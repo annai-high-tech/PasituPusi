@@ -1,0 +1,37 @@
+<resources>
+    <string name="prompt_email">Email Id</string>
+    <string name="prompt_email_password">Password</string>
+    <string name="prompt_phone">Phone Number</string>
+    <string name="prompt_phone_password">OTP</string>
+
+    <string name="action_sign_in">Sign in / Sign up</string>
+    <string name="action_reset">Reset Password</string>
+
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_password_otp">Password must be 6 characters</string>
+    <string name="invalid_internetConnection">Check your internet connection</string>
+    <string name="invalid_userDetails">Invalid User name/password</string>
+    <string name="invalid_phoneDetails">Invalid phone number. Please fill the phone number with country code. Example: +91 9876543210</string>
+    <string name="invalid_userAlreadyExists">User name already existing</string>
+    <string name="invalid_userNotVerified">User account not verified</string>
+    <string name="invalid_tooManyResend">Too many resend messages. Try after sometime</string>
+    <string name="invalid_otpTimeOut">OTP Timeout reached</string>
+    <string name="invalid_otp">Invalid OTP</string>
+
+    <string name="login_reset_password">Password reset e-mail sent to your mailbox and click the link to change your password. \nIf no email received for more than 5 minutes, then click \'Reset Password\' button</string>
+    <string name="login_activation">Verification e-mail sent to your mailbox and click the link to activate your account. \nAfter verification, click the \'Verify\' button. \nIf no email received for more than 5 minutes, then click \'Resend\' button</string>
+    <string name="login_verify_button">Verify</string>
+    <string name="login_resend_button">Resend</string>
+    <string name="login_cancel_button">Cancel</string>
+    <string name="login_ok_button">Ok</string>
+
+    <string name="login_activation_otp">Input the OTP sent to your phone number and click \'Verify\' button. \nIf no OTP received for more than 5 minutes, then click \'Resend\' button</string>
+
+    <string name="login_failed">"Login failed"</string>
+
+    <string name="tab_text_1">Profile</string>
+    <string name="tab_text_2">Chats</string>
+    <string name="tab_text_3">Events</string>
+    <string name="tab_text_4">Tab 2</string>
+</resources>
