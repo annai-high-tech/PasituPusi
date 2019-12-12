@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/nav_profile"
+        android:title="Profile" />
+
+    <item
+        android:id="@+id/nav_logout"
+        android:title="Logout" />
+
+    <item android:title="Calculator" >
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_calc_basic"
+                    android:title="Basic Calculator" />
+                <item
+                    android:id="@+id/nav_calc_scien"
+                    android:title="Scientific Calculator" />
+                <item
+                    android:id="@+id/nav_calc_bin"
+                    android:title="Binary Calculator" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="Converter" >
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_conv_adv"
+                    android:title="Currency Converter" />
+                <item
+                    android:id="@+id/nav_conv_basic"
+                    android:title="Basic Converter" />
+           </group>
+        </menu>
+    </item>
+
+    <item android:title="Banking" >
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_bank_basic"
+                    android:title="Interest Calculator" />
+                <item
+                    android:id="@+id/nav_bank_emi"
+                    android:title="EMI Calculator" />
+            </group>
+        </menu>
+    </item>
+
+</menu>

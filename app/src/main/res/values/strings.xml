@@ -33,5 +33,9 @@
     <string name="tab_text_1">Profile</string>
     <string name="tab_text_2">Chats</string>
     <string name="tab_text_3">Events</string>
-    <string name="tab_text_4">Tab 2</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
 </resources>
