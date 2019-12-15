@@ -63,14 +63,6 @@
             android:inputType="textPersonName" />
 
         <EditText
-            android:id="@+id/editTextAbout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="About"
-            android:inputType="textEmailAddress" />
-
-        <EditText
             android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,20 +77,6 @@
             android:ems="10"
             android:hint="Phone Number (Optional)"
             android:inputType="phone" />
-
-        <EditText
-            android:id="@+id/editTextDOB"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Date of Birth"
-            android:inputType="date" />
-
-        <Button
-            android:id="@+id/buttonDatePick"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="pick" />
 
         <Button
             android:id="@+id/buttonSave"

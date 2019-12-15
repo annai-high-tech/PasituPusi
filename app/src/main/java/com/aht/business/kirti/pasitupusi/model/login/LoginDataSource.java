@@ -50,7 +50,7 @@ public class LoginDataSource {
         }
 
         if(loginType == EMAIL_ID) {
-            loginWithEmail.login(email, password, activity, outResult);
+            loginWithEmail.signInWithEmailAndPassword(email, password, activity, outResult);
         }
         if(loginType == PHONE) {
             loginWithPhone.login(email, activity, outResult);

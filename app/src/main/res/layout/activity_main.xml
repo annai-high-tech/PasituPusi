@@ -41,12 +41,6 @@
                     android:background="?attr/colorPrimary"
                     app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/colorPrimary" />
-
                 <Button
                     android:id="@+id/buttonSignOut"
                     android:layout_width="match_parent"
@@ -58,21 +52,14 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
+        <FrameLayout
             android:id="@+id/content"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_below="@id/header"
             android:gravity="center">
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/view_pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-
-        </RelativeLayout>
+        </FrameLayout>
 
     </RelativeLayout>
 
@@ -81,6 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:layout_marginTop="56dp"
         android:fitsSystemWindows="true"
         android:maxWidth="200dp"
         app:headerLayout="@layout/nav_header_main"

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+//import com.google.api.core.ApiFuture;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -66,6 +67,8 @@ public class ProfileManager {
                 }
             }
         });
+
+
     }
 
     public void updateProfileData(final ProfileData data, final MutableLiveData<ProfileData> result) {
@@ -83,6 +86,7 @@ public class ProfileManager {
 
                 if(task.isSuccessful()) {
 
+
                     if(data.getName() != null && !data.getName().equals(currentUser.getDisplayName())) {
 
                         UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
@@ -90,7 +94,7 @@ public class ProfileManager {
                                 .build();
                         currentUser.updateProfile(userProfileChangeRequest);
                     }
-                    if(data.getEmail() != null && !data.getEmail().equals(currentUser.getEmail())) {
+                    if(data.getEmail() != null && !data.getEmail().equals("") && !data.getEmail().equals(currentUser.getEmail())) {
                         currentUser.updateEmail(data.getEmail());
                     }
                     if(data.getPhone() != null && !data.getPhone().equals(currentUser.getPhoneNumber())) {
@@ -115,4 +119,37 @@ public class ProfileManager {
 
         return false;
     }
+
+    public boolean isValidProfile(final MutableLiveData<Boolean> result) {
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        final DocumentReference docRef = db.collection("user_data").document(currentUser.getUid());
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                boolean status = false;
+                if(task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if(document.exists()) {
+                        status = true;
+                    }
+                }
+                result.setValue(status);
+
+            }
+        });
+
+        return true;
+    }
+
+    public static boolean isValidUser() {
+        return FirebaseAuth.getInstance().getCurrentUser() != null;
+    }
+
 }

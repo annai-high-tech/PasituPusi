@@ -100,11 +100,11 @@ public class LoginMainActivity extends AppCompatActivity {
             }
 
             if(view.getId() == loginButton.getId()) {
-                String buttonText = loginButton.getText().toString();
-                if (buttonText.equals(getResources().getString(R.string.action_sign_in))) {
+                //String buttonText = loginButton.getText().toString();
+                //if (buttonText.equals(getResources().getString(R.string.action_sign_in_up))) {
                     loginViewModel.login(usernameEditText.getText().toString(),
                             passwordEditText.getText().toString(), LoginMainActivity.this, loginType);
-                }
+                //}
             }
 
             if(view.getId() == resetButton.getId()) {
@@ -124,6 +124,7 @@ public class LoginMainActivity extends AppCompatActivity {
                 passwordEditText.setHint(getResources().getString(R.string.prompt_email_password));
                 passwordEditText.setVisibility(View.VISIBLE);
                 resetButton.setVisibility(View.VISIBLE);
+                loginButton.setText(getResources().getString(R.string.action_sign_in));
 
             }
 
@@ -135,6 +136,7 @@ public class LoginMainActivity extends AppCompatActivity {
                 passwordEditText.setText("");
                 passwordEditText.setVisibility(View.INVISIBLE);
                 resetButton.setVisibility(View.INVISIBLE);
+                loginButton.setText(getResources().getString(R.string.action_sign_in_up));
 
             }
         }

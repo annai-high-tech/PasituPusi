@@ -9,9 +9,15 @@ public class ProfileData {
 
     private String phone;
 
-    private String dob;
+    private String address_line1;
 
-    private String about;
+    private String address_line2;
+
+    private String city;
+
+    private String state;
+
+    private String pincode;
 
     public String getName() {
         return name;
@@ -37,19 +43,43 @@ public class ProfileData {
         this.phone = phone;
     }
 
-    public String getDob() {
-        return dob;
+    public String getAddress_line1() {
+        return address_line1;
     }
 
-    public void setDob(String dob) {
-        this.dob = dob;
+    public void setAddress_line1(String address_line1) {
+        this.address_line1 = address_line1;
     }
 
-    public String getAbout() {
-        return about;
+    public String getAddress_line2() {
+        return address_line2;
     }
 
-    public void setAbout(String about) {
-        this.about = about;
+    public void setAddress_line2(String address_line2) {
+        this.address_line2 = address_line2;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getPincode() {
+        return pincode;
+    }
+
+    public void setPincode(String pincode) {
+        this.pincode = pincode;
     }
 }

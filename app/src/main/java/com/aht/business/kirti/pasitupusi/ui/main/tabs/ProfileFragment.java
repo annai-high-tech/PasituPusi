@@ -21,8 +21,8 @@ import com.aht.business.kirti.pasitupusi.ui.main.dialog.DatePickerFragment;
 
 public class ProfileFragment extends BaseFragment {
 
-    private Button buttonSave, buttonReset, buttonDatePicker;
-    private EditText editTextProfileName, editTextEmail, editTextPhone, editTextDob, editTextAbout;
+    private Button buttonSave, buttonReset;
+    private EditText editTextProfileName, editTextEmail, editTextPhone;
 
     private ProfileViewModel profileViewModel;
     private ProfileData currrentProfileData;
@@ -37,25 +37,18 @@ public class ProfileFragment extends BaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        profileViewModel = ViewModelProviders.of(getActivity()).get(ProfileViewModel.class);
-
-        profileViewModel.getProfileData().observe(getActivity(), mObserverResult);
-
-
         editTextProfileName = view.findViewById(R.id.editTextName);
         editTextEmail = view.findViewById(R.id.editTextEmail);
         editTextPhone = view.findViewById(R.id.editTextPhone);
-        editTextDob = view.findViewById(R.id.editTextDOB);
-        editTextAbout = view.findViewById(R.id.editTextAbout);
 
         buttonSave = view.findViewById(R.id.buttonSave);
         buttonReset = view.findViewById(R.id.buttonReset);
-        buttonDatePicker = view.findViewById(R.id.buttonDatePick);
 
         buttonSave.setOnClickListener(listener);
         buttonReset.setOnClickListener(listener);
-        buttonDatePicker.setOnClickListener(listener);
 
+        profileViewModel = ViewModelProviders.of(getActivity()).get(ProfileViewModel.class);
+        profileViewModel.getProfileData().observe(getActivity(), mObserverResult);
         profileViewModel.createProfileData();
 
         return view;
@@ -67,27 +60,18 @@ public class ProfileFragment extends BaseFragment {
             /* Go to next fragment in navigation stack*/
             //mActivity.pushFragments(AppConstants.TAB_A, new AppTabAFragment2(),true,true);
 
-            if(v.getId() == buttonSave.getId()) {
+            if(v.getId() == buttonSave.getId() && currrentProfileData != null) {
                 if (editTextProfileName.getText() != null)
                     currrentProfileData.setName(editTextProfileName.getText().toString());
                 if (editTextEmail.getText() != null)
                     currrentProfileData.setEmail(editTextEmail.getText().toString());
                 if (editTextPhone.getText() != null)
                     currrentProfileData.setPhone(editTextPhone.getText().toString());
-                if (editTextDob.getText() != null)
-                    currrentProfileData.setDob(editTextDob.getText().toString());
-                if (editTextAbout.getText() != null)
-                    currrentProfileData.setAbout(editTextAbout.getText().toString());
 
             }
 
             if(v.getId() == buttonReset.getId()) {
                 //profileViewModel.getProfileData().setValue();
-            }
-
-            if(v.getId() == buttonDatePicker.getId()) {
-                DialogFragment newFragment = new DatePickerFragment(editTextDob);
-                newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
             }
 
             profileViewModel.updateProfileData(currrentProfileData);
@@ -100,18 +84,25 @@ public class ProfileFragment extends BaseFragment {
         public void onChanged(@Nullable ProfileData profileData) {
 
             //loadingProgressBar.setVisibility(View.GONE);
+            String name = "", email = "", phone = "";
 
             currrentProfileData = profileData;
 
-            if (profileData == null) {
-                return;
+            if (profileData != null) {
+                if(profileData.getName() != null) {
+                    name = profileData.getName();
+                }
+                if(profileData.getEmail() != null) {
+                    email = profileData.getEmail();
+                }
+                if(profileData.getPhone() != null) {
+                    phone = profileData.getPhone();
+                }
             }
 
-            editTextProfileName.setText(profileData.getName());
-            editTextEmail.setText(profileData.getEmail());
-            editTextPhone.setText(profileData.getPhone());
-            editTextDob.setText(profileData.getDob());
-            editTextAbout.setText(profileData.getAbout());
+            editTextProfileName.setText(name);
+            editTextEmail.setText(email);
+            editTextPhone.setText(phone);
         }
     };
 

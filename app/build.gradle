@@ -1,5 +1,5 @@
 ext {
-    appName = 'PasituPusi'
+    appName = 'Pasitu Pusi'
     appId = 'com.aht.business.kirti.pasitupusi'
     verCode = 1
     verName = 'V0.01'
@@ -17,6 +17,7 @@ android {
         applicationId appId
         minSdkVersion 19
         targetSdkVersion 29
+        multiDexEnabled true
         versionCode verCode
         versionName verName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -32,13 +33,17 @@ android {
             resValue "string", "ADMOB_APP_ID_FULLSCREEN", "ca-app-pub-3254495262037809/3335389407"
         }
         debug {
-            multiDexEnabled true
             applicationIdSuffix ".debug"
             versionNameSuffix '-DEMO'
             resValue "string", "app_name", "${appName} DEMO"
             resValue "string", "ADMOB_APP_ID", "ca-app-pub-3940256099942544~3347511713"
             resValue "string", "ADMOB_APP_ID_BANNER", "ca-app-pub-3940256099942544/6300978111"
             resValue "string", "ADMOB_APP_ID_FULLSCREEN", "ca-app-pub-3940256099942544/1033173712"
+        }
+    }
+    bundle {
+        language {
+            enableSplit = true
         }
     }
 }
@@ -60,6 +65,8 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.karumi:dexter:6.0.1'
     implementation 'androidx.cardview:cardview:1.0.0'
+    //implementation 'com.google.api-client:google-api-client:1.30.6'
+    //implementation 'com.google.api:api-common:1.8.1'
 
-    //implementation 'com.google.firebase:firebase-admin:6.10.0'
+    //implementation 'com.google.firebase:firebase-admin:6.11.0'
 }

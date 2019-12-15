@@ -4,43 +4,47 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.aht.business.kirti.pasitupusi.R;
+import com.aht.business.kirti.pasitupusi.model.profile.ProfileManager;
+import com.aht.business.kirti.pasitupusi.model.profile.ProfileViewModel;
 import com.aht.business.kirti.pasitupusi.ui.login.LoginMainActivity;
-import com.aht.business.kirti.pasitupusi.ui.login.LoginType;
+import com.aht.business.kirti.pasitupusi.ui.main.tabs.BaseFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.tabs.HomeFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.tabs.ProfileFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button logoutButton;
+    private BaseFragment currentFragment;
+    private ProfileViewModel profileViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        logoutButton = findViewById(R.id.buttonSignOut);
-
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -51,21 +55,22 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        /*SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
-        FloatingActionButton fab = findViewById(R.id.fab);
+        tabs.setupWithViewPager(viewPager);*/
 
+        logoutButton = findViewById(R.id.buttonSignOut);
         logoutButton.setOnClickListener(mOnClickSignoutListener);
 
         //String uid = getIntent().getStringExtra("uid");
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user == null) {
+        if(!ProfileManager.isValidUser()) {
             logoutButton.performClick();
         }
+
+        FloatingActionButton fab = findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,9 +82,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        changeFragments(new HomeFragment(this));
+
+        profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
+        profileViewModel.getProfileCheckData().observe(this, mObserverResult);
+        profileViewModel.isProfileCreated();
+
         //getSupportActionBar().hide();
 
     }
+
+    Observer<Boolean> mObserverResult = new Observer<Boolean>() {
+
+        @Override
+        public void onChanged(@Nullable Boolean status) {
+
+            if(!status){
+                changeFragments(new ProfileFragment(MainActivity.this));
+            }
+        }
+    };
 
     private void signOut() {
 
@@ -115,12 +137,20 @@ public class MainActivity extends AppCompatActivity {
     private boolean processMenuItem(@NonNull MenuItem menuItem) {
 
         switch (menuItem.getItemId()) {
-            case R.id.nav_logout:
-                signOut();
+            case R.id.nav_home:
+                if(currentFragment == null || !(currentFragment instanceof HomeFragment)){
+                    changeFragments(new HomeFragment(this));
+                }
                 break;
 
             case R.id.nav_profile:
-                //changeFragments(new ScientificCalculatorFragment(selectedTheme));
+                if(currentFragment == null || !(currentFragment instanceof ProfileFragment)) {
+                    changeFragments(new ProfileFragment(this));
+                }
+                break;
+
+            case R.id.nav_logout:
+                signOut();
                 break;
 
             default:
@@ -128,6 +158,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    public void changeFragments(BaseFragment selectedFragment) {
+
+        PlaceholderFragment fragment = PlaceholderFragment.newInstance(selectedFragment);
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
+        currentFragment = selectedFragment;
+
     }
 
 

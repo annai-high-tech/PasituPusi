@@ -78,14 +78,14 @@ public class LoginWithEmail {
                     public void onComplete(@NonNull Task task) {
                         //checking if success
 
-                        displayResetMsgBox(email);
+                        displayResetMsgBox(email, task);
 
                     }
                 });
 
     }
 
-    private void signInWithEmailAndPassword(final String email, final String password, final Activity activity, final MutableLiveData<LoggedInUser> outResult) {
+    public void signInWithEmailAndPassword(final String email, final String password, final Activity activity, final MutableLiveData<LoggedInUser> outResult) {
 
         this.result = outResult;
         this.activity = activity;
@@ -197,11 +197,18 @@ public class LoginWithEmail {
 
     }
 
-    private void displayResetMsgBox(final String email) {
+    private void displayResetMsgBox(final String email, Task task) {
+
+        String message = "Some Error";
+
+        if(task.isSuccessful()) {
+            message = getMessage(R.string.login_reset_password);
+        } else {
+            message = task.getException().getMessage();
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder = builder.setMessage(
-                getMessage(R.string.login_reset_password))
+        builder = builder.setMessage(message)
                 .setCancelable(false)
                 .setNeutralButton(getMessage(R.string.login_ok_button),
                         new DialogInterface.OnClickListener() {
