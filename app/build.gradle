@@ -1,8 +1,8 @@
 ext {
     appName = 'Pasitu Pusi'
     appId = 'com.aht.business.kirti.pasitupusi'
-    verCode = 1
-    verName = 'V0.01'
+    verCode = 2
+    verName = 'V0.02'
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
@@ -28,9 +28,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue "string", "app_name", "${appName}"
-            resValue "string", "ADMOB_APP_ID", "ca-app-pub-3254495262037809~6536267819"
-            resValue "string", "ADMOB_APP_ID_BANNER", "ca-app-pub-3254495262037809/2405451118"
-            resValue "string", "ADMOB_APP_ID_FULLSCREEN", "ca-app-pub-3254495262037809/3335389407"
+            resValue "string", "ADMOB_APP_ID", "ca-app-pub-3254495262037809~2764957423"
+            resValue "string", "ADMOB_APP_ID_BANNER", "ca-app-pub-3254495262037809/9852615118"
+            resValue "string", "ADMOB_APP_ID_FULLSCREEN", "ca-app-pub-3254495262037809/1998670669"
+            resValue "string", "ADMOB_APP_ID_NATIVE", "ca-app-pub-3254495262037809/6867853963"
         }
         debug {
             applicationIdSuffix ".debug"
@@ -39,6 +40,7 @@ android {
             resValue "string", "ADMOB_APP_ID", "ca-app-pub-3940256099942544~3347511713"
             resValue "string", "ADMOB_APP_ID_BANNER", "ca-app-pub-3940256099942544/6300978111"
             resValue "string", "ADMOB_APP_ID_FULLSCREEN", "ca-app-pub-3940256099942544/1033173712"
+            resValue "string", "ADMOB_APP_ID_NATIVE", "ca-app-pub-3940256099942544/2247696110"
         }
     }
     bundle {

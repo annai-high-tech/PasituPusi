@@ -25,6 +25,10 @@ public class ProfileManager {
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        if(currentUser == null) {
+            return;
+        }
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         final DocumentReference docRef = db.collection("user_data").document(currentUser.getUid());

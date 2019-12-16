@@ -45,8 +45,7 @@ public class PlaceholderFragment extends Fragment {
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View root = currentFragment.initView(inflater, container, savedInstanceState);
-
+        View root = currentFragment.initView(this, inflater, container, savedInstanceState);
 
         return root;
     }
@@ -54,7 +53,10 @@ public class PlaceholderFragment extends Fragment {
     public void onBackPressed(){
     }
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
+        //super.onActivityResult(requestCode, resultCode, data);
+        currentFragment.onActivityResult(requestCode, resultCode, data);
     }
 
 

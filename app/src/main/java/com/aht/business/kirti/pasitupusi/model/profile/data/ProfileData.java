@@ -1,5 +1,11 @@
 package com.aht.business.kirti.pasitupusi.model.profile.data;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
+import java.io.ByteArrayOutputStream;
+
 public class ProfileData {
 
 
@@ -13,11 +19,15 @@ public class ProfileData {
 
     private String address_line2;
 
+    private String landMark;
+
     private String city;
 
     private String state;
 
-    private String pincode;
+    private int pincode;
+
+    private String picture;
 
     public String getName() {
         return name;
@@ -59,6 +69,14 @@ public class ProfileData {
         this.address_line2 = address_line2;
     }
 
+    public String getLandMark() {
+        return landMark;
+    }
+
+    public void setLandMark(String landMark) {
+        this.landMark = landMark;
+    }
+
     public String getCity() {
         return city;
     }
@@ -75,11 +93,20 @@ public class ProfileData {
         this.state = state;
     }
 
-    public String getPincode() {
+    public int getPincode() {
         return pincode;
     }
 
-    public void setPincode(String pincode) {
+    public void setPincode(int pincode) {
         this.pincode = pincode;
     }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
 }

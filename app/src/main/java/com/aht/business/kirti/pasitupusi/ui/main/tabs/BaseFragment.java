@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
+import com.aht.business.kirti.pasitupusi.ui.main.PlaceholderFragment;
 
 public abstract class BaseFragment {
 
@@ -25,6 +26,10 @@ public abstract class BaseFragment {
         return mActivity;
     }
 
-    public abstract View initView(LayoutInflater inflater, ViewGroup container,
+    public abstract View initView(Fragment fragment, LayoutInflater inflater, ViewGroup container,
                          Bundle savedInstanceState);
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    }
+
 }

@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.fragment.app.Fragment;
+
 import com.aht.business.kirti.pasitupusi.R;
 
 public class HomeFragment extends BaseFragment {
@@ -18,8 +20,8 @@ public class HomeFragment extends BaseFragment {
     }
 
     @Override
-    public View initView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View initView(Fragment fragment, LayoutInflater inflater, ViewGroup container,
+                         Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
