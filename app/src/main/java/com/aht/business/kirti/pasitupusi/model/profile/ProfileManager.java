@@ -128,6 +128,10 @@ public class ProfileManager {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        if(currentUser == null) {
+            return false;
+        }
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         final DocumentReference docRef = db.collection("user_data").document(currentUser.getUid());
@@ -154,6 +158,15 @@ public class ProfileManager {
 
     public static boolean isValidUser() {
         return FirebaseAuth.getInstance().getCurrentUser() != null;
+    }
+
+    public static String getUserName() {
+        String name = null;
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            return FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        }
+
+        return name;
     }
 
 }

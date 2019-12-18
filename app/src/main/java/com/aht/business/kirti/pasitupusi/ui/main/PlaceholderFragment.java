@@ -16,9 +16,6 @@ import com.aht.business.kirti.pasitupusi.ui.main.tabs.BaseFragment;
  */
 public class PlaceholderFragment extends Fragment {
 
-    private static final String ARG_FRAGMENT_CLASS = "fragment_class";
-    private static final String ARG_ACTITITY_OBJECT = "activity_object";
-
     private BaseFragment currentFragment;
     private PageViewModel pageViewModel;
 

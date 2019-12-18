@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.aht.business.kirti.pasitupusi.R;
+import com.aht.business.kirti.pasitupusi.model.login.UserType;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 
 import static com.aht.business.kirti.pasitupusi.ui.login.LoginType.EMAIL_ID;
@@ -27,7 +28,7 @@ public class LoginMainActivity extends AppCompatActivity {
 
     private EditText usernameEditText;
     private EditText passwordEditText;
-    private Button loginButton;
+    private Button loginButton, guestLoginButton;
     private TextView resetButton;
     private ProgressBar loadingProgressBar;
     private RadioGroup radioGroupLoginType;
@@ -46,6 +47,7 @@ public class LoginMainActivity extends AppCompatActivity {
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
         loginButton = findViewById(R.id.login);
+        guestLoginButton = findViewById(R.id.guestLogin);
         resetButton = findViewById(R.id.reset);
         loadingProgressBar = findViewById(R.id.loading);
         radioGroupLoginType = findViewById(R.id.radioGroupLogin);
@@ -54,6 +56,7 @@ public class LoginMainActivity extends AppCompatActivity {
         passwordEditText.addTextChangedListener(mTextWatcher);
         radioGroupLoginType.setOnCheckedChangeListener(mOnCheckedChangeListener);
         loginButton.setOnClickListener(mOnClickListener);
+        guestLoginButton.setOnClickListener(mOnClickListener);
         resetButton.setOnClickListener(mOnClickListener);
         loginViewModel.getLoginFormState().observe(this, mObserver);
         loginViewModel.getLoginResult().observe(this, mObserverResult);
@@ -102,9 +105,13 @@ public class LoginMainActivity extends AppCompatActivity {
             if(view.getId() == loginButton.getId()) {
                 //String buttonText = loginButton.getText().toString();
                 //if (buttonText.equals(getResources().getString(R.string.action_sign_in_up))) {
-                    loginViewModel.login(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString(), LoginMainActivity.this, loginType);
+                loginViewModel.login(usernameEditText.getText().toString(),
+                        passwordEditText.getText().toString(), LoginMainActivity.this, loginType);
                 //}
+            }
+
+            if(view.getId() == guestLoginButton.getId()) {
+                openMainActivity("Guest", UserType.GUEST);
             }
 
             if(view.getId() == resetButton.getId()) {
@@ -178,9 +185,11 @@ public class LoginMainActivity extends AppCompatActivity {
             if (loginResult.getSuccess() != null) {
                 Toast.makeText(LoginMainActivity.this, "Login Success: " + loginResult.getSuccess().getUserId(), Toast.LENGTH_LONG).show();
 
-                Intent mainPage = new Intent(LoginMainActivity.this, MainActivity.class);
+                openMainActivity(loginResult.getSuccess().getUserId(), UserType.USER);
+
+                /*Intent mainPage = new Intent(LoginMainActivity.this, MainActivity.class);
                 mainPage.putExtra("uid", loginResult.getSuccess().getUserId());
-                LoginMainActivity.this.startActivity(mainPage);
+                LoginMainActivity.this.startActivity(mainPage);*/
 
             } else {
                 Toast.makeText(LoginMainActivity.this, "Login failed: " + loginResult.getErrorMsg(), Toast.LENGTH_LONG).show();
@@ -188,5 +197,12 @@ public class LoginMainActivity extends AppCompatActivity {
         }
     };
 
+    private void openMainActivity(String name, UserType userType) {
+        Intent mainPage = new Intent(LoginMainActivity.this, MainActivity.class);
+        mainPage.putExtra("USER_NAME", name);
+        mainPage.putExtra("USER_TYPE", userType.toString());
+        LoginMainActivity.this.startActivity(mainPage);
+
+    }
 
 }

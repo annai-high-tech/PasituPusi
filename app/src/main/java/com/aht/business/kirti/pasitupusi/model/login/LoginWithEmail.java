@@ -38,6 +38,10 @@ public class LoginWithEmail {
         this.result = outResult;
         this.activity = activity;
 
+        if(email == null || password == null || email.equals("") || password.equals("") ){
+            return;
+        }
+
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -90,6 +94,10 @@ public class LoginWithEmail {
         this.result = outResult;
         this.activity = activity;
 
+        if(email == null || password == null || email.equals("") || password.equals("") ){
+            return;
+        }
+
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -102,7 +110,7 @@ public class LoginWithEmail {
 
                             FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
-                            if (currentUser.isEmailVerified()) {
+                            if (currentUser != null && currentUser.isEmailVerified()) {
                                 user = new LoggedInUser(
                                         currentUser.getUid(),
                                         currentUser.getEmail(),

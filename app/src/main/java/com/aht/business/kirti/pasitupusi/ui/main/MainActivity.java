@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.aht.business.kirti.pasitupusi.R;
+import com.aht.business.kirti.pasitupusi.model.login.UserType;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfileManager;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfileViewModel;
 import com.aht.business.kirti.pasitupusi.ui.login.LoginMainActivity;
@@ -25,6 +26,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -36,6 +38,17 @@ public class MainActivity extends AppCompatActivity {
     private Button logoutButton;
     private BaseFragment currentFragment;
     private ProfileViewModel profileViewModel;
+
+    private String userDisplayName = null;
+    private UserType userType = UserType.GUEST;
+
+    public String getUserDisplayName() {
+        return userDisplayName;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +77,14 @@ public class MainActivity extends AppCompatActivity {
         logoutButton = findViewById(R.id.buttonSignOut);
         logoutButton.setOnClickListener(mOnClickSignoutListener);
 
-        //String uid = getIntent().getStringExtra("uid");
+        userDisplayName = getIntent().getStringExtra("USER_NAME");
+        String mUserType = getIntent().getStringExtra("USER_TYPE");
 
-        if(!ProfileManager.isValidUser()) {
+        if(mUserType != null) {
+            userType = UserType.valueOf(mUserType);
+        }
+
+        if(!ProfileManager.isValidUser() && !(userDisplayName != null && userDisplayName.equals("Guest"))) {
             logoutButton.performClick();
         }
 
@@ -89,6 +107,18 @@ public class MainActivity extends AppCompatActivity {
         profileViewModel.isProfileCreated();
 
         //getSupportActionBar().hide();
+
+        Menu nav_Menu = navigationView.getMenu();
+        nav_Menu.findItem(R.id.nav_logout).setTitle("Logout");
+        nav_Menu.findItem(R.id.nav_profile).setVisible(true);
+
+        if(ProfileManager.isValidUser()) {
+            userDisplayName = ProfileManager.getUserName();
+        }
+        else if(!ProfileManager.isValidUser() && userType == UserType.GUEST) {
+            nav_Menu.findItem(R.id.nav_profile).setVisible(false);
+            nav_Menu.findItem(R.id.nav_logout).setTitle("Login");
+        }
 
     }
 
