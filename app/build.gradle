@@ -1,8 +1,8 @@
 ext {
     appName = 'Pasitu Pusi'
     appId = 'com.aht.business.kirti.pasitupusi'
-    verCode = 4
-    verName = 'V0.04'
+    verCode = 5
+    verName = 'V0.05'
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
@@ -67,6 +67,8 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.karumi:dexter:6.0.1'
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.hbb20:ccp:2.3.5'
+
     //implementation 'com.google.api-client:google-api-client:1.30.6'
     //implementation 'com.google.api:api-common:1.8.1'
 

@@ -33,8 +33,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/login_layout"
+        <ScrollView
+            android:id="@+id/login_scroll_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -43,95 +43,119 @@
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="30dp"
             android:background="@drawable/layout_bg"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:gravity="center">
 
-            <RadioGroup
-                android:id="@+id/radioGroupLogin"
+            <LinearLayout
+                android:id="@+id/login_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="5dp"
-                android:orientation="horizontal"
-                android:text="Login as ">
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:gravity="center">
 
-
-                <TextView
+                <RadioGroup
+                    android:id="@+id/radioGroupLogin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Login using " />
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal"
+                    android:text="Login as ">
 
-                <RadioButton
-                    android:id="@+id/radioButtonPhone"
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:text="Login using " />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Phone Number" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:text="Email ID" />
+
+                </RadioGroup>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.hbb20.CountryCodePicker
+                        android:id="@+id/ccp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        app:ccp_defaultNameCode="IN" />
+
+                    <EditText
+                        android:id="@+id/username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:hint="@string/prompt_email"
+                        android:inputType="textEmailAddress"
+                        android:selectAllOnFocus="true" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Phone Number" />
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="@string/prompt_email_password"
+                    android:imeActionLabel="@string/action_sign_in"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:selectAllOnFocus="true" />
 
-                <RadioButton
-                    android:id="@+id/radioButtonEmail"
-                    android:layout_width="match_parent"
+                <Button
+                    android:id="@+id/login"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Email ID" />
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:enabled="false"
+                    android:text="@string/action_sign_in_up" />
 
-            </RadioGroup>
+                <TextView
+                    android:id="@+id/reset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/action_reset"
+                    android:textStyle="italic" />
 
-            <EditText
-                android:id="@+id/username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:hint="@string/prompt_email"
-                android:inputType="textEmailAddress"
-                android:selectAllOnFocus="true" />
+                <Button
+                    android:id="@+id/guestLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/action_guest_sign_in" />
 
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:hint="@string/prompt_email_password"
-                android:imeActionLabel="@string/action_sign_in"
-                android:imeOptions="actionDone"
-                android:inputType="textPassword"
-                android:selectAllOnFocus="true" />
+            </LinearLayout>
 
-            <Button
-                android:id="@+id/login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="5dp"
-                android:enabled="false"
-                android:text="@string/action_sign_in_up" />
-
-            <TextView
-                android:id="@+id/reset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:text="@string/action_reset"
-                android:textStyle="italic" />
-
-            <Button
-                android:id="@+id/guestLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="5dp"
-                android:text="@string/action_guest_sign_in" />
-
-        </LinearLayout>
+        </ScrollView>
 
         <ProgressBar
             android:id="@+id/loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/login_layout"
+            android:layout_below="@id/login_scroll_layout"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:visibility="gone" />

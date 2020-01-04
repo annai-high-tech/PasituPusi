@@ -3,6 +3,7 @@ package com.aht.business.kirti.pasitupusi.ui.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -26,12 +27,12 @@ import static com.aht.business.kirti.pasitupusi.ui.login.LoginType.PHONE;
 
 public class LoginMainActivity extends AppCompatActivity {
 
-    private EditText usernameEditText;
-    private EditText passwordEditText;
+    private EditText usernameEditText, passwordEditText;
     private Button loginButton, guestLoginButton;
     private TextView resetButton;
     private ProgressBar loadingProgressBar;
     private RadioGroup radioGroupLoginType;
+    private com.hbb20.CountryCodePicker countryCodePicker;
 
     private LoginViewModel loginViewModel;
 
@@ -51,6 +52,7 @@ public class LoginMainActivity extends AppCompatActivity {
         resetButton = findViewById(R.id.reset);
         loadingProgressBar = findViewById(R.id.loading);
         radioGroupLoginType = findViewById(R.id.radioGroupLogin);
+        countryCodePicker = findViewById(R.id.ccp);
 
         usernameEditText.addTextChangedListener(mTextWatcher);
         passwordEditText.addTextChangedListener(mTextWatcher);
@@ -98,14 +100,17 @@ public class LoginMainActivity extends AppCompatActivity {
             loadingProgressBar.setVisibility(View.VISIBLE);
 
             LoginType loginType = EMAIL_ID;
+            String countryCode = "";
+
             if(radioGroupLoginType.getCheckedRadioButtonId() == findViewById(R.id.radioButtonPhone).getId()) {
                 loginType = PHONE;
+                countryCode = countryCodePicker.getTextView_selectedCountry().getText().toString();
             }
 
             if(view.getId() == loginButton.getId()) {
                 //String buttonText = loginButton.getText().toString();
                 //if (buttonText.equals(getResources().getString(R.string.action_sign_in_up))) {
-                loginViewModel.login(usernameEditText.getText().toString(),
+                loginViewModel.login(countryCode + usernameEditText.getText().toString(),
                         passwordEditText.getText().toString(), LoginMainActivity.this, loginType);
                 //}
             }
@@ -127,7 +132,9 @@ public class LoginMainActivity extends AppCompatActivity {
 
             if(selectedButtonId == findViewById(R.id.radioButtonEmail).getId()) {
 
+                countryCodePicker.setVisibility(View.GONE);
                 usernameEditText.setHint(getResources().getString(R.string.prompt_email));
+                usernameEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 passwordEditText.setHint(getResources().getString(R.string.prompt_email_password));
                 passwordEditText.setVisibility(View.VISIBLE);
                 resetButton.setVisibility(View.VISIBLE);
@@ -137,7 +144,9 @@ public class LoginMainActivity extends AppCompatActivity {
 
             if(selectedButtonId == findViewById(R.id.radioButtonPhone).getId()) {
 
+                countryCodePicker.setVisibility(View.VISIBLE);
                 usernameEditText.setHint(getResources().getString(R.string.prompt_phone));
+                usernameEditText.setInputType(InputType.TYPE_CLASS_PHONE);
                 //passwordEditText.setHint(getResources().getString(R.string.prompt_phone_password));
                 //passwordEditText.setEnabled(false);
                 passwordEditText.setText("");

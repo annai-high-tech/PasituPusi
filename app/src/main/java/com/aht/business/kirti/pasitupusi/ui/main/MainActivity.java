@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        changeFragments(new HomeFragment(this));
+        changeFragments(new HomeFragment());
 
         profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
         profileViewModel.getProfileCheckData().observe(this, mObserverResult);
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         public void onChanged(@Nullable Boolean status) {
 
             if(!status){
-                changeFragments(new ProfileFragment(MainActivity.this));
+                changeFragments(new ProfileFragment());
             }
         }
     };
@@ -169,13 +169,13 @@ public class MainActivity extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
                 if(currentFragment == null || !(currentFragment instanceof HomeFragment)){
-                    changeFragments(new HomeFragment(this));
+                    changeFragments(new HomeFragment());
                 }
                 break;
 
             case R.id.nav_profile:
                 if(currentFragment == null || !(currentFragment instanceof ProfileFragment)) {
-                    changeFragments(new ProfileFragment(this));
+                    changeFragments(new ProfileFragment());
                 }
                 break;
 
@@ -192,10 +192,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeFragments(BaseFragment selectedFragment) {
 
-        PlaceholderFragment fragment = PlaceholderFragment.newInstance(selectedFragment);
+        //PlaceholderFragment fragment = PlaceholderFragment.newInstance(selectedFragment);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content, fragment);
+        fragmentTransaction.replace(R.id.content, selectedFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 

@@ -15,6 +15,8 @@ public class ProfileData {
 
     private String phone;
 
+    private String secondaryPhone;
+
     private String address_line1;
 
     private String address_line2;
@@ -24,6 +26,8 @@ public class ProfileData {
     private String city;
 
     private String state;
+
+    private String country;
 
     private int pincode;
 
@@ -109,4 +113,19 @@ public class ProfileData {
         this.picture = picture;
     }
 
+    public String getSecondaryPhone() {
+        return secondaryPhone;
+    }
+
+    public void setSecondaryPhone(String secondaryPhone) {
+        this.secondaryPhone = secondaryPhone;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 }

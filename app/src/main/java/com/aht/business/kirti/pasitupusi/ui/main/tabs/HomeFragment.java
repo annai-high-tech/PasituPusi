@@ -15,18 +15,16 @@ import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 
 public class HomeFragment extends BaseFragment {
 
-    private MainActivity activity;
     private Button mGotoButton;
     private TextView textViewWelcomeMsg;
 
-    public HomeFragment(MainActivity activity) {
-        super(activity);
-
-        this.activity = activity;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
-    public View initView(Fragment fragment, LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                          Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -35,7 +33,7 @@ public class HomeFragment extends BaseFragment {
         //mGoToButton = (Button) view.findViewById(R.id.goto_button);
         //mGoToButton.setOnClickListener(listener);
 
-        textViewWelcomeMsg.setText("Hello " + activity.getUserDisplayName() + "!\n\tWelcome to Pasitu Pusi Menu");
+        textViewWelcomeMsg.setText("Hello " + ((MainActivity)getActivity()).getUserDisplayName() + "!\n\tWelcome to Pasitu Pusi Menu");
         return view;
     }
 
