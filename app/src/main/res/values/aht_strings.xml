@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_link" translatable="false">
+        https://play.google.com/store/apps/details?id=%1$s
+    </string>
+
+    <string name="privacy_link" translatable="false">
+        https://annaihightech.wixsite.com/site/privacy-policy
+    </string>
+
+    <string name="privacy_title" translatable="false">Privacy Policy</string>
+
+    <bool name="enable_ads_banner">false</bool>
+    <bool name="enable_ads_fullscreen">false</bool>
+    <bool name="enable_ads_native">false</bool>
+
+</resources>

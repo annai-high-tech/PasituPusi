@@ -56,10 +56,36 @@
             android:id="@+id/content"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_above="@id/footer"
             android:layout_below="@id/header"
             android:gravity="center">
 
         </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center" >
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:adSize="BANNER"
+                app:adUnitId="@string/ADMOB_APP_ID_BANNER" />
+
+            <TextView
+                android:id="@+id/privacy_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/adView"
+                android:gravity="center"
+                android:text="@string/privacy_title" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.aht.business.kirti.pasitupusi.R;
+import com.aht.business.kirti.pasitupusi.model.ads.AdsAHT;
 import com.aht.business.kirti.pasitupusi.model.login.UserType;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfileManager;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfileViewModel;
@@ -12,6 +13,7 @@ import com.aht.business.kirti.pasitupusi.ui.main.tabs.BaseFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.ContactFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.HomeFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.ProfileFragment;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -27,18 +29,27 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.text.Html;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
+    private AdView adView;
+    private TextView privacyTextView;
     private Button logoutButton;
+    private RelativeLayout footerView;
     private BaseFragment currentFragment;
     private ProfileViewModel profileViewModel;
+    private AdsAHT adsAHT;
 
     private String userDisplayName = null;
     private UserType userType = UserType.GUEST;
@@ -67,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
 
         /*SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -121,6 +131,23 @@ public class MainActivity extends AppCompatActivity {
             nav_Menu.findItem(R.id.nav_logout).setTitle("Login");
         }
 
+        //Ads and privacy policy link
+        footerView = findViewById(R.id.footer);
+        adView = findViewById(R.id.adView);
+        privacyTextView = findViewById(R.id.privacy_content);
+
+        adsAHT = new AdsAHT(this,
+                adView,
+                getResources().getString(R.string.ADMOB_APP_ID_FULLSCREEN),
+                getResources().getString(R.string.ADMOB_APP_ID_NATIVE),
+                getResources().getBoolean(R.bool.enable_ads_banner),
+                getResources().getBoolean(R.bool.enable_ads_fullscreen),
+                getResources().getBoolean(R.bool.enable_ads_native));
+
+        adsAHT.loadAllAds();
+
+        showFooter(true, true, false);
+
     }
 
     Observer<Boolean> mObserverResult = new Observer<Boolean>() {
@@ -167,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean processMenuItem(@NonNull MenuItem menuItem) {
 
+        showFooter(true, true, false);
+
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
                 if(currentFragment == null || !(currentFragment instanceof HomeFragment)){
@@ -181,6 +210,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.nav_contact:
+                adsAHT.showFullScreenAds();
+                showFooter(true, true, true);
                 if(currentFragment == null || !(currentFragment instanceof ContactFragment)) {
                     changeFragments(new ContactFragment());
                 }
@@ -210,5 +241,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void showFooter(boolean showFooter, boolean showAds, boolean showPrivacy){
+
+        footerView.setVisibility(showFooter ? View.VISIBLE : View.GONE);
+        if (showFooter) {
+            adView.setVisibility(showAds ? View.VISIBLE : View.GONE);
+            privacyTextView.setVisibility(showPrivacy ? View.VISIBLE : View.GONE);
+            if (showPrivacy) {
+                //privacyTextView.setOnClickListener(mOnClickListener);
+                Spanned text = Html.fromHtml("<a href='"
+                        + getResources().getString(R.string.privacy_link)
+                        + "'>"
+                        + getResources().getString(R.string.privacy_title)
+                        + "</a>");
+                privacyTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                privacyTextView.setText(text);
+            }
+        }
+    }
 
 }
