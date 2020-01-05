@@ -9,6 +9,7 @@ import com.aht.business.kirti.pasitupusi.model.profile.ProfileManager;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfileViewModel;
 import com.aht.business.kirti.pasitupusi.ui.login.LoginMainActivity;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.BaseFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.tabs.ContactFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.HomeFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.ProfileFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -176,6 +177,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_profile:
                 if(currentFragment == null || !(currentFragment instanceof ProfileFragment)) {
                     changeFragments(new ProfileFragment());
+                }
+                break;
+
+            case R.id.nav_contact:
+                if(currentFragment == null || !(currentFragment instanceof ContactFragment)) {
+                    changeFragments(new ContactFragment());
                 }
                 break;
 

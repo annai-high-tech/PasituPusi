@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="email_id">pasitupusi@gmail.com</string>
+    <string name="phone_number">+91 79047 71427</string>
+
+    <string name="contact_title">For any Queries and Feedback</string>
+    <string name="contact_email">Email us at </string>
+    <string name="contact_phone">Whatsapp/Call us at </string>
+
+</resources>

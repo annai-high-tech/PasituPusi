@@ -53,6 +53,7 @@ public class ProfilePhotoManager {
                     fragment.startActivityForResult(Intent.createChooser(intent, "Select File"), 2);
                 }
                 else if (options[item].equals("Cancel")) {
+                    //fragment.startActivityForResult(new Intent(), 3);
                     dialog.dismiss();
                 }
             }

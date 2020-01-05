@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfilePhotoManager;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfileViewModel;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
+import com.aht.business.kirti.pasitupusi.ui.utils.AnimationUtil;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.ByteArrayOutputStream;
@@ -33,8 +35,11 @@ public class ProfileFragment extends BaseFragment {
     private TextInputEditText editTextCity, editTextState, editTextCountry, editTextPinCode;
     private ImageView imageViewProfilePic;
     private TextView textViewProfilePicEdit, textViewProfilePicSave, textViewProfilePicCancel;
-    private TextView textViewProfileEdit, textViewProfileSave, textViewProfileCancel;
-    private TextView textViewProfileAddrEdit, textViewProfileAddrSave, textViewProfileAddrCancel;
+    private TextView textViewProfileEdit, textViewProfileSave, textViewProfileCancel, textViewProfileCollapse;
+    private TextView textViewProfileAddrEdit, textViewProfileAddrSave, textViewProfileAddrCancel, textViewProfileAddrCollapse;
+    private TextView textViewProfileCurOrderCollapse, textViewProfileHisOrderCollapse;
+
+    private LinearLayout editableProfileLayout, editableProfileAddressLayout, editableProfileCurOrderLayout, editableProfileHisOrderLayout;
 
     private ProfileViewModel profileViewModel;
     private ProfileData currrentProfileData;
@@ -71,11 +76,20 @@ public class ProfileFragment extends BaseFragment {
         textViewProfileEdit = view.findViewById(R.id.textViewProfileEdit);
         textViewProfileSave = view.findViewById(R.id.textViewProfileSave);
         textViewProfileCancel = view.findViewById(R.id.textViewProfileCancel);
+        textViewProfileCollapse = view.findViewById(R.id.textViewProfileCollapse);
         textViewProfileAddrEdit = view.findViewById(R.id.textViewProfileAddressEdit);
         textViewProfileAddrSave = view.findViewById(R.id.textViewProfileAddressSave);
         textViewProfileAddrCancel = view.findViewById(R.id.textViewProfileAddressCancel);
+        textViewProfileAddrCollapse = view.findViewById(R.id.textViewProfileAddressCollapse);
+        textViewProfileCurOrderCollapse = view.findViewById(R.id.textViewProfileCurOrderCollapse);
+        textViewProfileHisOrderCollapse = view.findViewById(R.id.textViewProfileHisOrderCollapse);
 
         imageViewProfilePic = view.findViewById(R.id.profile_pic);
+
+        editableProfileLayout = view.findViewById(R.id.editableProfileLayout);
+        editableProfileAddressLayout = view.findViewById(R.id.editableProfileAddressLayout);
+        editableProfileCurOrderLayout = view.findViewById(R.id.editableProfileCurOrderLayout);
+        editableProfileHisOrderLayout = view.findViewById(R.id.editableProfileHisOrderLayout);
 
         textViewProfilePicEdit.setOnClickListener(listener);
         textViewProfilePicSave.setOnClickListener(listener);
@@ -83,9 +97,13 @@ public class ProfileFragment extends BaseFragment {
         textViewProfileEdit.setOnClickListener(listener);
         textViewProfileSave.setOnClickListener(listener);
         textViewProfileCancel.setOnClickListener(listener);
+        textViewProfileCollapse.setOnClickListener(listener);
         textViewProfileAddrEdit.setOnClickListener(listener);
         textViewProfileAddrSave.setOnClickListener(listener);
         textViewProfileAddrCancel.setOnClickListener(listener);
+        textViewProfileAddrCollapse.setOnClickListener(listener);
+        textViewProfileCurOrderCollapse.setOnClickListener(listener);
+        textViewProfileHisOrderCollapse.setOnClickListener(listener);
 
         profileViewModel = ViewModelProviders.of(getActivity()).get(ProfileViewModel.class);
         profileViewModel.getProfileData().observe(getActivity(), mObserverResult);
@@ -94,6 +112,10 @@ public class ProfileFragment extends BaseFragment {
         setProfilePicView(false);
         setProfileDetailView(false);
         setProfileAddressView(false);
+        editableProfileLayout.setVisibility(View.GONE);
+        editableProfileAddressLayout.setVisibility(View.GONE);
+        editableProfileCurOrderLayout.setVisibility(View.GONE);
+        editableProfileHisOrderLayout.setVisibility(View.GONE);
         return view;
     }
 
@@ -250,6 +272,9 @@ public class ProfileFragment extends BaseFragment {
             else if(v.getId() == textViewProfileCancel.getId()) {
                 saveProfileDetails(false);
             }
+            else if(v.getId() == textViewProfileCollapse.getId()) {
+                toggle_contents(textViewProfileCollapse, editableProfileLayout);
+            }
 
             if(v.getId() == textViewProfileAddrEdit.getId()) {
                 setProfileAddressView(true);
@@ -260,13 +285,17 @@ public class ProfileFragment extends BaseFragment {
             else if(v.getId() == textViewProfileAddrCancel.getId()) {
                 saveProfileAddress(false);
             }
-
-            if(v.getId() == imageViewProfilePic.getId()) {
-
-                profilePhotoManager.selectImage(ProfileFragment.this);
-                return;
+            else if(v.getId() == textViewProfileAddrCollapse.getId()) {
+                toggle_contents(textViewProfileAddrCollapse, editableProfileAddressLayout);
             }
 
+            if(v.getId() == textViewProfileCurOrderCollapse.getId()) {
+                toggle_contents(textViewProfileCurOrderCollapse, editableProfileCurOrderLayout);
+            }
+
+            if(v.getId() == textViewProfileHisOrderCollapse.getId()) {
+                toggle_contents(textViewProfileHisOrderCollapse, editableProfileHisOrderLayout);
+            }
 
         }
     };
@@ -386,4 +415,19 @@ public class ProfileFragment extends BaseFragment {
         }
     }
 
+    private void toggle_contents(TextView sourceClick, View destView){
+
+        if(destView.isShown()){
+            AnimationUtil.slide_up(this.getContext(), destView, sourceClick);
+        }
+        else{
+            AnimationUtil.slide_down(this.getContext(), destView, sourceClick);
+        }
+
+        /*if(destView.isShown()) {
+            sourceClick.setText("---");
+        } else {
+            sourceClick.setText("+++");
+        }*/
+    }
 }
