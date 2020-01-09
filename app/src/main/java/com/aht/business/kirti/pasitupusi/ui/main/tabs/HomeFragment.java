@@ -33,7 +33,7 @@ public class HomeFragment extends BaseFragment {
         //mGoToButton = (Button) view.findViewById(R.id.goto_button);
         //mGoToButton.setOnClickListener(listener);
 
-        textViewWelcomeMsg.setText("Hello " + ((MainActivity)getActivity()).getUserDisplayName() + "!\n\tWelcome to Pasitu Pusi Menu");
+        textViewWelcomeMsg.setText("Hello " + ((MainActivity)getActivity()).getProfileData().getName() + "!\n\tWelcome to Pasitu Pusi Menu");
         return view;
     }
 

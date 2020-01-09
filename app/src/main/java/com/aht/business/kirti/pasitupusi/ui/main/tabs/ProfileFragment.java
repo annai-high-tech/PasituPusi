@@ -107,7 +107,7 @@ public class ProfileFragment extends BaseFragment {
 
         profileViewModel = ViewModelProviders.of(getActivity()).get(ProfileViewModel.class);
         profileViewModel.getProfileData().observe(getActivity(), mObserverResult);
-        profileViewModel.createProfileData();
+        profileViewModel.createProfile();
 
         setProfilePicView(false);
         setProfileDetailView(false);
@@ -203,7 +203,7 @@ public class ProfileFragment extends BaseFragment {
         }
 
         setProfilePicView(false);
-        profileViewModel.updateProfileData(currrentProfileData);
+        profileViewModel.updateProfile(currrentProfileData);
     }
 
     private void saveProfileDetails(boolean save) {
@@ -220,7 +220,7 @@ public class ProfileFragment extends BaseFragment {
         }
 
         setProfileDetailView(false);
-        profileViewModel.updateProfileData(currrentProfileData);
+        profileViewModel.updateProfile(currrentProfileData);
     }
 
     private void saveProfileAddress(boolean save) {
@@ -246,7 +246,7 @@ public class ProfileFragment extends BaseFragment {
         }
 
         setProfileAddressView(false);
-        profileViewModel.updateProfileData(currrentProfileData);
+        profileViewModel.updateProfile(currrentProfileData);
     }
 
     private View.OnClickListener listener        =   new View.OnClickListener(){

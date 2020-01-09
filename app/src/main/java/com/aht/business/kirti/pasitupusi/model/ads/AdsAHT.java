@@ -1,5 +1,8 @@
 package com.aht.business.kirti.pasitupusi.model.ads;
 
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +19,7 @@ public class AdsAHT extends AdListener {
 
     private InterstitialAd mInterstitialAd = null;
     private AdView mAdView = null;
+    private LinearLayout mAdViewLayout = null;
     private boolean adsBannerEnable = false;
     private boolean adsFullScreenEnable = false;
     private boolean adsNativeEnable = false;
@@ -40,9 +44,11 @@ public class AdsAHT extends AdListener {
         //context.findViewById(R.id.adView)
         this.mAdView = mAdView;
         if(adsBannerEnable && mAdView != null) {
+            ((ViewGroup)mAdView.getParent()).setVisibility(View.VISIBLE);
             mAdView.setAdListener(this);
         }
         else {
+            ((ViewGroup)mAdView.getParent()).setVisibility(View.GONE);
             mAdView.destroy();
         }
 
@@ -59,6 +65,7 @@ public class AdsAHT extends AdListener {
     }
 
     public void loadBannerAds() {
+
         if(adsBannerEnable) {
             MobileAds.initialize(context, new OnInitializationCompleteListener() {
                 @Override

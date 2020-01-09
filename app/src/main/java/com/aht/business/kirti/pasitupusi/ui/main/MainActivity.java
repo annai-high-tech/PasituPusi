@@ -5,10 +5,13 @@ import android.os.Bundle;
 
 import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.ads.AdsAHT;
-import com.aht.business.kirti.pasitupusi.model.login.UserType;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfileManager;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfileViewModel;
+import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
+import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
 import com.aht.business.kirti.pasitupusi.ui.login.LoginMainActivity;
+import com.aht.business.kirti.pasitupusi.ui.main.tabs.AdminUpdateFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.tabs.AdminViewOrderFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.BaseFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.ContactFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.HomeFragment;
@@ -50,16 +53,12 @@ public class MainActivity extends AppCompatActivity {
     private BaseFragment currentFragment;
     private ProfileViewModel profileViewModel;
     private AdsAHT adsAHT;
+    private NavigationView navigationView;
 
-    private String userDisplayName = null;
-    private UserType userType = UserType.GUEST;
+    private ProfileData profileData = null;
 
-    public String getUserDisplayName() {
-        return userDisplayName;
-    }
-
-    public UserType getUserType() {
-        return userType;
+    public ProfileData getProfileData() {
+        return profileData;
     }
 
     @Override
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -88,17 +87,6 @@ public class MainActivity extends AppCompatActivity {
         logoutButton = findViewById(R.id.buttonSignOut);
         logoutButton.setOnClickListener(mOnClickSignoutListener);
 
-        userDisplayName = getIntent().getStringExtra("USER_NAME");
-        String mUserType = getIntent().getStringExtra("USER_TYPE");
-
-        if(mUserType != null) {
-            userType = UserType.valueOf(mUserType);
-        }
-
-        if(!ProfileManager.isValidUser() && !(userDisplayName != null && userDisplayName.equals("Guest"))) {
-            logoutButton.performClick();
-        }
-
         FloatingActionButton fab = findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -111,25 +99,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        changeFragments(new HomeFragment());
+        profileData = (ProfileData) getIntent().getSerializableExtra("USER_PROFILE");
+
+        if(!ProfileManager.isValidUser() && !(profileData != null && profileData.getRole() == ProfileRole.GUEST)) {
+            logoutButton.performClick();
+        }
 
         profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
         profileViewModel.getProfileCheckData().observe(this, mObserverResult);
-        profileViewModel.isProfileCreated();
-
-        //getSupportActionBar().hide();
-
-        Menu nav_Menu = navigationView.getMenu();
-        nav_Menu.findItem(R.id.nav_logout).setTitle("Logout");
-        nav_Menu.findItem(R.id.nav_profile).setVisible(true);
-
-        if(ProfileManager.isValidUser()) {
-            userDisplayName = ProfileManager.getUserName();
-        }
-        else if(!ProfileManager.isValidUser() && userType == UserType.GUEST) {
-            nav_Menu.findItem(R.id.nav_profile).setVisible(false);
-            nav_Menu.findItem(R.id.nav_logout).setTitle("Login");
-        }
+        profileViewModel.getProfile();
 
         //Ads and privacy policy link
         footerView = findViewById(R.id.footer);
@@ -150,13 +128,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    Observer<Boolean> mObserverResult = new Observer<Boolean>() {
+    Observer<ProfileData> mObserverResult = new Observer<ProfileData>() {
 
         @Override
-        public void onChanged(@Nullable Boolean status) {
+        public void onChanged(@Nullable ProfileData data) {
 
-            if(!status){
+            Menu nav_Menu = navigationView.getMenu();
+            nav_Menu.findItem(R.id.nav_logout).setTitle("Logout");
+            nav_Menu.findItem(R.id.nav_profile).setVisible(true);
+
+            if(!ProfileManager.isValidUser() && profileData != null && profileData.getRole() == ProfileRole.GUEST) {
+                nav_Menu.findItem(R.id.nav_profile).setVisible(false);
+                nav_Menu.findItem(R.id.nav_logout).setTitle("Login");
+            } else if(!ProfileManager.isValidUser() && profileData != null && profileData.getRole() == ProfileRole.GUEST) {
+                nav_Menu.findItem(R.id.nav_profile).setVisible(false);
+                nav_Menu.findItem(R.id.nav_logout).setTitle("Login");
+            }
+
+            if(data == null ){
+
                 changeFragments(new ProfileFragment());
+
+            } else {
+
+                if(ProfileRole.getValue(data.getRole()) < ProfileRole.getValue(ProfileRole.MANAGER)) {
+                    nav_Menu.findItem(R.id.nav_admin_update).setVisible(false);
+                    nav_Menu.findItem(R.id.nav_admin_view_order).setVisible(false);
+                }
+
+                if(ProfileRole.getValue(data.getRole()) < ProfileRole.getValue(ProfileRole.USER)) {
+                    nav_Menu.findItem(R.id.nav_profile).setVisible(false);
+                    nav_Menu.findItem(R.id.nav_logout).setTitle("Login");
+                }
+
+                profileData  = data;
+                changeFragments(new HomeFragment());
+
             }
         }
     };
@@ -214,6 +221,18 @@ public class MainActivity extends AppCompatActivity {
                 showFooter(true, true, true);
                 if(currentFragment == null || !(currentFragment instanceof ContactFragment)) {
                     changeFragments(new ContactFragment());
+                }
+                break;
+
+            case R.id.nav_admin_update:
+                if(currentFragment == null || !(currentFragment instanceof AdminUpdateFragment)){
+                    changeFragments(new AdminUpdateFragment());
+                }
+                break;
+
+            case R.id.nav_admin_view_order:
+                if(currentFragment == null || !(currentFragment instanceof AdminViewOrderFragment)){
+                    changeFragments(new AdminViewOrderFragment());
                 }
                 break;
 

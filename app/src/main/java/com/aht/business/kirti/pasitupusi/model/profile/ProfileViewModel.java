@@ -9,26 +9,26 @@ import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 public class ProfileViewModel extends ViewModel {
 
     private MutableLiveData<ProfileData> profileData = new MutableLiveData<>();
-    private MutableLiveData<Boolean> profileCheckData = new MutableLiveData<>();
+    private MutableLiveData<ProfileData> profileCheckData = new MutableLiveData<>();
     ProfileManager profileManager = new ProfileManager();
 
     public LiveData<ProfileData> getProfileData() {
         return profileData;
     }
 
-    public LiveData<Boolean> getProfileCheckData() {
+    public LiveData<ProfileData> getProfileCheckData() {
         return profileCheckData;
     }
 
-    public void createProfileData() {
-        profileManager.createProfileData(profileData);
+    public void createProfile() {
+        profileManager.createProfile(profileData);
     }
 
-    public void updateProfileData(ProfileData data) {
-        profileManager.updateProfileData(data, profileData);
+    public void updateProfile(ProfileData data) {
+        profileManager.updateProfile(data, profileData);
     }
 
-    public void isProfileCreated() {
-        profileManager.isValidProfile(profileCheckData);
+    public void getProfile() {
+        profileManager.getProfile(profileCheckData);
     }
 }

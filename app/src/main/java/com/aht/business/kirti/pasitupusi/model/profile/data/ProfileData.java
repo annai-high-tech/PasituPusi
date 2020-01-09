@@ -1,12 +1,10 @@
 package com.aht.business.kirti.pasitupusi.model.profile.data;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
+import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
 
-import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 
-public class ProfileData {
+public class ProfileData implements Serializable {
 
 
     private String name;
@@ -32,6 +30,8 @@ public class ProfileData {
     private int pincode;
 
     private String picture;
+
+    private ProfileRole role = ProfileRole.GUEST;
 
     public String getName() {
         return name;
@@ -127,5 +127,13 @@ public class ProfileData {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public ProfileRole getRole() {
+        return role;
+    }
+
+    public void setRole(ProfileRole role) {
+        this.role = role;
     }
 }

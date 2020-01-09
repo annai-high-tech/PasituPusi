@@ -19,8 +19,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.aht.business.kirti.pasitupusi.R;
-import com.aht.business.kirti.pasitupusi.model.login.UserType;
+import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
+import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
+
+import java.io.Serializable;
 
 import static com.aht.business.kirti.pasitupusi.ui.login.LoginType.EMAIL_ID;
 import static com.aht.business.kirti.pasitupusi.ui.login.LoginType.PHONE;
@@ -116,7 +119,7 @@ public class LoginMainActivity extends AppCompatActivity {
             }
 
             if(view.getId() == guestLoginButton.getId()) {
-                openMainActivity("Guest", UserType.GUEST);
+                openMainActivity("Guest", ProfileRole.GUEST);
             }
 
             if(view.getId() == resetButton.getId()) {
@@ -194,7 +197,7 @@ public class LoginMainActivity extends AppCompatActivity {
             if (loginResult.getSuccess() != null) {
                 Toast.makeText(LoginMainActivity.this, "Login Success: " + loginResult.getSuccess().getUserId(), Toast.LENGTH_LONG).show();
 
-                openMainActivity(loginResult.getSuccess().getUserId(), UserType.USER);
+                openMainActivity(loginResult.getSuccess().getUserId(), ProfileRole.USER);
 
                 /*Intent mainPage = new Intent(LoginMainActivity.this, MainActivity.class);
                 mainPage.putExtra("uid", loginResult.getSuccess().getUserId());
@@ -206,10 +209,14 @@ public class LoginMainActivity extends AppCompatActivity {
         }
     };
 
-    private void openMainActivity(String name, UserType userType) {
+    private void openMainActivity(String name, ProfileRole profileRole) {
         Intent mainPage = new Intent(LoginMainActivity.this, MainActivity.class);
-        mainPage.putExtra("USER_NAME", name);
-        mainPage.putExtra("USER_TYPE", userType.toString());
+
+        ProfileData data = new ProfileData();
+        data.setName(name);
+        data.setRole(profileRole);
+
+        mainPage.putExtra("USER_PROFILE", (Serializable) data);
         LoginMainActivity.this.startActivity(mainPage);
 
     }

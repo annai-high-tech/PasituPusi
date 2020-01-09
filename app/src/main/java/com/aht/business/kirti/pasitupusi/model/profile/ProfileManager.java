@@ -1,10 +1,10 @@
 package com.aht.business.kirti.pasitupusi.model.profile;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
+import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 //import com.google.api.core.ApiFuture;
@@ -14,14 +14,12 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firestore.v1.WriteResult;
 
 public class ProfileManager {
 
     private FirebaseUser currentUser;
 
-    public void createProfileData(final MutableLiveData<ProfileData> result) {
+    public void createProfile(final MutableLiveData<ProfileData> result) {
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -58,6 +56,7 @@ public class ProfileManager {
                         if(isNonEmptyString(currentUser.getPhoneNumber()))
                             user.setPhone(currentUser.getPhoneNumber());
 
+                        user.setRole(ProfileRole.USER);
                         //docRef.set(user, SetOptions.merge());
                         docRef.set(user);
                     }
@@ -75,7 +74,7 @@ public class ProfileManager {
 
     }
 
-    public void updateProfileData(final ProfileData data, final MutableLiveData<ProfileData> result) {
+    public void updateProfile(final ProfileData data, final MutableLiveData<ProfileData> result) {
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -124,11 +123,15 @@ public class ProfileManager {
         return false;
     }
 
-    public boolean isValidProfile(final MutableLiveData<Boolean> result) {
+    public boolean getProfile(final MutableLiveData<ProfileData> result) {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if(currentUser == null) {
+            ProfileData user = new ProfileData();
+            user.setRole(ProfileRole.GUEST);
+            user.setName("Guest");
+            result.setValue(user);
             return false;
         }
 
@@ -141,14 +144,16 @@ public class ProfileManager {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                boolean status = false;
+                ProfileData user = null;
                 if(task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
+
                     if(document.exists()) {
-                        status = true;
+
+                        user = document.toObject(ProfileData.class);
                     }
                 }
-                result.setValue(status);
+                result.setValue(user);
 
             }
         });
