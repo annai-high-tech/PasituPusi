@@ -14,7 +14,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.aht.business.kirti.pasitupusi.R;
+import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
+import com.aht.business.kirti.pasitupusi.ui.main.dialog.UpdateDailyMenuDialog;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -255,6 +261,8 @@ public class AdminUpdateFragment extends BaseFragment {
             }else if(aaaaaaaaaa == 3) {
                 aaaaaaaaaa = 0;
             }
+
+            showDialog();
         }
 
         private void addTextView(View view, String text) {
@@ -269,4 +277,16 @@ public class AdminUpdateFragment extends BaseFragment {
 
         }
     };
+
+    void showDialog() {
+        int mStackLevel = 0;
+        mStackLevel++;
+
+        // Create and show the dialog.
+        UpdateDailyMenuDialog newFragment = new UpdateDailyMenuDialog(mStackLevel);
+
+        ((MainActivity)getActivity()).changeFragments(newFragment);
+        //newFragment.show(ft, "dialog");
+    }
+
 }

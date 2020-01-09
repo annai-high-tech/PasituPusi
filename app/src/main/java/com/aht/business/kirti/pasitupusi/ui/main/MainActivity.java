@@ -16,6 +16,7 @@ import com.aht.business.kirti.pasitupusi.ui.main.tabs.BaseFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.ContactFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.HomeFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.ProfileFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.tabs.SubPageFragment;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -35,6 +36,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private ProfileViewModel profileViewModel;
     private AdsAHT adsAHT;
     private NavigationView navigationView;
+    private Toolbar toolbar;
 
     private ProfileData profileData = null;
 
@@ -66,17 +69,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
         navigationView.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        setMenuDrawerInToolbar();
 
         /*SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -256,6 +255,16 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
+        if(selectedFragment instanceof SubPageFragment) {
+            this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(mToolbarClickListener);
+        } else if(selectedFragment instanceof BaseFragment) {
+            this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+            setMenuDrawerInToolbar();
+
+        }
+
         currentFragment = selectedFragment;
 
     }
@@ -279,4 +288,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+        if(currentFragment instanceof SubPageFragment) {
+            super.onBackPressed();
+        }
+    }
+
+    private View.OnClickListener mToolbarClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(currentFragment instanceof SubPageFragment) {
+                MainActivity.this.onBackPressed();
+                MainActivity.this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                setMenuDrawerInToolbar();
+            }
+        }
+    };
+
+    private void setMenuDrawerInToolbar() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+    }
 }
