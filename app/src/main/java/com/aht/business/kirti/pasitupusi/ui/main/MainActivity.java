@@ -291,16 +291,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        if(currentFragment instanceof SubPageFragment) {
-            super.onBackPressed();
-        }
     }
 
     private View.OnClickListener mToolbarClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(currentFragment instanceof SubPageFragment) {
-                MainActivity.this.onBackPressed();
+                MainActivity.super.onBackPressed();
                 MainActivity.this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 setMenuDrawerInToolbar();
             }

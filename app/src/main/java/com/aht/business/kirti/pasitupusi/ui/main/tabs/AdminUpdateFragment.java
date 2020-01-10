@@ -1,26 +1,25 @@
 package com.aht.business.kirti.pasitupusi.ui.main.tabs;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
+import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.aht.business.kirti.pasitupusi.R;
+import com.aht.business.kirti.pasitupusi.model.dailymenu.DailyMenuViewModel;
+import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
+import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
-import com.aht.business.kirti.pasitupusi.ui.main.dialog.UpdateDailyMenuDialog;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -33,6 +32,10 @@ public class AdminUpdateFragment extends BaseFragment {
     private ImageView top_left_arrow, top_right_arrow, top_go_to_today;
 
     private Calendar calendar;
+    private ProgressDialog progressDialog;
+
+    private DailyMenuViewModel dailyMenuViewModel;
+    private MenuCategoryList menuCategoryList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,10 +48,17 @@ public class AdminUpdateFragment extends BaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_admin_update, container, false);
 
+        progressDialog = new ProgressDialog(this.getContext());
         textViewMonth =  view.findViewById(R.id.top_month_value);
         top_left_arrow =  view.findViewById(R.id.top_left_arrow);
         top_right_arrow =  view.findViewById(R.id.top_right_arrow);
         top_go_to_today =  view.findViewById(R.id.top_go_to_today);
+
+        dailyMenuViewModel = ViewModelProviders.of(getActivity()).get(DailyMenuViewModel.class);
+        dailyMenuViewModel.getCategoryList().observe(getActivity(), mObserverResult);
+        dailyMenuViewModel.getAllTimeMenu();
+
+        progressDialog.show();
 
         calendar = Calendar.getInstance(TimeZone.getDefault());
         int currentYear = calendar.get(Calendar.YEAR);
@@ -240,16 +250,16 @@ public class AdminUpdateFragment extends BaseFragment {
         }
     };
 
-    static int aaaaaaaaaa = 0;
+    //static int aaaaaaaaaa = 0;
     private View.OnClickListener menuDaylistener        =   new View.OnClickListener(){
         @Override
         public void onClick(View view){
 
-            aaaaaaaaaa++;
+            //aaaaaaaaaa++;
 
             ((LinearLayout)view).removeViews(1, ((LinearLayout)view).getChildCount() - 1);
 
-            if(aaaaaaaaaa == 1) {
+            /*if(aaaaaaaaaa == 1) {
                 addTextView(view, "Idly");
                 addTextView(view, "Dosa");
                 addTextView(view, "Biriyani");
@@ -260,9 +270,9 @@ public class AdminUpdateFragment extends BaseFragment {
                 addTextView(view, "Kara Kulambu");
             }else if(aaaaaaaaaa == 3) {
                 aaaaaaaaaa = 0;
-            }
+            }*/
 
-            showDialog();
+            showDialog((LinearLayout)view);
         }
 
         private void addTextView(View view, String text) {
@@ -278,15 +288,42 @@ public class AdminUpdateFragment extends BaseFragment {
         }
     };
 
-    void showDialog() {
-        int mStackLevel = 0;
-        mStackLevel++;
+    private void showDialog(LinearLayout layout) {
+
+        String date = "";
+        int d = Integer.parseInt(((TextView)layout.getChildAt(0)).getText().toString());
+        int month = getMonthInt(textViewMonth.getText().toString().split(MONTH_YEAR_SEPERATOR)[0]) + 1;
+        String year = textViewMonth.getText().toString().split(MONTH_YEAR_SEPERATOR)[1];
+
+        date = year;
+
+        if(month > 9)
+            date = date + "-" + month;
+        else
+            date = date + "-0" + month;
+
+        if(d > 9)
+            date = date + "-" + d;
+        else
+            date = date + "-0" + d;
 
         // Create and show the dialog.
-        UpdateDailyMenuDialog newFragment = new UpdateDailyMenuDialog(mStackLevel);
+        UpdateDailyMenuSubFragment newFragment = new UpdateDailyMenuSubFragment(menuCategoryList, date);
 
         ((MainActivity)getActivity()).changeFragments(newFragment);
         //newFragment.show(ft, "dialog");
     }
+
+    Observer<MenuCategoryList> mObserverResult = new Observer<MenuCategoryList>() {
+        @Override
+        public void onChanged(@Nullable MenuCategoryList menuCategory) {
+
+
+            menuCategoryList = menuCategory;
+            progressDialog.dismiss();
+
+       }
+    };
+
 
 }
