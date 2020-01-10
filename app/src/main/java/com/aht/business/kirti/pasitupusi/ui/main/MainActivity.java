@@ -298,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             if(currentFragment instanceof SubPageFragment) {
                 MainActivity.super.onBackPressed();
+                currentFragment.onDetach();
                 MainActivity.this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 setMenuDrawerInToolbar();
             }

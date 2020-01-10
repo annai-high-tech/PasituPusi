@@ -3,6 +3,7 @@ package com.aht.business.kirti.pasitupusi.model.dailymenu;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenuList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
@@ -111,6 +112,58 @@ public class DailyMenuManager {
         menuCategoryList.getMenuCategoryList().put("curry", category4);
 
         return menuCategoryList;
+    }
+
+    public void getDailyMenu(final String date, final MutableLiveData<DailyMenuList> result) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        final DocumentReference docRef = db.collection("menu_data").document(date);
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                DailyMenuList dailyMenuList = new DailyMenuList();
+                if(task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+
+                    if(document.exists()) {
+
+                        dailyMenuList = document.toObject(DailyMenuList.class);
+                    }
+                }
+                result.setValue(dailyMenuList);
+
+            }
+        });
+
+    }
+
+    public void updateDailyMenu(final String date, final DailyMenuList dailyMenuList, final MutableLiveData<DailyMenuList> result) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        final DocumentReference docRef = db.collection("menu_data").document(date);
+
+        docRef.set(dailyMenuList).addOnCompleteListener(new OnCompleteListener() {
+
+            @Override
+            public void onComplete(@NonNull Task task) {
+
+                 if(task.isSuccessful()) {
+                    result.setValue(dailyMenuList);
+                } else {
+                    //Excepion message to be shown to user
+                    //TODO
+                    System.out.println("Error in updating the database: " + task.getException().getMessage());
+
+                }
+
+            }
+        });
+
     }
 
 }

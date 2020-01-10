@@ -1,7 +1,6 @@
 package com.aht.business.kirti.pasitupusi.ui.main.tabs;
 
 import android.app.ProgressDialog;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,7 +17,6 @@ import androidx.lifecycle.ViewModelProviders;
 import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.DailyMenuViewModel;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
-import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 
 import java.util.Calendar;
@@ -316,10 +314,10 @@ public class AdminUpdateFragment extends BaseFragment {
 
     Observer<MenuCategoryList> mObserverResult = new Observer<MenuCategoryList>() {
         @Override
-        public void onChanged(@Nullable MenuCategoryList menuCategory) {
+        public void onChanged(@Nullable MenuCategoryList list) {
 
 
-            menuCategoryList = menuCategory;
+            menuCategoryList = list;
             progressDialog.dismiss();
 
        }

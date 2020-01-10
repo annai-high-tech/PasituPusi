@@ -12,9 +12,17 @@ public class MenuElement {
 
     public MenuElement(String name) {
         setName(name);
+        setActive(true);
+        setPrice(0);
     }
 
     private String name;
+
+    private String description;
+
+    private int price;
+
+    private boolean active;
 
     public String getName() {
         return name;
@@ -24,4 +32,27 @@ public class MenuElement {
         this.name = name;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
