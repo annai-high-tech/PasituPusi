@@ -60,7 +60,7 @@ public class AnimationUtil {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                sourceClick.setText("Less");
+                sourceClick.setText("-");
             }
 
             @Override
@@ -126,7 +126,7 @@ public class AnimationUtil {
             @Override
             public void onAnimationEnd(Animation animation) {
                 view.setVisibility(View.GONE);
-                sourceClick.setText("More");
+                sourceClick.setText("+");
             }
 
             @Override

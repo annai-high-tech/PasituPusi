@@ -38,6 +38,7 @@ public class ProfileFragment extends BaseFragment {
     private TextView textViewProfileEdit, textViewProfileSave, textViewProfileCancel, textViewProfileCollapse;
     private TextView textViewProfileAddrEdit, textViewProfileAddrSave, textViewProfileAddrCancel, textViewProfileAddrCollapse;
     private TextView textViewProfileCurOrderCollapse, textViewProfileHisOrderCollapse;
+    private LinearLayout layoutProfileCollapse, layoutProfileAddrCollapse, layoutProfileCurOrderCollapse, layoutProfileHisOrderCollapse;
 
     private LinearLayout editableProfileLayout, editableProfileAddressLayout, editableProfileCurOrderLayout, editableProfileHisOrderLayout;
 
@@ -77,12 +78,16 @@ public class ProfileFragment extends BaseFragment {
         textViewProfileSave = view.findViewById(R.id.textViewProfileSave);
         textViewProfileCancel = view.findViewById(R.id.textViewProfileCancel);
         textViewProfileCollapse = view.findViewById(R.id.textViewProfileCollapse);
+        layoutProfileCollapse = view.findViewById(R.id.layoutProfileCollapse);
         textViewProfileAddrEdit = view.findViewById(R.id.textViewProfileAddressEdit);
         textViewProfileAddrSave = view.findViewById(R.id.textViewProfileAddressSave);
         textViewProfileAddrCancel = view.findViewById(R.id.textViewProfileAddressCancel);
         textViewProfileAddrCollapse = view.findViewById(R.id.textViewProfileAddressCollapse);
+        layoutProfileAddrCollapse = view.findViewById(R.id.layoutProfileAddressCollapse);
         textViewProfileCurOrderCollapse = view.findViewById(R.id.textViewProfileCurOrderCollapse);
+        layoutProfileCurOrderCollapse = view.findViewById(R.id.layoutProfileCurOrderCollapse);
         textViewProfileHisOrderCollapse = view.findViewById(R.id.textViewProfileHisOrderCollapse);
+        layoutProfileHisOrderCollapse = view.findViewById(R.id.layoutProfileHisOrderCollapse);
 
         imageViewProfilePic = view.findViewById(R.id.profile_pic);
 
@@ -98,15 +103,19 @@ public class ProfileFragment extends BaseFragment {
         textViewProfileSave.setOnClickListener(listener);
         textViewProfileCancel.setOnClickListener(listener);
         textViewProfileCollapse.setOnClickListener(listener);
+        layoutProfileCollapse.setOnClickListener(listener);
         textViewProfileAddrEdit.setOnClickListener(listener);
         textViewProfileAddrSave.setOnClickListener(listener);
         textViewProfileAddrCancel.setOnClickListener(listener);
         textViewProfileAddrCollapse.setOnClickListener(listener);
+        layoutProfileAddrCollapse.setOnClickListener(listener);
         textViewProfileCurOrderCollapse.setOnClickListener(listener);
+        layoutProfileCurOrderCollapse.setOnClickListener(listener);
         textViewProfileHisOrderCollapse.setOnClickListener(listener);
+        layoutProfileHisOrderCollapse.setOnClickListener(listener);
 
         profileViewModel = ViewModelProviders.of(getActivity()).get(ProfileViewModel.class);
-        profileViewModel.getProfileData().observe(getActivity(), mObserverResult);
+        profileViewModel.getProfileData().observe(this, mObserverResult);
         profileViewModel.createProfile();
 
         setProfilePicView(false);
@@ -272,7 +281,7 @@ public class ProfileFragment extends BaseFragment {
             else if(v.getId() == textViewProfileCancel.getId()) {
                 saveProfileDetails(false);
             }
-            else if(v.getId() == textViewProfileCollapse.getId()) {
+            else if(v.getId() == textViewProfileCollapse.getId() || v.getId() == layoutProfileCollapse.getId()) {
                 toggle_contents(textViewProfileCollapse, editableProfileLayout);
             }
 
@@ -285,15 +294,15 @@ public class ProfileFragment extends BaseFragment {
             else if(v.getId() == textViewProfileAddrCancel.getId()) {
                 saveProfileAddress(false);
             }
-            else if(v.getId() == textViewProfileAddrCollapse.getId()) {
+            else if(v.getId() == textViewProfileAddrCollapse.getId() || v.getId() == layoutProfileAddrCollapse.getId()) {
                 toggle_contents(textViewProfileAddrCollapse, editableProfileAddressLayout);
             }
 
-            if(v.getId() == textViewProfileCurOrderCollapse.getId()) {
+            if(v.getId() == textViewProfileCurOrderCollapse.getId() || v.getId() == layoutProfileCurOrderCollapse.getId()) {
                 toggle_contents(textViewProfileCurOrderCollapse, editableProfileCurOrderLayout);
             }
 
-            if(v.getId() == textViewProfileHisOrderCollapse.getId()) {
+            if(v.getId() == textViewProfileHisOrderCollapse.getId() || v.getId() == layoutProfileHisOrderCollapse.getId()) {
                 toggle_contents(textViewProfileHisOrderCollapse, editableProfileHisOrderLayout);
             }
 

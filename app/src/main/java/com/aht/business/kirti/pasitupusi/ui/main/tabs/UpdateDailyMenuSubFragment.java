@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -26,7 +25,9 @@ import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
 
+import java.util.Calendar;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class UpdateDailyMenuSubFragment extends SubPageFragment {
 
@@ -34,15 +35,14 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
     private LinearLayout contentLayout;
     private ProgressDialog progressDialog;
 
+    private Calendar calendar;
+
     private DailyMenuViewModel dailyMenuViewModel;
     private DailyMenuList dailyMenuList;
     private MenuCategoryList menuCategoryList;
     private String date;
 
-    /**
-     * Create a new instance of MyDialogFragment, providing "num"
-     * as an argument.
-     */
+
     public UpdateDailyMenuSubFragment(MenuCategoryList menuCategoryList, String date) {
         this.menuCategoryList = menuCategoryList;
         this.date = date;
@@ -58,6 +58,8 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_menu_update, container, false);
+
+        calendar = Calendar.getInstance(TimeZone.getDefault());
 
         progressDialog = new ProgressDialog(this.getContext());
         textViewTitle = v.findViewById(R.id.home_welcome);
@@ -88,6 +90,7 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
     private void updatePage(MenuCategoryList menuCategoryList, DailyMenuList dailyMenuList, LinearLayout contentLayout) {
 
         boolean isEmpty = true;
+        boolean isOldDate = isOldDate(date);
         contentLayout.removeAllViewsInLayout();
 
         for(MenuCategory list:menuCategoryList.getMenuCategoryList().values()) {
@@ -103,15 +106,44 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
                     if(dailyMenuList != null && dailyMenuList.getMenuList().containsKey(element)) {
                         selected = true;
                     }
-                    addMenuList(contentLayout, menuElement, element, selected);
+                    addMenuList(contentLayout, menuElement, element, selected, isOldDate);
                     isEmpty = false;
                 }
             }
         }
 
-        if(!isEmpty) {
+        if(!isEmpty && !isOldDate) {
             addMenuButtons(contentLayout);
         }
+    }
+
+    private boolean isOldDate(String date) {
+
+        String[] dateSplit = date.split("-");
+
+        if(dateSplit.length != 3) {
+            return true;
+        }
+
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH) + 1; //Calendar.JANUARY;
+        int curDate = calendar.get(Calendar.DAY_OF_MONTH);
+
+        if(currentYear > Integer.parseInt(dateSplit[0])) {
+            return true;
+        }
+        if(currentYear == Integer.parseInt(dateSplit[0])
+                && currentMonth > Integer.parseInt(dateSplit[1])) {
+            return true;
+        }
+        if(currentYear == Integer.parseInt(dateSplit[0])
+                && currentMonth == Integer.parseInt(dateSplit[1])
+                && curDate > Integer.parseInt(dateSplit[2])) {
+            return true;
+        }
+
+        return false;
+
     }
 
     private void addMenuCategory(LinearLayout layout, String text) {
@@ -152,7 +184,7 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
 
     }
 
-    private void addMenuList(LinearLayout layout, MenuElement element, String key, boolean selected) {
+    private void addMenuList(LinearLayout layout, MenuElement element, String key, boolean selected, boolean isOldDate) {
 
         LinearLayout rowLayout = new LinearLayout(this.getContext());
         CheckBox cb = new CheckBox(this.getContext());
@@ -163,6 +195,7 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
 
         cb.setOnCheckedChangeListener(checkBoxListener);
         cb.setChecked(selected);
+        cb.setEnabled(!isOldDate);
 
         rowLayout.setOrientation(LinearLayout.HORIZONTAL);
         rowLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
