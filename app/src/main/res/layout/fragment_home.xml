@@ -26,11 +26,81 @@
             android:textSize="24sp"
             android:text="loading..." />
 
-        <LinearLayout
-            android:id="@+id/content_layout"
+        <RelativeLayout
+            android:id="@+id/calendar_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"></LinearLayout>
+            android:background="@color/md_grey_800"
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/medium_margin">
+
+        <ImageView
+            android:id="@+id/top_left_arrow"
+            style="@style/ArrowStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingStart="@dimen/medium_margin"
+            android:paddingEnd="@dimen/medium_margin"
+            android:paddingTop="@dimen/medium_margin"
+            android:paddingBottom="@dimen/medium_margin"
+            android:src="@drawable/ic_chevron_left_vector" />
+
+            <TextView
+                android:id="@+id/top_date_value"
+                style="@style/MonthStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/top_right_arrow"
+                android:layout_toEndOf="@+id/top_left_arrow"
+                android:gravity="center"
+                android:lines="1"
+                android:paddingTop="@dimen/medium_margin"
+                android:paddingBottom="@dimen/medium_margin"
+                android:textColor="@color/default_text_color"
+                android:textSize="@dimen/month_text_size" />
+
+        <ImageView
+            android:id="@+id/top_right_arrow"
+            style="@style/ArrowStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/top_go_to_today"
+            android:gravity="center"
+            android:paddingStart="@dimen/medium_margin"
+            android:paddingEnd="@dimen/medium_margin"
+            android:paddingTop="@dimen/medium_margin"
+            android:paddingBottom="@dimen/medium_margin"
+            android:src="@drawable/ic_chevron_right_vector" />
+
+        <ImageView
+            android:id="@+id/top_go_to_today"
+            style="@style/ArrowStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/top_month_value"
+            android:layout_alignBottom="@+id/top_month_value"
+            android:layout_alignParentEnd="true"
+            android:paddingStart="@dimen/medium_margin"
+            android:paddingEnd="@dimen/medium_margin"
+            android:paddingTop="@dimen/medium_margin"
+            android:paddingBottom="@dimen/medium_margin"
+            android:src="@drawable/ic_today_vector" />
+
+        </RelativeLayout>
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/content_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"></LinearLayout>
+        </ScrollView>
+
 
 
     </LinearLayout>

@@ -58,7 +58,7 @@ public class AdminUpdateFragment extends BaseFragment {
 
         progressDialog.show();
 
-        calendar = Calendar.getInstance(TimeZone.getDefault());
+        calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
         int currentYear = calendar.get(Calendar.YEAR);
         int currentMonth = calendar.get(Calendar.MONTH); //Calendar.JANUARY;
         //currentMonth = Calendar.FEBRUARY;
@@ -76,7 +76,7 @@ public class AdminUpdateFragment extends BaseFragment {
 
     private void updateCalendar(View view, int currentYear, int currentMonth) {
 
-        Calendar newCalendar = Calendar.getInstance(TimeZone.getDefault());
+        Calendar newCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
         newCalendar.set(currentYear, currentMonth, 1);
 
         int year = newCalendar.get(Calendar.YEAR);

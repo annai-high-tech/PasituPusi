@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Strings -->
+    <string name="timezone">Asia/Calcutta</string>
+
     <string name="january">January</string>
     <string name="february">February</string>
     <string name="march">March</string>

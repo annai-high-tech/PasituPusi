@@ -59,7 +59,7 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
 
         View v = inflater.inflate(R.layout.fragment_menu_update, container, false);
 
-        calendar = Calendar.getInstance(TimeZone.getDefault());
+        calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
 
         progressDialog = new ProgressDialog(this.getContext());
         textViewTitle = v.findViewById(R.id.home_welcome);
