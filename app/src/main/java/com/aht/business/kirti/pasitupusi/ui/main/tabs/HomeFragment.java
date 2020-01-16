@@ -26,6 +26,7 @@ import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
+import com.aht.business.kirti.pasitupusi.ui.utils.AnimationUtil;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -157,9 +158,9 @@ public class HomeFragment extends BaseFragment {
 
         contentLayout.removeAllViewsInLayout();
         if(dailyMenuList == null || menuCategoryList == null) {
-            addMenuCategory(contentLayout, "No Menus for the day");
+            addMenuTitle(contentLayout, "No Menus for the day");
         } else if(dailyMenuList.getMenuList().size() <= 0) {
-            addMenuCategory(contentLayout, "No Menus for the day");
+            addMenuTitle(contentLayout, "No Menus for the day");
         } else {
             updateMenuItems(menuCategoryList, dailyMenuList, contentLayout);
         }
@@ -177,6 +178,7 @@ public class HomeFragment extends BaseFragment {
         for(MenuCategory list:menuCategoryList.getMenuCategoryList().values()) {
 
             boolean menuListNotEmpty = false;
+            LinearLayout layout = null;
 
             for(String element:list.getMenuList().keySet()) {
 
@@ -185,10 +187,13 @@ public class HomeFragment extends BaseFragment {
                 if(menuElement.isActive()) {
                     if(dailyMenuList != null && dailyMenuList.getMenuList().containsKey(element)) {
                         if(!menuListNotEmpty) {
-                            addMenuCategory(contentLayout, list.getName());
+                            layout = addMenuCategory(contentLayout, list.getName());
                         }
                         menuListNotEmpty = true;
-                        addMenuList(contentLayout, menuElement, element, menuListNotEmpty);
+
+                        if(layout != null) {
+                            addMenuList(layout, menuElement, element, menuListNotEmpty);
+                        }
                     }
                     isEmpty = false;
                 }
@@ -211,17 +216,48 @@ public class HomeFragment extends BaseFragment {
 
     }
 
-    private void addMenuCategory(LinearLayout layout, String text) {
+    private LinearLayout addMenuCategory(LinearLayout layout, String text) {
+
+        LinearLayout rowLayout = new LinearLayout(this.getContext());
+        LinearLayout row1Layout = new LinearLayout(this.getContext());
         TextView textView = new TextView(this.getContext());
+        final TextView textViewCollapse = new TextView(this.getContext());
+        final LinearLayout contentLayout = new LinearLayout(this.getContext());
+
         textView.setText(text);
+        textViewCollapse.setText("-");
 
-        textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        textView.setGravity(Gravity.CENTER);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        textViewCollapse.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        row1Layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        row1Layout.setGravity(Gravity.END);
+        //textView.setGravity(Gravity.CENTER);
         //textView.setTextColor(getResources().getColor(R.color.date_sel_text_color));
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+        textViewCollapse.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
 
-        layout.addView(textView);
+        rowLayout.addView(textView);
+        rowLayout.addView(row1Layout);
+        row1Layout.addView(textViewCollapse);
+        layout.addView(rowLayout);
+        layout.addView(contentLayout);
 
+        rowLayout.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                toggle_contents(textViewCollapse, contentLayout);
+              }
+          });
+
+        rowLayout.setPadding(10, 40, 10, 10);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(10, 10, 10, 10);
+        contentLayout.setOrientation(LinearLayout.VERTICAL);
+        contentLayout.setLayoutParams(params);
+
+        return contentLayout;
     }
 
     private void addMenuList(LinearLayout layout, MenuElement element, String key, boolean selected) {
@@ -247,17 +283,22 @@ public class HomeFragment extends BaseFragment {
 
 
         textViewName.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        textViewPrice.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        textViewPrice.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         textViewDesc.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        textViewName.setPadding(10, 0, 0, 0);
-        textViewPrice.setPadding(10, 0, 0, 0);
-        textViewDesc.setPadding(10, 0, 0, 0);
+        textViewName.setPadding(10, 0, 10, 0);
+        textViewPrice.setPadding(10, 0, 10, 0);
+        textViewDesc.setPadding(10, 0, 10, 0);
+        rowLayout.setPadding(10, 10, 10, 10);
         //textViewName.setGravity(GravityView view, .CENTER);
         //textViewName.setTextColor(getResources().getColor(R.color.date_sel_text_color));
         //textViewName.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
 
-        rowLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        textViewPrice.setGravity(Gravity.END);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(10, 10, 10, 10);
+        rowLayout.setLayoutParams(params);
         row1Layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         row2Layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         row3Layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -313,5 +354,15 @@ public class HomeFragment extends BaseFragment {
         }
     };
 
+    private void toggle_contents(TextView sourceClick, View destView){
+
+        if(destView.isShown()){
+            AnimationUtil.slide_up(this.getContext(), destView, sourceClick);
+        }
+        else{
+            AnimationUtil.slide_down(this.getContext(), destView, sourceClick);
+        }
+
+    }
 
 }
