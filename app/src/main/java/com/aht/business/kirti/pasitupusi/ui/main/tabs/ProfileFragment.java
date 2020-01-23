@@ -22,6 +22,7 @@ import com.aht.business.kirti.pasitupusi.model.profile.ProfilePhotoManager;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfileViewModel;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.ui.utils.AnimationUtil;
+import com.aht.business.kirti.pasitupusi.ui.utils.BitMapUtils;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.ByteArrayOutputStream;
@@ -208,7 +209,7 @@ public class ProfileFragment extends BaseFragment {
         if(save) {
             BitmapDrawable drawable = (BitmapDrawable) imageViewProfilePic.getDrawable();
             if(drawable != null)
-                currrentProfileData.setPicture(BitMapToString(drawable.getBitmap()));
+                currrentProfileData.setPicture(BitMapUtils.BitMapToString(drawable.getBitmap()));
         }
 
         setProfilePicView(false);
@@ -358,7 +359,7 @@ public class ProfileFragment extends BaseFragment {
                     pincode = String.valueOf(profileData.getPincode());
                 }
                 if(profileData.getPicture() != null) {
-                    thumbnail = StringToBitMap(profileData.getPicture());
+                    thumbnail = BitMapUtils.StringToBitMap(profileData.getPicture());
                 }
             }
 
@@ -404,25 +405,6 @@ public class ProfileFragment extends BaseFragment {
         }
     };
 
-
-    private String BitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-        byte [] arr=baos.toByteArray();
-        String result= Base64.encodeToString(arr, Base64.DEFAULT);
-        return result;
-    }
-
-    private Bitmap StringToBitMap(String image){
-        try{
-            byte [] encodeByte=Base64.decode(image,Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        }catch(Exception e){
-            e.getMessage();
-            return null;
-        }
-    }
 
     private void toggle_contents(TextView sourceClick, View destView){
 

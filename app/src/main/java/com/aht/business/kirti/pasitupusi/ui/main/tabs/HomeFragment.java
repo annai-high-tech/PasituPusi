@@ -2,6 +2,7 @@ package com.aht.business.kirti.pasitupusi.ui.main.tabs;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -27,6 +28,7 @@ import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 import com.aht.business.kirti.pasitupusi.ui.utils.AnimationUtil;
+import com.aht.business.kirti.pasitupusi.ui.utils.BitMapUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -263,6 +265,7 @@ public class HomeFragment extends BaseFragment {
     private void addMenuList(LinearLayout layout, MenuElement element, String key, boolean selected) {
 
         String desc = "", price = "";
+        Bitmap thumbnail = null;
         LinearLayout rowLayout = new LinearLayout(this.getContext());
         LinearLayout row1Layout = new LinearLayout(this.getContext());
         LinearLayout row2Layout = new LinearLayout(this.getContext());
@@ -270,6 +273,7 @@ public class HomeFragment extends BaseFragment {
         TextView textViewName = new TextView(this.getContext());
         TextView textViewPrice = new TextView(this.getContext());
         TextView textViewDesc = new TextView(this.getContext());
+        ImageView imageViewPic = new ImageView(this.getContext());
 
         if(element.getPrice() >= 0) {
             price = "Price " + "\u20B9" + element.getPrice();
@@ -277,9 +281,14 @@ public class HomeFragment extends BaseFragment {
         if(element.getDescription() != null) {
             desc = element.getDescription();
         }
+        if(element.getPicture() != null) {
+            thumbnail = BitMapUtils.StringToBitMap(element.getPicture());
+        }
         textViewName.setText(element.getName());
         textViewPrice.setText(price);
         textViewDesc.setText(desc);
+        if(thumbnail != null)
+            imageViewPic.setImageBitmap(thumbnail);
 
 
         textViewName.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -310,6 +319,7 @@ public class HomeFragment extends BaseFragment {
 
         row1Layout.addView(textViewName);
         row1Layout.addView(textViewPrice);
+        row2Layout.addView(imageViewPic);
         row3Layout.addView(textViewDesc);
         rowLayout.addView(row1Layout);
         rowLayout.addView(row2Layout);

@@ -19,8 +19,12 @@ public class DailyMenuViewModel extends ViewModel {
 
     public void getAllTimeMenu() {
 
-        //profileManager.addTestMenu(categoryList);
         profileManager.getAllTimeMenu(categoryList);
+    }
+
+    public void addAllTimeMenu() {
+
+        profileManager.addTestMenu(categoryList);
     }
 
     public LiveData<DailyMenuList> getDailyMenuList() {

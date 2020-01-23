@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.DailyMenuViewModel;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
+import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 
 import java.util.Calendar;
@@ -28,6 +29,7 @@ public class AdminUpdateFragment extends BaseFragment {
 
     private TextView textViewMonth;
     private ImageView top_left_arrow, top_right_arrow, top_go_to_today;
+    private LinearLayout month_line_holder_last;
 
     private Calendar calendar;
     private ProgressDialog progressDialog;
@@ -51,6 +53,7 @@ public class AdminUpdateFragment extends BaseFragment {
         top_left_arrow =  view.findViewById(R.id.top_left_arrow);
         top_right_arrow =  view.findViewById(R.id.top_right_arrow);
         top_go_to_today =  view.findViewById(R.id.top_go_to_today);
+        month_line_holder_last = view.findViewById(R.id.day_42);
 
         dailyMenuViewModel = ViewModelProviders.of(getActivity()).get(DailyMenuViewModel.class);
         dailyMenuViewModel.getCategoryList().observe(getActivity(), mObserverResult);
@@ -70,6 +73,10 @@ public class AdminUpdateFragment extends BaseFragment {
         top_right_arrow.setOnClickListener(listener);
         top_go_to_today.setOnClickListener(listener);
 
+        if(ProfileRole.getValue(((MainActivity)getActivity()).getProfileData().getRole()) >= ProfileRole.getValue(ProfileRole.ADMIN)) {
+
+            month_line_holder_last.setOnClickListener(listener);
+        }
         return view;
     }
 
@@ -243,6 +250,11 @@ public class AdminUpdateFragment extends BaseFragment {
 
                 updateCalendar(AdminUpdateFragment.this.getView(), currentYear, currentMonth);
 
+            } else if(view.getId() == month_line_holder_last.getId()) {
+
+                progressDialog.show();
+                dailyMenuViewModel.addAllTimeMenu();
+
             }
 
         }
@@ -315,7 +327,6 @@ public class AdminUpdateFragment extends BaseFragment {
     Observer<MenuCategoryList> mObserverResult = new Observer<MenuCategoryList>() {
         @Override
         public void onChanged(@Nullable MenuCategoryList list) {
-
 
             menuCategoryList = list;
             progressDialog.dismiss();

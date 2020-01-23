@@ -1,8 +1,8 @@
 ext {
     appName = 'Pasitu Pusi'
     appId = 'com.aht.business.kirti.pasitupusi'
-    verCode = 11
-    verName = 'V0.11'
+    verCode = 100
+    verName = 'V1.00'
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'

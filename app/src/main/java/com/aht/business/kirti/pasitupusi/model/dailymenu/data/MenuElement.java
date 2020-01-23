@@ -20,6 +20,8 @@ public class MenuElement {
 
     private String description;
 
+    private String picture;
+
     private int price;
 
     private boolean active;
@@ -54,5 +56,13 @@ public class MenuElement {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 }
