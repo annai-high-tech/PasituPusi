@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.aht.business.kirti.pasitupusi.R;
@@ -45,7 +46,7 @@ public class LoginMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
+        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
         usernameEditText = findViewById(R.id.username);
@@ -195,7 +196,8 @@ public class LoginMainActivity extends AppCompatActivity {
             }
 
             if (loginResult.getSuccess() != null) {
-                Toast.makeText(LoginMainActivity.this, "Login Success: " + loginResult.getSuccess().getUserId(), Toast.LENGTH_LONG).show();
+
+                Toast.makeText(LoginMainActivity.this, "Login Success", Toast.LENGTH_LONG).show();
 
                 openMainActivity(loginResult.getSuccess().getUserId(), ProfileRole.USER);
 

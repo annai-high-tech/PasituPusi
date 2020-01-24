@@ -2,10 +2,8 @@ package com.aht.business.kirti.pasitupusi.ui.main.tabs;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +13,17 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfilePhotoManager;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfileViewModel;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
-import com.aht.business.kirti.pasitupusi.ui.utils.AnimationUtil;
-import com.aht.business.kirti.pasitupusi.ui.utils.BitMapUtils;
+import com.aht.business.kirti.pasitupusi.model.utils.AnimationUtil;
+import com.aht.business.kirti.pasitupusi.model.utils.BitMapUtils;
+import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 import com.google.android.material.textfield.TextInputEditText;
-
-import java.io.ByteArrayOutputStream;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -115,14 +113,14 @@ public class ProfileFragment extends BaseFragment {
         textViewProfileHisOrderCollapse.setOnClickListener(listener);
         layoutProfileHisOrderCollapse.setOnClickListener(listener);
 
-        profileViewModel = ViewModelProviders.of(getActivity()).get(ProfileViewModel.class);
-        profileViewModel.getProfileData().observe(this, mObserverResult);
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        profileViewModel.getProfileData().observe(getViewLifecycleOwner(), mObserverResult);
         profileViewModel.createProfile();
 
         setProfilePicView(false);
         setProfileDetailView(false);
         setProfileAddressView(false);
-        editableProfileLayout.setVisibility(View.GONE);
+        editableProfileLayout.setVisibility(View.VISIBLE);
         editableProfileAddressLayout.setVisibility(View.GONE);
         editableProfileCurOrderLayout.setVisibility(View.GONE);
         editableProfileHisOrderLayout.setVisibility(View.GONE);
@@ -214,6 +212,7 @@ public class ProfileFragment extends BaseFragment {
 
         setProfilePicView(false);
         profileViewModel.updateProfile(currrentProfileData);
+        ((MainActivity)getActivity()).setProfileData(currrentProfileData);
     }
 
     private void saveProfileDetails(boolean save) {
@@ -231,6 +230,7 @@ public class ProfileFragment extends BaseFragment {
 
         setProfileDetailView(false);
         profileViewModel.updateProfile(currrentProfileData);
+        ((MainActivity)getActivity()).setProfileData(currrentProfileData);
     }
 
     private void saveProfileAddress(boolean save) {
@@ -257,6 +257,7 @@ public class ProfileFragment extends BaseFragment {
 
         setProfileAddressView(false);
         profileViewModel.updateProfile(currrentProfileData);
+        ((MainActivity)getActivity()).setProfileData(currrentProfileData);
     }
 
     private View.OnClickListener listener        =   new View.OnClickListener(){

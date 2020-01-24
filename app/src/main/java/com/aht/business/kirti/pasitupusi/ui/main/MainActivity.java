@@ -1,6 +1,7 @@
 package com.aht.business.kirti.pasitupusi.ui.main;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.aht.business.kirti.pasitupusi.R;
@@ -9,6 +10,8 @@ import com.aht.business.kirti.pasitupusi.model.profile.ProfileManager;
 import com.aht.business.kirti.pasitupusi.model.profile.ProfileViewModel;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
+import com.aht.business.kirti.pasitupusi.model.updates.AppUpdatesManager;
+import com.aht.business.kirti.pasitupusi.model.utils.BitMapUtils;
 import com.aht.business.kirti.pasitupusi.ui.login.LoginMainActivity;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.AdminUpdateFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.tabs.AdminViewOrderFragment;
@@ -30,17 +33,18 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,7 +53,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity {
 
     private AdView adView;
-    private TextView privacyTextView;
+    private TextView privacyTextView, welcomeMsgTextView;
     private Button logoutButton;
     private RelativeLayout footerView;
     private BaseFragment currentFragment;
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private AdsAHT adsAHT;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private ImageView menuDrawerImageView;
 
     private ProfileData profileData = null;
 
@@ -64,16 +69,30 @@ public class MainActivity extends AppCompatActivity {
         return profileData;
     }
 
+    public void setProfileData(ProfileData profileData) {
+        this.profileData = profileData;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        try {
+            int versionCode = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode;
+            AppUpdatesManager.checkUpdates(versionCode, this);
+
+        } catch (PackageManager.NameNotFoundException e) {
+
+        }
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        welcomeMsgTextView = navigationView.getHeaderView(0).findViewById(R.id.nameTxt);
+        menuDrawerImageView= navigationView.getHeaderView(0).findViewById(R.id.imageView);
 
         setMenuDrawerInToolbar();
 
@@ -104,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             logoutButton.performClick();
         }
 
-        profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         profileViewModel.getProfileCheckData().observe(this, mObserverResult);
         profileViewModel.getProfile();
 
@@ -146,26 +165,47 @@ public class MainActivity extends AppCompatActivity {
 
             if(data == null ){
 
+                updateMenu(nav_Menu, "Guest", ProfileRole.USER, null);
+
+                changeFragments(new ProfileFragment());
+
+            } else if(data.getName() == null ){
+
+                updateMenu(nav_Menu, "Guest", data.getRole(), null);
+
                 changeFragments(new ProfileFragment());
 
             } else {
 
-                if(ProfileRole.getValue(data.getRole()) < ProfileRole.getValue(ProfileRole.MANAGER)) {
-                    nav_Menu.findItem(R.id.nav_admin_update).setVisible(false);
-                    nav_Menu.findItem(R.id.nav_admin_view_order).setVisible(false);
-                }
-
-                if(ProfileRole.getValue(data.getRole()) < ProfileRole.getValue(ProfileRole.USER)) {
-                    nav_Menu.findItem(R.id.nav_profile).setVisible(false);
-                    nav_Menu.findItem(R.id.nav_logout).setTitle("Login");
-                }
+                updateMenu(nav_Menu, data.getName(), data.getRole(), data.getPicture());
 
                 profileData  = data;
                 changeFragments(new HomeFragment());
 
             }
         }
+
     };
+
+    private void updateMenu(Menu nav_Menu, String name, ProfileRole role, String picture) {
+
+        if(ProfileRole.getValue(role) < ProfileRole.getValue(ProfileRole.MANAGER)) {
+            nav_Menu.findItem(R.id.nav_admin_update).setVisible(false);
+            nav_Menu.findItem(R.id.nav_admin_view_order).setVisible(false);
+        }
+
+        if(ProfileRole.getValue(role) < ProfileRole.getValue(ProfileRole.USER)) {
+            nav_Menu.findItem(R.id.nav_profile).setVisible(false);
+            nav_Menu.findItem(R.id.nav_logout).setTitle("Login");
+        }
+
+        if(picture != null) {
+            menuDrawerImageView.setImageBitmap(BitMapUtils.StringToBitMap(picture));
+        }
+
+        welcomeMsgTextView.setText("Hello " + name + "!");
+
+    }
 
     private void signOut() {
 

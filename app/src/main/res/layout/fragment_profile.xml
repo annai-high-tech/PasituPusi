@@ -106,7 +106,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:clickable="true"
-                    android:text="+"
+                    android:text="-"
                     android:textAlignment="textEnd"
                     android:textSize="18sp"
                     android:textStyle="bold" />

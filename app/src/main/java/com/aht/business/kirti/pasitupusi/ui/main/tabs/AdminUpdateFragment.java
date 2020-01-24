@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.aht.business.kirti.pasitupusi.R;
@@ -55,8 +56,8 @@ public class AdminUpdateFragment extends BaseFragment {
         top_go_to_today =  view.findViewById(R.id.top_go_to_today);
         month_line_holder_last = view.findViewById(R.id.day_42);
 
-        dailyMenuViewModel = ViewModelProviders.of(getActivity()).get(DailyMenuViewModel.class);
-        dailyMenuViewModel.getCategoryList().observe(getActivity(), mObserverResult);
+        dailyMenuViewModel = new ViewModelProvider(this).get(DailyMenuViewModel.class);
+        dailyMenuViewModel.getCategoryList().observe(getViewLifecycleOwner(), mObserverResult);
         dailyMenuViewModel.getAllTimeMenu();
 
         progressDialog.show();

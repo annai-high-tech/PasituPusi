@@ -1,7 +1,5 @@
 package com.aht.business.kirti.pasitupusi.model.dailymenu;
 
-import android.os.Environment;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -9,19 +7,14 @@ import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenuList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
-import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
-import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
-import com.aht.business.kirti.pasitupusi.ui.utils.BitMapUtils;
+import com.aht.business.kirti.pasitupusi.model.utils.BitMapUtils;
+import com.aht.business.kirti.pasitupusi.model.utils.Database;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.List;
 
 //import com.google.api.core.ApiFuture;
 
@@ -33,7 +26,7 @@ public class DailyMenuManager {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        final DocumentReference docRef = db.collection("menu_data").document("all_time_menu");
+        final DocumentReference docRef = db.collection(Database.DATABASE_MENU_DATA_COLLECTION).document(Database.DATABASE_ALL_TIME_MENU_DOCUMENT);
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
@@ -60,7 +53,7 @@ public class DailyMenuManager {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        final DocumentReference docRef = db.collection("menu_data").document("all_time_menu");
+        final DocumentReference docRef = db.collection(Database.DATABASE_MENU_DATA_COLLECTION).document(Database.DATABASE_ALL_TIME_MENU_DOCUMENT);
 
         docRef.set(testData()).addOnCompleteListener(new OnCompleteListener() {
 
@@ -270,7 +263,7 @@ public class DailyMenuManager {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        final DocumentReference docRef = db.collection("menu_data").document(date);
+        final DocumentReference docRef = db.collection(Database.DATABASE_MENU_DATA_COLLECTION).document(date);
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
@@ -297,7 +290,7 @@ public class DailyMenuManager {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        final DocumentReference docRef = db.collection("menu_data").document(date);
+        final DocumentReference docRef = db.collection(Database.DATABASE_MENU_DATA_COLLECTION).document(date);
 
         docRef.set(dailyMenuList).addOnCompleteListener(new OnCompleteListener() {
 

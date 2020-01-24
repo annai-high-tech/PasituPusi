@@ -1,6 +1,5 @@
 package com.aht.business.kirti.pasitupusi.ui.main.tabs;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -9,15 +8,13 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.aht.business.kirti.pasitupusi.R;
@@ -26,11 +23,12 @@ import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenuList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
+import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
-import com.aht.business.kirti.pasitupusi.ui.utils.AnimationUtil;
-import com.aht.business.kirti.pasitupusi.ui.utils.BitMapUtils;
+import com.aht.business.kirti.pasitupusi.model.utils.AnimationUtil;
+import com.aht.business.kirti.pasitupusi.model.utils.BitMapUtils;
+import com.google.android.material.navigation.NavigationView;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,10 +37,12 @@ import java.util.TimeZone;
 
 public class HomeFragment extends BaseFragment {
 
-    private TextView textViewWelcomeMsg;
+    private TextView textViewWelcomeMsg, welcomeMsgTextView;
     private LinearLayout contentLayout;
     private TextView textViewDate;
     private ImageView top_left_arrow, top_right_arrow, top_go_to_today;
+    private ImageView menuDrawerImageView;
+    private NavigationView navigationView;
 
     private ProgressDialog progressDialog;
     private Calendar calendar;
@@ -73,27 +73,29 @@ public class HomeFragment extends BaseFragment {
         top_right_arrow =  view.findViewById(R.id.top_right_arrow);
         top_go_to_today =  view.findViewById(R.id.top_go_to_today);
         contentLayout =  view.findViewById(R.id.content_layout);
+        navigationView = getActivity().findViewById(R.id.nav_view);
+        welcomeMsgTextView = navigationView.getHeaderView(0).findViewById(R.id.nameTxt);
+        menuDrawerImageView= navigationView.getHeaderView(0).findViewById(R.id.imageView);
 
         //textViewWelcomeMsg.setText("Hello " + ((MainActivity)getActivity()).getProfileData().getName() + "!\n\tWelcome to Pasitu Pusi Menu");
 
         isAllTimeMenuAcquired = false;
         isDailyMenuAcquired = false;
 
-        dailyMenuViewModel = ViewModelProviders.of(getActivity()).get(DailyMenuViewModel.class);
+        dailyMenuViewModel = new ViewModelProvider(this).get(DailyMenuViewModel.class);
 
         calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
-        SimpleDateFormat simpleDate =  new SimpleDateFormat("yyyy-MM-dd");
-        today = menuDay = simpleDate.format(calendar.getTime());
+        today = menuDay = dateFormat(calendar);
         calendar.add(Calendar.DAY_OF_YEAR, 1);
-        tomorrow = simpleDate.format(calendar.getTime());
+        tomorrow = dateFormat(calendar);
         calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
 
         if(menuCategoryList == null) {
-            dailyMenuViewModel.getCategoryList().observe(getActivity(), mObserverResult1);
+            dailyMenuViewModel.getCategoryList().observe(getViewLifecycleOwner(), mObserverResult1);
             dailyMenuViewModel.getAllTimeMenu();
         }
 
-        dailyMenuViewModel.getDailyMenuList().observe(this, mObserverResult2);
+        dailyMenuViewModel.getDailyMenuList().observe(getViewLifecycleOwner(), mObserverResult2);
         dailyMenuViewModel.getDailyMenu(menuDay);
         progressDialog.show();
 
@@ -138,7 +140,16 @@ public class HomeFragment extends BaseFragment {
 
     private void updatePage() {
 
-        textViewWelcomeMsg.setText("Hello " + ((MainActivity)getActivity()).getProfileData().getName() + "!\n\tWelcome to Pasitu Pusi");
+        ProfileData profileData = ((MainActivity)getActivity()).getProfileData();
+
+        if(profileData != null) {
+            if (profileData.getPicture() != null) {
+                menuDrawerImageView.setImageBitmap(BitMapUtils.StringToBitMap(profileData.getPicture()));
+            }
+            welcomeMsgTextView.setText("Hello " + profileData.getName() + "!");
+        }
+
+        textViewWelcomeMsg.setText("Welcome to PASITU PUSI");
 
         SimpleDateFormat i_format = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat o_format = new SimpleDateFormat("dd MMM yyyy");
@@ -333,29 +344,29 @@ public class HomeFragment extends BaseFragment {
         @Override
         public void onClick(View view){
 
-            SimpleDateFormat simpleDate =  new SimpleDateFormat("yyyy-MM-dd");
+            //SimpleDateFormat simpleDate =  new SimpleDateFormat("yyyy-MM-dd");
             if(view.getId() == top_left_arrow.getId()) {
                 calendar.add(Calendar.DAY_OF_YEAR, -1);
-                menuDay = simpleDate.format(calendar.getTime());
+                menuDay = dateFormat(calendar);
 
-                dailyMenuViewModel.getDailyMenuList().observe(HomeFragment.this, mObserverResult2);
+                dailyMenuViewModel.getDailyMenuList().observe(HomeFragment.this.getViewLifecycleOwner(), mObserverResult2);
                 dailyMenuViewModel.getDailyMenu(menuDay);
                 progressDialog.show();
 
             } else if(view.getId() == top_right_arrow.getId()) {
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
-                menuDay = simpleDate.format(calendar.getTime());
+                menuDay = dateFormat(calendar);
 
-                dailyMenuViewModel.getDailyMenuList().observe(HomeFragment.this, mObserverResult2);
+                dailyMenuViewModel.getDailyMenuList().observe(HomeFragment.this.getViewLifecycleOwner(), mObserverResult2);
                 dailyMenuViewModel.getDailyMenu(menuDay);
                 progressDialog.show();
 
 
             } else if(view.getId() == top_go_to_today.getId()) {
                 calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
-                today = menuDay = simpleDate.format(calendar.getTime());
+                today = menuDay = dateFormat(calendar);
 
-                dailyMenuViewModel.getDailyMenuList().observe(HomeFragment.this, mObserverResult2);
+                dailyMenuViewModel.getDailyMenuList().observe(HomeFragment.this.getViewLifecycleOwner(), mObserverResult2);
                 dailyMenuViewModel.getDailyMenu(menuDay);
                 progressDialog.show();
 
@@ -375,4 +386,22 @@ public class HomeFragment extends BaseFragment {
 
     }
 
+    private String dateFormat(Calendar calendar) {
+
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        String str = "" + year + "-";
+
+        if(month < 10)
+            str += "0";
+        str += month + "-";
+
+        if(day < 10)
+            str += "0";
+        str += day;
+
+        return str;
+    }
 }

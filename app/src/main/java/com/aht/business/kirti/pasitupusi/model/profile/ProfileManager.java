@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
+import com.aht.business.kirti.pasitupusi.model.utils.Database;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 //import com.google.api.core.ApiFuture;
@@ -29,7 +30,7 @@ public class ProfileManager {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        final DocumentReference docRef = db.collection("user_data").document(currentUser.getUid());
+        final DocumentReference docRef = db.collection(Database.DATABASE_USER_DATA_COLLECTION).document(currentUser.getUid());
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
@@ -80,7 +81,7 @@ public class ProfileManager {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        final DocumentReference docRef = db.collection("user_data").document(currentUser.getUid());
+        final DocumentReference docRef = db.collection(Database.DATABASE_USER_DATA_COLLECTION).document(currentUser.getUid());
 
         docRef.set(data).addOnCompleteListener(new OnCompleteListener() {
 
@@ -137,7 +138,7 @@ public class ProfileManager {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        final DocumentReference docRef = db.collection("user_data").document(currentUser.getUid());
+        final DocumentReference docRef = db.collection(Database.DATABASE_USER_DATA_COLLECTION).document(currentUser.getUid());
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
