@@ -37,7 +37,7 @@ import java.util.TimeZone;
 
 public class HomeFragment extends BaseFragment {
 
-    private TextView textViewWelcomeMsg, welcomeMsgTextView;
+    private TextView textViewWelcomeMsg, welcomeMsgTextView, newsTextView;
     private LinearLayout contentLayout;
     private TextView textViewDate;
     private ImageView top_left_arrow, top_right_arrow, top_go_to_today;
@@ -68,6 +68,7 @@ public class HomeFragment extends BaseFragment {
 
         progressDialog = new ProgressDialog(this.getContext());
         textViewWelcomeMsg =  view.findViewById(R.id.home_welcome);
+        newsTextView =  view.findViewById(R.id.newsTextView);
         textViewDate =  view.findViewById(R.id.top_date_value);
         top_left_arrow =  view.findViewById(R.id.top_left_arrow);
         top_right_arrow =  view.findViewById(R.id.top_right_arrow);
@@ -77,6 +78,7 @@ public class HomeFragment extends BaseFragment {
         welcomeMsgTextView = navigationView.getHeaderView(0).findViewById(R.id.nameTxt);
         menuDrawerImageView= navigationView.getHeaderView(0).findViewById(R.id.imageView);
 
+        newsTextView.setSelected(true);
         //textViewWelcomeMsg.setText("Hello " + ((MainActivity)getActivity()).getProfileData().getName() + "!\n\tWelcome to Pasitu Pusi Menu");
 
         isAllTimeMenuAcquired = false;

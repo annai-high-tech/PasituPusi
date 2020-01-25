@@ -23,8 +23,25 @@
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:gravity="center"
-            android:textSize="24sp"
-            android:text="loading..." />
+            android:text="loading..."
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/newsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:freezesText="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="Online ordering is not possible in the app. Contact +91 7904771427 for any orders and queries"
+            android:textColor="#ff4500" />
 
         <RelativeLayout
             android:id="@+id/calendar_holder"
