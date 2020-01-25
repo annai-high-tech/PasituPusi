@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.main.tabs.ProfileFragment">
+    tools:context=".ui.main.fragments.ProfileFragment">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -48,6 +48,7 @@
                 android:clickable="true"
                 android:text="Change Picture"
                 android:textAlignment="textEnd"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -60,6 +61,7 @@
                 android:clickable="true"
                 android:text="Save"
                 android:textAlignment="textEnd"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -72,6 +74,7 @@
                 android:clickable="true"
                 android:text="Cancel"
                 android:textAlignment="textEnd"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -82,14 +85,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
-            android:background="#6602A64F"
+            android:background="@color/colorPrimary"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:text="Personal Details"
                 android:textAlignment="textStart"
+                android:textColor="@color/colorWhiteText"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -108,6 +114,7 @@
                     android:clickable="true"
                     android:text="-"
                     android:textAlignment="textEnd"
+                    android:textColor="@color/colorWhiteText"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -140,6 +147,7 @@
                     android:clickable="true"
                     android:text="Cancel"
                     android:textAlignment="textEnd"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -152,6 +160,7 @@
                     android:clickable="true"
                     android:text="Edit"
                     android:textAlignment="textEnd"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -164,6 +173,7 @@
                     android:clickable="true"
                     android:text="Save"
                     android:textAlignment="textEnd"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -237,14 +247,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
-            android:background="#6602A64F"
+            android:background="@color/colorPrimary"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:text="Address Details"
                 android:textAlignment="textStart"
+                android:textColor="@color/colorWhiteText"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -263,6 +276,7 @@
                     android:clickable="true"
                     android:text="+"
                     android:textAlignment="textEnd"
+                    android:textColor="@color/colorWhiteText"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -295,6 +309,7 @@
                     android:clickable="true"
                     android:text="Edit"
                     android:textAlignment="textEnd"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -307,6 +322,7 @@
                     android:clickable="true"
                     android:text="Save"
                     android:textAlignment="textEnd"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -319,6 +335,7 @@
                     android:clickable="true"
                     android:text="Cancel"
                     android:textAlignment="textEnd"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -429,14 +446,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
-            android:background="#6602A64F"
+            android:background="@color/colorPrimary"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:text="Current Open Order"
                 android:textAlignment="textStart"
+                android:textColor="@color/colorWhiteText"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -455,6 +475,7 @@
                     android:clickable="true"
                     android:text="+"
                     android:textAlignment="textEnd"
+                    android:textColor="@color/colorWhiteText"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -489,14 +510,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
-            android:background="#6602A64F"
+            android:background="@color/colorPrimary"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:text="Order History"
                 android:textAlignment="textStart"
+                android:textColor="@color/colorWhiteText"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -515,6 +539,7 @@
                     android:clickable="true"
                     android:text="+"
                     android:textAlignment="textEnd"
+                    android:textColor="@color/colorWhiteText"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 

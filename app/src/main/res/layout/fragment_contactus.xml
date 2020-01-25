@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.main.tabs.ContactFragment">
+    tools:context=".ui.main.fragments.ContactFragment">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -25,6 +25,7 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:gravity="center"
             android:text="@string/contact_title"
+            android:textColor="@color/colorPrimaryText"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -42,6 +43,7 @@
                 android:clickable="true"
                 android:gravity="center"
                 android:text="@string/contact_email"
+                android:textColor="@color/colorPrimaryText"
                 android:textSize="18sp"
                 android:textStyle="italic" />
 
@@ -74,6 +76,7 @@
                 android:clickable="true"
                 android:gravity="center"
                 android:text="@string/contact_phone"
+                android:textColor="@color/colorPrimaryText"
                 android:textSize="18sp"
                 android:textStyle="italic" />
 

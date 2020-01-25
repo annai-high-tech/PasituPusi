@@ -11,15 +11,15 @@ import com.aht.business.kirti.pasitupusi.model.profile.ProfileViewModel;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
 import com.aht.business.kirti.pasitupusi.model.updates.AppUpdatesManager;
-import com.aht.business.kirti.pasitupusi.model.utils.BitMapUtils;
+import com.aht.business.kirti.pasitupusi.model.utils.BitmapUtils;
 import com.aht.business.kirti.pasitupusi.ui.login.LoginMainActivity;
-import com.aht.business.kirti.pasitupusi.ui.main.tabs.AdminUpdateFragment;
-import com.aht.business.kirti.pasitupusi.ui.main.tabs.AdminViewOrderFragment;
-import com.aht.business.kirti.pasitupusi.ui.main.tabs.BaseFragment;
-import com.aht.business.kirti.pasitupusi.ui.main.tabs.ContactFragment;
-import com.aht.business.kirti.pasitupusi.ui.main.tabs.HomeFragment;
-import com.aht.business.kirti.pasitupusi.ui.main.tabs.ProfileFragment;
-import com.aht.business.kirti.pasitupusi.ui.main.tabs.SubPageFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.AdminUpdateFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.AdminViewOrderFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.ContactFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.HomeFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.ProfileFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.SubPageFragment;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -34,7 +34,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Html;
@@ -200,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(picture != null) {
-            menuDrawerImageView.setImageBitmap(BitMapUtils.StringToBitMap(picture));
+            menuDrawerImageView.setImageBitmap(BitmapUtils.StringToBitMap(picture));
         }
 
         welcomeMsgTextView.setText("Hello " + name + "!");

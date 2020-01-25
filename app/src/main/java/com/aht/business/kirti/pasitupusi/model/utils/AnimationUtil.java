@@ -1,9 +1,12 @@
 package com.aht.business.kirti.pasitupusi.model.utils;
 
 import android.content.Context;
+import android.text.Layout;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aht.business.kirti.pasitupusi.R;
@@ -139,4 +142,21 @@ public class AnimationUtil {
             }
         }
     }
+
+    public static void shake_right_left(LinearLayout layout, final TextView view, final int repeatCount) {
+        //view.startAnimation(AnimationUtils.loadAnimation(ctx, R.anim.shake_left_right));
+
+        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+
+        TranslateAnimation animation = new TranslateAnimation(0.0f, layout.getMeasuredWidth() - view.getMeasuredWidth(), 0.0f, 0.0f); // new TranslateAnimation (float fromXDelta,float toXDelta, float fromYDelta, float toYDelta)
+        animation.setDuration(5000); // animation duration
+        animation.setRepeatCount(repeatCount); // animation repeat count
+        animation.setRepeatMode(Animation.REVERSE); // repeat animation (left to right, right to left)
+
+        animation.setFillAfter(false);
+        view.clearAnimation();
+        view.startAnimation(animation);//your_view for mine is imageView
+    }
+
+
 }
