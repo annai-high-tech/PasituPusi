@@ -1,8 +1,8 @@
 ext {
     appName = 'Pasitu Pusi'
     appId = 'com.aht.business.kirti.pasitupusi'
-    verCode = 102
-    verName = 'V1.02'
+    verCode = 103
+    verName = 'V1.03'
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
@@ -69,6 +69,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.hbb20:ccp:2.3.5'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 
     //implementation 'com.google.api-client:google-api-client:1.30.6'
     //implementation 'com.google.api:api-common:1.8.1'

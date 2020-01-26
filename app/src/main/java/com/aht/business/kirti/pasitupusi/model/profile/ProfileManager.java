@@ -166,13 +166,4 @@ public class ProfileManager {
         return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
 
-    public static String getUserName() {
-        String name = null;
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            return FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-        }
-
-        return name;
-    }
-
 }

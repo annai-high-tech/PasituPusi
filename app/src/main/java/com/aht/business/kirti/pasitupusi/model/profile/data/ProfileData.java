@@ -136,4 +136,5 @@ public class ProfileData implements Serializable {
     public void setRole(ProfileRole role) {
         this.role = role;
     }
+
 }

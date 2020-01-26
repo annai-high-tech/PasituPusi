@@ -133,10 +133,8 @@ public class ProfileFragment extends BaseFragment {
 
             Bitmap thumbnail = null;
 
-            if (requestCode == 1) {
-                thumbnail = profilePhotoManager.onCaptureImageResult(data);
-            } else if (requestCode == 2) {
-                thumbnail = profilePhotoManager.onSelectFromGalleryResult(data);
+            if (requestCode == ProfilePhotoManager.PROFILE_IMAGE_ACTIVITY_REQUEST_CODE) {
+                thumbnail = profilePhotoManager.onSelectImageResult(data);
             }
 
             if(thumbnail != null) {

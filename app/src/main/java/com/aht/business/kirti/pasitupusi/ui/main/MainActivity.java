@@ -249,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.nav_profile:
+                adsAHT.showFullScreenAds();
                 if(currentFragment == null || !(currentFragment instanceof ProfileFragment)) {
                     changeFragments(new ProfileFragment());
                 }
@@ -275,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.nav_logout:
+                adsAHT.showFullScreenAds();
                 signOut();
                 break;
 
