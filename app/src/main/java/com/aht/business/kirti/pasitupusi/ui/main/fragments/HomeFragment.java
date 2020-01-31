@@ -1,5 +1,6 @@
 package com.aht.business.kirti.pasitupusi.ui.main.fragments;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -9,6 +10,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
+import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 import com.aht.business.kirti.pasitupusi.model.utils.AnimationUtil;
 import com.aht.business.kirti.pasitupusi.model.utils.BitmapUtils;
@@ -45,7 +48,7 @@ public class HomeFragment extends BaseFragment {
     private NavigationView navigationView;
 
     private ProgressDialog progressDialog;
-    private Calendar calendar;
+    private Calendar calendar, minCalendar, maxCalendar;
     private String menuDay, today, tomorrow;
 
     private DailyMenuViewModel dailyMenuViewModel;
@@ -53,6 +56,8 @@ public class HomeFragment extends BaseFragment {
     private DailyMenuList dailyMenuList = null;
 
     private boolean isAllTimeMenuAcquired, isDailyMenuAcquired;
+
+    private ProfileData profileData = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +107,7 @@ public class HomeFragment extends BaseFragment {
         dailyMenuViewModel.getDailyMenu(menuDay);
         progressDialog.show();
 
+        textViewDate.setOnClickListener(listener);
         top_left_arrow.setOnClickListener(listener);
         top_right_arrow.setOnClickListener(listener);
         top_go_to_today.setOnClickListener(listener);
@@ -145,13 +151,27 @@ public class HomeFragment extends BaseFragment {
 
     private void updatePage() {
 
-        ProfileData profileData = ((MainActivity)getActivity()).getProfileData();
+        profileData = ((MainActivity)getActivity()).getProfileData();
 
         if(profileData != null) {
             if (profileData.getPicture() != null) {
                 menuDrawerImageView.setImageBitmap(BitmapUtils.StringToBitMap(profileData.getPicture()));
+            } else {
+                menuDrawerImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_person));
             }
             welcomeMsgTextView.setText("Hello " + profileData.getName() + "!");
+
+            if(ProfileRole.getValue(profileData.getRole()) < ProfileRole.getValue(ProfileRole.MANAGER)) {
+
+                minCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
+                minCalendar.add(Calendar.DAY_OF_YEAR, -1);
+
+                maxCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
+                maxCalendar.add(Calendar.DAY_OF_YEAR, 7);
+            } else {
+                minCalendar = maxCalendar = null;
+            }
+
         }
 
         textViewWelcomeMsg.setText("Welcome to PASITU PUSI");
@@ -159,9 +179,30 @@ public class HomeFragment extends BaseFragment {
         SimpleDateFormat i_format = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat o_format = new SimpleDateFormat("dd MMM yyyy");
         String dateTitle = "";
+        String minDate, maxDate;
+
         try {
+            minDate = dateFormat(minCalendar);
+            maxDate = dateFormat(maxCalendar);
+
+            top_left_arrow.setVisibility(View.VISIBLE);
+            top_right_arrow.setVisibility(View.VISIBLE);
+
             Date curDate = i_format.parse(menuDay);
             dateTitle = o_format.format(curDate);
+
+            if(minDate != null) {
+                Date date = i_format.parse(minDate);
+                if (dateTitle.equals(o_format.format(date))) {
+                    top_left_arrow.setVisibility(View.INVISIBLE);
+                }
+            }
+            if(maxDate != null) {
+                Date date = i_format.parse(maxDate);
+                if (dateTitle.equals(o_format.format(date))) {
+                    top_right_arrow.setVisibility(View.INVISIBLE);
+                }
+            }
 
             if(menuDay.equals(today)) {
                 dateTitle += " (Today)";
@@ -171,6 +212,7 @@ public class HomeFragment extends BaseFragment {
             }
         } catch (ParseException e) {
             dateTitle = "No Dates";
+            e.printStackTrace();
         }
         textViewDate.setText(dateTitle);
 
@@ -403,9 +445,43 @@ public class HomeFragment extends BaseFragment {
                 dailyMenuViewModel.getDailyMenu(menuDay);
                 progressDialog.show();
 
+            } else if (view.getId() == textViewDate.getId()) {
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(HomeFragment.this.getContext(), dateListener, calendar
+                        .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
+
+                if(minCalendar != null) {
+                    datePickerDialog.getDatePicker().setMinDate(minCalendar.getTimeInMillis());
+                }
+                if(maxCalendar != null) {
+                    datePickerDialog.getDatePicker().setMaxDate(maxCalendar.getTimeInMillis());
+                }
+
+                datePickerDialog.show();
             }
 
         }
+
+
+    };
+
+    DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, monthOfYear);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            menuDay = dateFormat(calendar);
+
+            dailyMenuViewModel.getDailyMenuList().observe(HomeFragment.this.getViewLifecycleOwner(), mObserverResult2);
+            dailyMenuViewModel.getDailyMenu(menuDay);
+            progressDialog.show();
+        }
+
     };
 
     private void toggle_contents(TextView sourceClick, View destView){
@@ -420,6 +496,10 @@ public class HomeFragment extends BaseFragment {
     }
 
     private String dateFormat(Calendar calendar) {
+
+        if(calendar == null) {
+            return null;
+        }
 
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1;

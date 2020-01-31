@@ -133,8 +133,12 @@ public class ProfileFragment extends BaseFragment {
 
             Bitmap thumbnail = null;
 
-            if (requestCode == ProfilePhotoManager.PROFILE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (requestCode == ProfilePhotoManager.PROFILE_IMAGE_ACTIVITY_REQUEST_CODE_UPDATE) {
                 thumbnail = profilePhotoManager.onSelectImageResult(data);
+            }
+            else if (requestCode == ProfilePhotoManager.PROFILE_IMAGE_ACTIVITY_REQUEST_CODE_REMOVE) {
+                thumbnail = null;
+                imageViewProfilePic.setImageDrawable(getResources().getDrawable(R.drawable.ic_person));
             }
 
             if(thumbnail != null) {
@@ -203,8 +207,14 @@ public class ProfileFragment extends BaseFragment {
 
         if(save) {
             BitmapDrawable drawable = (BitmapDrawable) imageViewProfilePic.getDrawable();
-            if(drawable != null)
-                currrentProfileData.setPicture(BitmapUtils.BitMapToString(drawable.getBitmap()));
+            if(drawable != null) {
+
+                if(BitmapUtils.BitMapToString(drawable.getBitmap()).equals(BitmapUtils.BitMapToString(((BitmapDrawable)getResources().getDrawable(R.drawable.ic_person)).getBitmap()))) {
+                    currrentProfileData.setPicture(null);
+                } else {
+                    currrentProfileData.setPicture(BitmapUtils.BitMapToString(drawable.getBitmap()));
+                }
+            }
         }
 
         setProfilePicView(false);
