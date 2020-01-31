@@ -2,6 +2,8 @@ package com.aht.business.kirti.pasitupusi.ui.main.fragments;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -34,8 +37,10 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
     private TextView textViewTitle;
     private LinearLayout contentLayout;
     private ProgressDialog progressDialog;
+    private Button save, reset;
 
     private Calendar calendar;
+
 
     private DailyMenuViewModel dailyMenuViewModel;
     private DailyMenuList dailyMenuList;
@@ -90,10 +95,17 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
     private void updatePage(MenuCategoryList menuCategoryList, DailyMenuList dailyMenuList, LinearLayout contentLayout) {
 
         boolean isEmpty = true;
+        boolean firstTime = true;
         boolean isOldDate = isOldDate(date);
         contentLayout.removeAllViewsInLayout();
+        save = reset = null;
 
         for(MenuCategory list:menuCategoryList.getMenuCategoryList().values()) {
+            if(firstTime && dailyMenuList != null) {
+                firstTime = false;
+                addMenuDescription(contentLayout, dailyMenuList.getDescription(), isOldDate);
+            }
+
             addMenuCategory(contentLayout, list.getName());
 
             for(String element:list.getMenuList().keySet()) {
@@ -146,6 +158,36 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
 
     }
 
+    private void addMenuDescription(LinearLayout layout, String text, boolean isOldDate) {
+        EditText editText = new EditText(this.getContext());
+        editText.setText(text);
+        editText.setEnabled(!isOldDate);
+
+        editText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        editText.setGravity(Gravity.LEFT);
+        editText.setHint("Enter menu description");
+        editText.setPadding(10, 10, 10, 20);
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+
+        editText.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+
+                dailyMenuList.setDescription(s.toString());
+                save.setEnabled(true);
+                reset.setEnabled(true);
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+
+        layout.addView(editText);
+
+    }
+
     private void addMenuCategory(LinearLayout layout, String text) {
         TextView textView = new TextView(this.getContext());
         textView.setText(text);
@@ -162,8 +204,8 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
     private void addMenuButtons(LinearLayout layout) {
 
         LinearLayout rowLayout = new LinearLayout(this.getContext());
-        Button save = new Button(this.getContext());
-        Button reset = new Button(this.getContext());
+        save = new Button(this.getContext());
+        reset = new Button(this.getContext());
 
         rowLayout.setOrientation(LinearLayout.HORIZONTAL);
         rowLayout.setGravity(Gravity.CENTER);
@@ -181,6 +223,9 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
         rowLayout.addView(save);
         rowLayout.addView(reset);
         layout.addView(rowLayout);
+
+        save.setEnabled(false);
+        reset.setEnabled(false);
 
     }
 
@@ -237,6 +282,9 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
             }
 
             dailyMenuViewModel.getDailyMenu(date);
+            save.setEnabled(false);
+            reset.setEnabled(false);
+
         }
     };
 
@@ -248,8 +296,13 @@ public class UpdateDailyMenuSubFragment extends SubPageFragment {
 
             if(isChecked && !menuList.containsKey(key)) {
                 menuList.put(key, new DailyMenu(key));
+                save.setEnabled(true);
+                reset.setEnabled(true);
+
             } else if(!isChecked && menuList.containsKey(key)) {
                 menuList.remove(key);
+                save.setEnabled(true);
+                reset.setEnabled(true);
             }
         }
 
