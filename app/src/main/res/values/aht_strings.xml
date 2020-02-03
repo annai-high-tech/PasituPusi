@@ -11,8 +11,5 @@
 
     <string name="privacy_title" translatable="false">Privacy Policy</string>
 
-    <bool name="enable_ads_banner">true</bool>
-    <bool name="enable_ads_fullscreen">true</bool>
-    <bool name="enable_ads_native">true</bool>
 
 </resources>

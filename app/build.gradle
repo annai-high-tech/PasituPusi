@@ -1,8 +1,8 @@
 ext {
     appName = 'Pasitu Pusi'
     appId = 'com.aht.business.kirti.pasitupusi'
-    verCode = 104
-    verName = 'V1.04'
+    verCode = 105
+    verName = 'V1.05'
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
@@ -59,13 +59,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'com.google.firebase:firebase-ads:18.3.0'
-    implementation 'com.google.firebase:firebase-firestore:21.3.1'
+    implementation 'com.google.firebase:firebase-firestore:21.4.0'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.google.firebase:firebase-appindexing:19.0.0'
+    implementation 'com.google.firebase:firebase-appindexing:19.1.0'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'com.karumi:dexter:6.0.1'
+    implementation 'com.karumi:dexter:6.0.2'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.hbb20:ccp:2.3.5'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'

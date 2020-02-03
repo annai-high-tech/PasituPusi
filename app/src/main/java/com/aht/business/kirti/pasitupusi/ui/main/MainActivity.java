@@ -287,6 +287,10 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public AdsAHT getAdsAHT() {
+        return adsAHT;
+    }
+
     public void changeFragments(BaseFragment selectedFragment) {
 
         //PlaceholderFragment fragment = PlaceholderFragment.newInstance(selectedFragment);

@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.updates.data.VersionDetail;
 import com.aht.business.kirti.pasitupusi.model.updates.enums.UpdateType;
 import com.aht.business.kirti.pasitupusi.model.utils.Database;
@@ -65,9 +66,19 @@ public final class AppUpdatesManager {
         final Context l_context = context;
 
         if(updateType != UpdateType.NO_UPDATE) {
+
+            String displayMessage = "A new version of the application is available";
+            if(updateType != UpdateType.MANDATORY) {
+                displayMessage += "\n\nDo you want to update it now?";
+            } else {
+                displayMessage += "\n\nPlease update it now";
+            }
+
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("New Version");
+            builder.setIcon(R.drawable.alert);
             builder = builder.setMessage(
-                    "Install the latest App")
+                    displayMessage)
                     .setCancelable(false)
                     .setPositiveButton("UPDATE",
                             new DialogInterface.OnClickListener() {
@@ -80,18 +91,18 @@ public final class AppUpdatesManager {
                                     Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
                                     l_context.startActivity(intent);
 
-                                    Toast.makeText(l_context, "You clicked on UPDATE", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(l_context, "You clicked on UPDATE", Toast.LENGTH_SHORT).show();
                                     dialog.cancel();
                                 }
                             });
 
             if(updateType != UpdateType.MANDATORY) {
-                builder = builder.setNegativeButton("NOT NOW",
+                builder = builder.setNegativeButton("IGNORE",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int id) {
 
-                                Toast.makeText(l_context, "You clicked on NOT NOW", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(l_context, "You clicked on IGNORE", Toast.LENGTH_SHORT).show();
                                 dialog.cancel();
                             }
                         });

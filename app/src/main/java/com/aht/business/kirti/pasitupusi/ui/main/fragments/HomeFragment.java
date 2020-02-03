@@ -239,6 +239,7 @@ public class HomeFragment extends BaseFragment {
 
             boolean menuListNotEmpty = false;
             LinearLayout layout = null;
+            int countItem = 0;
 
             for(String element:list.getMenuList().keySet()) {
 
@@ -252,11 +253,21 @@ public class HomeFragment extends BaseFragment {
                         menuListNotEmpty = true;
 
                         if(layout != null) {
+                            countItem ++;
                             addMenuList(layout, menuElement, element, menuListNotEmpty);
+
+                            if(countItem % 5 == 0) {
+                                ((MainActivity)getActivity()).getAdsAHT().showNativeAds(this.getContext(), layout);
+                            }
                         }
+
                     }
                     isEmpty = false;
                 }
+            }
+
+            if(menuListNotEmpty && countItem % 5 != 0) {
+                ((MainActivity)getActivity()).getAdsAHT().showNativeAds(this.getContext(), layout);
             }
         }
 
