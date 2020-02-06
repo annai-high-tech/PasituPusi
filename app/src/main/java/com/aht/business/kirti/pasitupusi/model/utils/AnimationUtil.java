@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,7 +14,7 @@ import com.aht.business.kirti.pasitupusi.R;
 
 public class AnimationUtil {
 
-    public static void slide_down(Context ctx, final View view, final TextView sourceClick) {
+    public static void slide_down(final Context ctx, final View view, final ImageView sourceClick) {
 
         /*if (view != null) {
 
@@ -60,7 +61,7 @@ public class AnimationUtil {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                sourceClick.setText("-");
+                sourceClick.setImageDrawable(ctx.getResources().getDrawable(android.R.drawable.arrow_up_float));
             }
 
             @Override
@@ -78,7 +79,7 @@ public class AnimationUtil {
         }
     }
 
-    public static void slide_up(Context ctx, final View view, final TextView sourceClick) {
+    public static void slide_up(final Context ctx, final View view, final ImageView sourceClick) {
 
         /*if (view != null) {
 
@@ -126,7 +127,7 @@ public class AnimationUtil {
             @Override
             public void onAnimationEnd(Animation animation) {
                 view.setVisibility(View.GONE);
-                sourceClick.setText("+");
+                sourceClick.setImageDrawable(ctx.getResources().getDrawable(android.R.drawable.arrow_down_float));
             }
 
             @Override

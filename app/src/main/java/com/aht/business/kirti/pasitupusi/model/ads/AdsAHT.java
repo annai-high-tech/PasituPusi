@@ -128,7 +128,6 @@ public class AdsAHT extends AdListener {
     public void loadNativenAds() {
         if(adsNativeEnable) {
             mAdLoader.loadAds(new AdRequest.Builder().build(), 5);
-            mAdLoader.loadAds(new AdRequest.Builder().build(), 10);
         }
     }
 
@@ -143,7 +142,7 @@ public class AdsAHT extends AdListener {
 
     public boolean showNativeAds(final Context context, final LinearLayout layout) {
 
-        if(unifiedNativeAdQueue.size() < 20) {
+        if(unifiedNativeAdQueue.size() < 15) {
             loadNativenAds();
         }
         if (mAdLoader != null && unifiedNativeAdQueue.size() > 0) {

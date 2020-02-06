@@ -13,12 +13,14 @@ import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
 import com.aht.business.kirti.pasitupusi.model.updates.AppUpdatesManager;
 import com.aht.business.kirti.pasitupusi.model.utils.BitmapUtils;
 import com.aht.business.kirti.pasitupusi.ui.login.LoginMainActivity;
-import com.aht.business.kirti.pasitupusi.ui.main.fragments.AdminUpdateFragment;
-import com.aht.business.kirti.pasitupusi.ui.main.fragments.AdminViewOrderFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.DishConfigureFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.DishSelectionFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.ViewAllOrderFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
-import com.aht.business.kirti.pasitupusi.ui.main.fragments.ContactFragment;
-import com.aht.business.kirti.pasitupusi.ui.main.fragments.HomeFragment;
-import com.aht.business.kirti.pasitupusi.ui.main.fragments.ProfileFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.user.ContactFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.user.TrackOrderFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.user.UserDishSelectionFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.user.ProfileFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.SubPageFragment;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -179,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 updateMenu(nav_Menu, data.getName(), data.getRole(), data.getPicture());
 
                 profileData  = data;
-                changeFragments(new HomeFragment());
+                changeFragments(new UserDishSelectionFragment());
 
             }
         }
@@ -189,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateMenu(Menu nav_Menu, String name, ProfileRole role, String picture) {
 
         if(ProfileRole.getValue(role) < ProfileRole.getValue(ProfileRole.MANAGER)) {
+            nav_Menu.findItem(R.id.nav_admin_configure).setVisible(false);
             nav_Menu.findItem(R.id.nav_admin_update).setVisible(false);
             nav_Menu.findItem(R.id.nav_admin_view_order).setVisible(false);
         }
@@ -242,9 +245,16 @@ public class MainActivity extends AppCompatActivity {
         showFooter(true, true, false);
 
         switch (menuItem.getItemId()) {
-            case R.id.nav_home:
-                if(currentFragment == null || !(currentFragment instanceof HomeFragment)){
-                    changeFragments(new HomeFragment());
+            case R.id.nav_dashboard:
+                if(currentFragment == null || !(currentFragment instanceof UserDishSelectionFragment)){
+                    changeFragments(new UserDishSelectionFragment());
+                }
+                break;
+
+            case R.id.nav_track:
+                adsAHT.showFullScreenAds();
+                if(currentFragment == null || !(currentFragment instanceof TrackOrderFragment)){
+                    changeFragments(new TrackOrderFragment());
                 }
                 break;
 
@@ -263,15 +273,21 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
 
+            case R.id.nav_admin_configure:
+                if(currentFragment == null || !(currentFragment instanceof DishConfigureFragment)){
+                    changeFragments(new DishConfigureFragment());
+                }
+                break;
+
             case R.id.nav_admin_update:
-                if(currentFragment == null || !(currentFragment instanceof AdminUpdateFragment)){
-                    changeFragments(new AdminUpdateFragment());
+                if(currentFragment == null || !(currentFragment instanceof DishSelectionFragment)){
+                    changeFragments(new DishSelectionFragment());
                 }
                 break;
 
             case R.id.nav_admin_view_order:
-                if(currentFragment == null || !(currentFragment instanceof AdminViewOrderFragment)){
-                    changeFragments(new AdminViewOrderFragment());
+                if(currentFragment == null || !(currentFragment instanceof ViewAllOrderFragment)){
+                    changeFragments(new ViewAllOrderFragment());
                 }
                 break;
 

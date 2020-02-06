@@ -4,8 +4,12 @@
 
     <group android:id="@+id/manager" >
         <item
+            android:id="@+id/nav_admin_configure"
+            android:title="Configure Dishes" />
+
+        <item
             android:id="@+id/nav_admin_update"
-            android:title="Update Menu" />
+            android:title="Select Daily Dishes" />
 
         <item
             android:id="@+id/nav_admin_view_order"
@@ -14,8 +18,12 @@
 
     <group android:id="@+id/user" >
         <item
-            android:id="@+id/nav_home"
-            android:title="Home" />
+            android:id="@+id/nav_dashboard"
+            android:title="Dashboard" />
+
+        <item
+            android:id="@+id/nav_track"
+            android:title="Track Order" />
 
         <item
             android:id="@+id/nav_profile"
