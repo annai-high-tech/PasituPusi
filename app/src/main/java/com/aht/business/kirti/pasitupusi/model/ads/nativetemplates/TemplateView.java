@@ -242,9 +242,9 @@ public class TemplateView extends FrameLayout {
     }
 
     public String getTemplateTypeName() {
-        if (templateType == R.layout.gnt_medium_template_view) {
+        if (templateType == R.layout.component_native_medium_view) {
             return MEDIUM_TEMPLATE;
-        } else if (templateType == R.layout.gnt_small_template_view) {
+        } else if (templateType == R.layout.component_native_small_view) {
             return SMALL_TEMPLATE;
         }
         return "";
@@ -258,7 +258,7 @@ public class TemplateView extends FrameLayout {
         try {
             templateType =
                     attributes.getResourceId(
-                            R.styleable.TemplateView_gnt_template_type, R.layout.gnt_medium_template_view);
+                            R.styleable.TemplateView_gnt_template_type, R.layout.component_native_medium_view);
         } finally {
             attributes.recycle();
         }

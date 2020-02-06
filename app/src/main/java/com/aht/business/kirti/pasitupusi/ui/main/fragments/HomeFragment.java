@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -27,6 +28,8 @@ import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
+import com.aht.business.kirti.pasitupusi.model.order.data.DishOrderData;
+import com.aht.business.kirti.pasitupusi.ui.components.layout.FoodDishLayoutAdapter;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 import com.aht.business.kirti.pasitupusi.model.utils.AnimationUtil;
 import com.aht.business.kirti.pasitupusi.model.utils.BitmapUtils;
@@ -34,14 +37,19 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class HomeFragment extends BaseFragment {
 
     private TextView textViewWelcomeMsg, welcomeMsgTextView, newsTextView, menuTitleTextView;
     private LinearLayout contentLayout;
+    private LinearLayout cartLayout;
     private TextView textViewDate;
     private ImageView top_left_arrow, top_right_arrow, top_go_to_today;
     private ImageView menuDrawerImageView;
@@ -59,6 +67,8 @@ public class HomeFragment extends BaseFragment {
 
     private ProfileData profileData = null;
 
+    private Map<String, DishOrderData> orderList = new HashMap<>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +80,10 @@ public class HomeFragment extends BaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        orderList.clear();
+
+        ((MainActivity)getActivity()).getAdsAHT().loadNativenAds();
+        ((MainActivity)getActivity()).getAdsAHT().loadNativenAds();
 
         progressDialog = new ProgressDialog(this.getContext());
         textViewWelcomeMsg =  view.findViewById(R.id.home_welcome);
@@ -80,6 +94,7 @@ public class HomeFragment extends BaseFragment {
         top_right_arrow =  view.findViewById(R.id.top_right_arrow);
         top_go_to_today =  view.findViewById(R.id.top_go_to_today);
         contentLayout =  view.findViewById(R.id.content_layout);
+        cartLayout =  view.findViewById(R.id.homeViewCartLayout);
         navigationView = getActivity().findViewById(R.id.nav_view);
         welcomeMsgTextView = navigationView.getHeaderView(0).findViewById(R.id.nameTxt);
         menuDrawerImageView= navigationView.getHeaderView(0).findViewById(R.id.imageView);
@@ -112,6 +127,9 @@ public class HomeFragment extends BaseFragment {
         top_right_arrow.setOnClickListener(listener);
         top_go_to_today.setOnClickListener(listener);
 
+        if(orderList.size() <= 0) {
+            cartLayout.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -342,6 +360,22 @@ public class HomeFragment extends BaseFragment {
 
     private void addMenuList(LinearLayout layout, MenuElement element, String key, boolean selected) {
 
+        Bitmap thumbnail = null;
+
+        if(element.getPicture() != null) {
+            thumbnail = BitmapUtils.StringToBitMap(element.getPicture());
+        }
+
+        DishOrderData dishOrderData = new DishOrderData(key, element.getName(), element.getDescription(), element.getPrice());
+
+        View view = FoodDishLayoutAdapter.createLayout(this.getContext(), dishOrderData, thumbnail, orderList, cartLayout);
+
+        layout.addView(view);
+    }
+
+    /*
+    private void addMenuList1(LinearLayout layout, MenuElement element, String key, boolean selected) {
+
         String desc = "", price = "";
         Bitmap thumbnail = null;
         LinearLayout rowLayout = new LinearLayout(this.getContext());
@@ -425,6 +459,7 @@ public class HomeFragment extends BaseFragment {
 
         rowLayout.setBackground(getResources().getDrawable(R.drawable.layout_bg));
     }
+    */
 
     private View.OnClickListener listener        =   new View.OnClickListener(){
         @Override

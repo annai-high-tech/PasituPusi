@@ -32,13 +32,15 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class AdsAHT extends AdListener {
 
     private InterstitialAd mInterstitialAd = null;
     private AdView mAdView = null;
     private AdLoader mAdLoader = null;
-    private UnifiedNativeAd unifiedNativeAd;
+    private Queue<UnifiedNativeAd> unifiedNativeAdQueue = new LinkedList<>();
     private LinearLayout mAdViewLayout = null;
     private boolean adsBannerEnable = false;
     private boolean adsFullScreenEnable = false;
@@ -124,8 +126,10 @@ public class AdsAHT extends AdListener {
     }
 
     public void loadNativenAds() {
-        if(adsNativeEnable)
-            mAdLoader.loadAd(new AdRequest.Builder().build());
+        if(adsNativeEnable) {
+            mAdLoader.loadAds(new AdRequest.Builder().build(), 5);
+            mAdLoader.loadAds(new AdRequest.Builder().build(), 10);
+        }
     }
 
     public boolean showFullScreenAds() {
@@ -139,8 +143,10 @@ public class AdsAHT extends AdListener {
 
     public boolean showNativeAds(final Context context, final LinearLayout layout) {
 
-        loadNativenAds();
-        if (mAdLoader != null && unifiedNativeAd != null) {
+        if(unifiedNativeAdQueue.size() < 20) {
+            loadNativenAds();
+        }
+        if (mAdLoader != null && unifiedNativeAdQueue.size() > 0) {
 
             //NativeTemplateStyle styles = new
             //        NativeTemplateStyle.Builder().withMainBackgroundColor((ColorDrawable)fragmentActivity.getDrawable(R.drawable.ic_launcher_background)).build();
@@ -149,7 +155,7 @@ public class AdsAHT extends AdListener {
             TemplateView template = new TemplateView(context, null);
             template.onFinishInflate();
             //template.setStyles(styles);
-            template.setNativeAd(unifiedNativeAd);
+            template.setNativeAd(unifiedNativeAdQueue.remove());
 
             layout.addView(template);
 
@@ -162,7 +168,7 @@ public class AdsAHT extends AdListener {
         @Override
         public void onUnifiedNativeAdLoaded(UnifiedNativeAd pUnifiedNativeAd) {
 
-            unifiedNativeAd = pUnifiedNativeAd;
+            unifiedNativeAdQueue.add(pUnifiedNativeAd);
 
             //showNativeAds(context);
 
