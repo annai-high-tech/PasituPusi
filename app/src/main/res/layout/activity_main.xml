@@ -70,26 +70,17 @@
             android:gravity="center" >
 
             <LinearLayout
-                android:id="@+id/adView_layout"
+                android:id="@+id/ad_view_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center">
-
-                <com.google.android.gms.ads.AdView
-                    android:id="@+id/adView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    app:adSize="BANNER"
-                    app:adUnitId="@string/ADMOB_APP_ID_BANNER" />
-
-            </LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="center"/>
 
             <TextView
                 android:id="@+id/privacy_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/adView_layout"
+                android:layout_below="@id/ad_view_container"
                 android:gravity="center"
                 android:text="@string/privacy_title" />
 

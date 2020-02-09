@@ -46,6 +46,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -53,7 +54,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AdView adView;
+    private LinearLayout adContainerView;
     private TextView privacyTextView, welcomeMsgTextView;
     private Button logoutButton;
     private RelativeLayout footerView;
@@ -130,11 +131,12 @@ public class MainActivity extends AppCompatActivity {
 
         //Ads and privacy policy link
         footerView = findViewById(R.id.footer);
-        adView = findViewById(R.id.adView);
+        adContainerView = findViewById(R.id.ad_view_container);
         privacyTextView = findViewById(R.id.privacy_content);
 
         adsAHT = new AdsAHT(this,
-                adView,
+                adContainerView,
+                getResources().getString(R.string.ADMOB_APP_ID_BANNER),
                 getResources().getString(R.string.ADMOB_APP_ID_FULLSCREEN),
                 getResources().getString(R.string.ADMOB_APP_ID_NATIVE),
                 getResources().getBoolean(R.bool.enable_ads_banner),
@@ -334,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
 
         footerView.setVisibility(showFooter ? View.VISIBLE : View.GONE);
         if (showFooter) {
-            adView.setVisibility(showAds ? View.VISIBLE : View.GONE);
+            adContainerView.setVisibility(showAds ? View.VISIBLE : View.GONE);
             privacyTextView.setVisibility(showPrivacy ? View.VISIBLE : View.GONE);
             if (showPrivacy) {
                 //privacyTextView.setOnClickListener(mOnClickListener);

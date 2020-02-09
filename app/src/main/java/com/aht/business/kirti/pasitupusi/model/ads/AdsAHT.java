@@ -5,6 +5,8 @@ import android.content.res.XmlResourceParser;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -21,6 +23,7 @@ import com.aht.business.kirti.pasitupusi.model.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
@@ -43,31 +46,38 @@ public class AdsAHT {
     private boolean adsFullScreenEnable = false;
     private boolean adsNativeEnable = false;
     private AppCompatActivity context;
+    private String bannerUnitId;
     private String fullScreenUnitId;
     private String nativeUnitId;
 
     public AdsAHT(AppCompatActivity context,
-                  AdView mAdView, String fullScreenUnitId, String nativeUnitId,
+                  LinearLayout adContainerView, String bannerUnitId, String fullScreenUnitId, String nativeUnitId,
                   boolean adsBannerEnable, boolean adsFullScreenEnable, boolean adsNativeEnable) {
         this.context = context;
         this.adsBannerEnable = adsBannerEnable;
         this.adsFullScreenEnable = adsFullScreenEnable;
         this.adsNativeEnable = adsNativeEnable;
+        this.bannerUnitId = bannerUnitId;
         this.fullScreenUnitId = fullScreenUnitId;
         this.nativeUnitId = nativeUnitId;
-        init(context, mAdView);
+        init(context, adContainerView);
     }
 
-    private void init(AppCompatActivity context, AdView mAdView) {
+    private void init(AppCompatActivity context, LinearLayout adContainerView) {
 
-        //context.findViewById(R.id.adView)
-        this.mAdView = mAdView;
+        mAdView = new AdView(context);
+        mAdView.setAdUnitId(bannerUnitId);
         if(adsBannerEnable && mAdView != null) {
-            ((ViewGroup)mAdView.getParent()).setVisibility(View.VISIBLE);
+            //((ViewGroup)mAdView.getParent()).setVisibility(View.VISIBLE);
+            if(adContainerView != null) {
+                adContainerView.addView(mAdView);
+                AdSize adSize = getAdSize(context);
+                mAdView.setAdSize(adSize);
+            }
             mAdView.setAdListener(bannerAdListener);
         }
         else {
-            ((ViewGroup)mAdView.getParent()).setVisibility(View.GONE);
+            //((ViewGroup)mAdView.getParent()).setVisibility(View.GONE);
             mAdView.destroy();
         }
 
@@ -213,5 +223,21 @@ public class AdsAHT {
             //showNativeAds(context);
         }
     };
+
+    private AdSize getAdSize(AppCompatActivity context) {
+        // Step 2 - Determine the screen width (less decorations) to use for the ad width.
+        Display display = context.getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float widthPixels = outMetrics.widthPixels;
+        float density = outMetrics.density;
+
+        int adWidth = (int) (widthPixels / density);
+
+        // Step 3 - Get adaptive ad size and return for setting on the ad view.
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth);
+    }
+
 
 }
