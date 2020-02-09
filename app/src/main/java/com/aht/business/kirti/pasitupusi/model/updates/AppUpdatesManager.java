@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -76,7 +75,7 @@ public final class AppUpdatesManager {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("New Version");
-            builder.setIcon(R.drawable.alert);
+            builder.setIcon(R.drawable.ic_alert);
             builder = builder.setMessage(
                     displayMessage)
                     .setCancelable(false)

@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                 updateMenu(nav_Menu, data.getName(), data.getRole(), data.getPicture());
 
                 profileData  = data;
-                changeFragments(new UserDishSelectionFragment());
+                changeFragments(new UserDishSelectionFragment(true));
 
             }
         }
@@ -200,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(ProfileRole.getValue(role) < ProfileRole.getValue(ProfileRole.USER)) {
             nav_Menu.findItem(R.id.nav_profile).setVisible(false);
+            nav_Menu.findItem(R.id.nav_track).setVisible(false);
             nav_Menu.findItem(R.id.nav_logout).setTitle("Login");
         }
 
@@ -249,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case R.id.nav_dashboard:
                 if(currentFragment == null || !(currentFragment instanceof UserDishSelectionFragment)){
-                    changeFragments(new UserDishSelectionFragment());
+                    changeFragments(new UserDishSelectionFragment(true));
                 }
                 break;
 
@@ -261,14 +262,14 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.nav_profile:
-                adsAHT.showFullScreenAds();
+                //adsAHT.showFullScreenAds();
                 if(currentFragment == null || !(currentFragment instanceof ProfileFragment)) {
                     changeFragments(new ProfileFragment());
                 }
                 break;
 
             case R.id.nav_contact:
-                adsAHT.showFullScreenAds();
+                //adsAHT.showFullScreenAds();
                 showFooter(true, true, true);
                 if(currentFragment == null || !(currentFragment instanceof ContactFragment)) {
                     changeFragments(new ContactFragment());
@@ -276,18 +277,21 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.nav_admin_configure:
+                adsAHT.showFullScreenAds();
                 if(currentFragment == null || !(currentFragment instanceof DishConfigureFragment)){
                     changeFragments(new DishConfigureFragment());
                 }
                 break;
 
             case R.id.nav_admin_update:
+                adsAHT.showFullScreenAds();
                 if(currentFragment == null || !(currentFragment instanceof DishSelectionFragment)){
                     changeFragments(new DishSelectionFragment());
                 }
                 break;
 
             case R.id.nav_admin_view_order:
+                adsAHT.showFullScreenAds();
                 if(currentFragment == null || !(currentFragment instanceof ViewAllOrderFragment)){
                     changeFragments(new ViewAllOrderFragment());
                 }
@@ -323,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
             toolbar.setNavigationOnClickListener(mToolbarClickListener);
         } else if(selectedFragment instanceof BaseFragment) {
             this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
+            this.getSupportActionBar().setTitle(this.getResources().getString(R.string.app_name));
             setMenuDrawerInToolbar();
 
         }
@@ -363,6 +367,7 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.super.onBackPressed();
                 currentFragment.onDetach();
                 MainActivity.this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                MainActivity.this.getSupportActionBar().setTitle(MainActivity.this.getResources().getString(R.string.app_name));
                 setMenuDrawerInToolbar();
             }
         }

@@ -27,6 +27,7 @@ import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenuList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
+import com.aht.business.kirti.pasitupusi.model.utils.DateUtils;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.SubPageFragment;
 
 import java.util.Calendar;
@@ -50,6 +51,8 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
 
 
     public DailyDishSelectionSubFragment(MenuCategoryList menuCategoryList, String date) {
+        super("Daily Dish Selection");
+
         this.menuCategoryList = menuCategoryList;
         this.date = date;
     }
@@ -68,7 +71,7 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
         calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
 
         progressDialog = new ProgressDialog(this.getContext());
-        textViewTitle = v.findViewById(R.id.home_welcome);
+        textViewTitle = v.findViewById(R.id.titleTextView);
         contentLayout =  v.findViewById(R.id.content_layout);
 
         textViewTitle.setText("Menu for the day (" + date + ")");
@@ -97,7 +100,7 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
 
         boolean isEmpty = true;
         boolean firstTime = true;
-        boolean isOldDate = isOldDate(date);
+        boolean isOldDate = DateUtils.isOldDate(date, calendar);
         contentLayout.removeAllViewsInLayout();
         save = reset = null;
 
@@ -128,35 +131,6 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
         if(!isEmpty && !isOldDate) {
             addMenuButtons(contentLayout);
         }
-    }
-
-    private boolean isOldDate(String date) {
-
-        String[] dateSplit = date.split("-");
-
-        if(dateSplit.length != 3) {
-            return true;
-        }
-
-        int currentYear = calendar.get(Calendar.YEAR);
-        int currentMonth = calendar.get(Calendar.MONTH) + 1; //Calendar.JANUARY;
-        int curDate = calendar.get(Calendar.DAY_OF_MONTH);
-
-        if(currentYear > Integer.parseInt(dateSplit[0])) {
-            return true;
-        }
-        if(currentYear == Integer.parseInt(dateSplit[0])
-                && currentMonth > Integer.parseInt(dateSplit[1])) {
-            return true;
-        }
-        if(currentYear == Integer.parseInt(dateSplit[0])
-                && currentMonth == Integer.parseInt(dateSplit[1])
-                && curDate > Integer.parseInt(dateSplit[2])) {
-            return true;
-        }
-
-        return false;
-
     }
 
     private void addMenuDescription(LinearLayout layout, String text, boolean isOldDate) {

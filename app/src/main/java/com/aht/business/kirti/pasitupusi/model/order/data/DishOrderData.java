@@ -18,11 +18,11 @@ public class DishOrderData {
 
     public DishOrderData(String id, String name, String description, int price) {
 
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.orderCount = 0;
+        setId(id);
+        setName(name);
+        setDescription(description);
+        setPrice(price);
+        setOrderCount(0);
     }
 
     public String getId() {

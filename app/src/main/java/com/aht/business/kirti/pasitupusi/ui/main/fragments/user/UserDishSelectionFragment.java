@@ -25,9 +25,11 @@ import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenuList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
+import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
 import com.aht.business.kirti.pasitupusi.model.order.data.DishOrderData;
+import com.aht.business.kirti.pasitupusi.model.utils.DateUtils;
 import com.aht.business.kirti.pasitupusi.ui.components.layout.FoodDishLayoutAdapter;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 import com.aht.business.kirti.pasitupusi.model.utils.AnimationUtil;
@@ -47,7 +49,7 @@ public class UserDishSelectionFragment extends BaseFragment {
 
     private TextView textViewWelcomeMsg, welcomeMsgTextView, newsTextView, menuTitleTextView;
     private LinearLayout contentLayout;
-    private LinearLayout cartLayout;
+    private LinearLayout cartLayout, viewCartLayout;
     private TextView textViewDate;
     private ImageView top_left_arrow, top_right_arrow, top_go_to_today;
     private ImageView menuDrawerImageView;
@@ -61,11 +63,19 @@ public class UserDishSelectionFragment extends BaseFragment {
     private MenuCategoryList menuCategoryList = null;
     private DailyMenuList dailyMenuList = null;
 
-    private boolean isAllTimeMenuAcquired, isDailyMenuAcquired;
+    private boolean isAllTimeMenuAcquired, isDailyMenuAcquired, isNewObject;
 
     private ProfileData profileData = null;
 
-    private Map<String, DishOrderData> orderList = new HashMap<>();
+    private Map<String, OrderData> orderDataList = new HashMap<>();
+
+    private UserDishSelectionFragment() {
+
+    }
+
+    public UserDishSelectionFragment(boolean isNewObject) {
+        this.isNewObject = isNewObject;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,13 +88,11 @@ public class UserDishSelectionFragment extends BaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_dish_selection_user, container, false);
 
-        orderList.clear();
-
         ((MainActivity)getActivity()).getAdsAHT().loadNativenAds();
         ((MainActivity)getActivity()).getAdsAHT().loadNativenAds();
 
         progressDialog = new ProgressDialog(this.getContext());
-        textViewWelcomeMsg =  view.findViewById(R.id.home_welcome);
+        textViewWelcomeMsg =  view.findViewById(R.id.titleTextView);
         newsTextView =  view.findViewById(R.id.newsTextView);
         menuTitleTextView =  view.findViewById(R.id.menu_heading);
         textViewDate =  view.findViewById(R.id.top_date_value);
@@ -93,6 +101,7 @@ public class UserDishSelectionFragment extends BaseFragment {
         top_go_to_today =  view.findViewById(R.id.top_go_to_today);
         contentLayout =  view.findViewById(R.id.content_layout);
         cartLayout =  view.findViewById(R.id.homeViewCartLayout);
+        viewCartLayout = view.findViewById(R.id.viewCartLayout);
         navigationView = getActivity().findViewById(R.id.nav_view);
         welcomeMsgTextView = navigationView.getHeaderView(0).findViewById(R.id.nameTxt);
         menuDrawerImageView= navigationView.getHeaderView(0).findViewById(R.id.imageView);
@@ -105,16 +114,20 @@ public class UserDishSelectionFragment extends BaseFragment {
 
         dailyMenuViewModel = new ViewModelProvider(this).get(DailyMenuViewModel.class);
 
-        calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
-        today = menuDay = dateFormat(calendar);
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        tomorrow = dateFormat(calendar);
-        calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
+        if(isNewObject) {
+            orderDataList.clear();
 
-        if(menuCategoryList == null) {
+            calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
+            today = menuDay = dateFormat(calendar);
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+            tomorrow = dateFormat(calendar);
+            calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
+        }
+
+        //if(menuCategoryList == null) {
             dailyMenuViewModel.getCategoryList().observe(getViewLifecycleOwner(), mObserverResult1);
             dailyMenuViewModel.getAllTimeMenu();
-        }
+        //}
 
         dailyMenuViewModel.getDailyMenuList().observe(getViewLifecycleOwner(), mObserverResult2);
         dailyMenuViewModel.getDailyMenu(menuDay);
@@ -124,11 +137,21 @@ public class UserDishSelectionFragment extends BaseFragment {
         top_left_arrow.setOnClickListener(listener);
         top_right_arrow.setOnClickListener(listener);
         top_go_to_today.setOnClickListener(listener);
+        viewCartLayout.setOnClickListener(listener);
 
-        if(orderList.size() <= 0) {
+        isNewObject = false;
+
+        return view;
+    }
+
+    private void updateCartLayout() {
+
+        if(orderDataList.containsKey(menuDay) && orderDataList.get(menuDay).getOrderList().size() > 0) {
+            cartLayout.setVisibility(View.VISIBLE);
+        } else {
             cartLayout.setVisibility(View.GONE);
         }
-        return view;
+
     }
 
     Observer<MenuCategoryList> mObserverResult1 = new Observer<MenuCategoryList>() {
@@ -169,6 +192,8 @@ public class UserDishSelectionFragment extends BaseFragment {
 
         profileData = ((MainActivity)getActivity()).getProfileData();
 
+        updateCartLayout();
+
         if(profileData != null) {
             if (profileData.getPicture() != null) {
                 menuDrawerImageView.setImageBitmap(BitmapUtils.StringToBitMap(profileData.getPicture()));
@@ -186,6 +211,12 @@ public class UserDishSelectionFragment extends BaseFragment {
                 maxCalendar.add(Calendar.DAY_OF_YEAR, 7);
             } else {
                 minCalendar = maxCalendar = null;
+            }
+
+            if(ProfileRole.getValue(profileData.getRole()) <= ProfileRole.getValue(ProfileRole.GUEST)) {
+                newsTextView.setText("Guest user cannot order dishes and cannot see past and future dish menus");
+                minCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
+                maxCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
             }
 
         }
@@ -248,6 +279,11 @@ public class UserDishSelectionFragment extends BaseFragment {
     private void updateMenuItems(MenuCategoryList menuCategoryList, DailyMenuList dailyMenuList, LinearLayout contentLayout) {
 
         boolean isEmpty = true;
+        boolean isOrderEnable = ProfileRole.getValue(profileData.getRole()) > ProfileRole.getValue(ProfileRole.GUEST);
+
+        if(isOrderEnable) {
+            isOrderEnable = !DateUtils.isOldDate(menuDay, today);
+        }
 
         if(dailyMenuList != null && dailyMenuList.getDescription() != null) {
             addMenuTitle(dailyMenuList.getDescription());
@@ -272,7 +308,7 @@ public class UserDishSelectionFragment extends BaseFragment {
 
                         if(layout != null) {
                             countItem ++;
-                            addMenuList(layout, menuElement, element, menuListNotEmpty);
+                            addMenuList(layout, menuElement, element, menuListNotEmpty, isOrderEnable);
 
                             if(countItem % 5 == 0) {
                                 ((MainActivity)getActivity()).getAdsAHT().showNativeAds(this.getContext(), layout);
@@ -354,7 +390,7 @@ public class UserDishSelectionFragment extends BaseFragment {
         return contentLayout;
     }
 
-    private void addMenuList(LinearLayout layout, MenuElement element, String key, boolean selected) {
+    private void addMenuList(LinearLayout layout, MenuElement element, String key, boolean selected, boolean isOrderEnable) {
 
         Bitmap thumbnail = null;
 
@@ -362,100 +398,23 @@ public class UserDishSelectionFragment extends BaseFragment {
             thumbnail = BitmapUtils.StringToBitMap(element.getPicture());
         }
 
-        DishOrderData dishOrderData = new DishOrderData(key, element.getName(), element.getDescription(), element.getPrice());
+        DishOrderData dishOrderData = null;
 
-        View view = FoodDishLayoutAdapter.createLayout(this.getContext(), dishOrderData, thumbnail, orderList, cartLayout);
+        if(!orderDataList.containsKey(menuDay)) {
+            orderDataList.put(menuDay, new OrderData(menuDay));
+        }
+
+        if(orderDataList.get(menuDay).getOrderList().size() > 0
+                && orderDataList.get(menuDay).getOrderList().containsKey(key)) {
+            dishOrderData = orderDataList.get(menuDay).getOrderList().get(key);
+        } else {
+            dishOrderData = new DishOrderData(key, element.getName(), element.getDescription(), element.getPrice());
+        }
+
+        View view = FoodDishLayoutAdapter.createLayout(this.getContext(), dishOrderData, thumbnail, orderDataList.get(menuDay).getOrderList(), cartLayout, isOrderEnable);
 
         layout.addView(view);
     }
-
-    /*
-    private void addMenuList1(LinearLayout layout, MenuElement element, String key, boolean selected) {
-
-        String desc = "", price = "";
-        Bitmap thumbnail = null;
-        LinearLayout rowLayout = new LinearLayout(this.getContext());
-        LinearLayout row1Layout = new LinearLayout(this.getContext());
-        LinearLayout row2Layout = new LinearLayout(this.getContext());
-        LinearLayout row3Layout = new LinearLayout(this.getContext());
-        TextView textViewName = new TextView(this.getContext());
-        TextView textViewPrice = new TextView(this.getContext());
-        TextView textViewDesc = new TextView(this.getContext());
-        ImageView imageViewPic = new ImageView(this.getContext());
-
-        if(element.getPrice() >= 0) {
-            price = "Price " + "\u20B9" + element.getPrice();
-        }
-        if(element.getDescription() != null) {
-            desc = element.getDescription();
-        }
-        if(element.getPicture() != null) {
-            thumbnail = BitmapUtils.StringToBitMap(element.getPicture());
-        }
-        textViewName.setText(element.getName());
-        textViewPrice.setText(price);
-        textViewDesc.setText(desc);
-
-        imageViewPic.setMinimumWidth(200);
-        imageViewPic.setMinimumHeight(200);
-        imageViewPic.setMaxWidth(700);
-        imageViewPic.setMaxHeight(700);
-        imageViewPic.setImageDrawable(getResources().getDrawable(R.mipmap.ic_launcher));
-        if(thumbnail != null) {
-            //int layout_width = (int)(getView().getWidth() * 0.80f);
-            //int image_width = thumbnail.getWidth();
-            //imageViewPic.setMinimumWidth(layout_width);
-            //imageViewPic.setMaxWidth(layout_width);
-            imageViewPic.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            imageViewPic.setAdjustViewBounds(true);
-            imageViewPic.setImageBitmap(thumbnail);
-            //imageViewPic.setBackground(getResources().getDrawable(R.drawable.layout_bg));
-        }
-
-
-        textViewName.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        textViewPrice.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        textViewDesc.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        textViewName.setPadding(10, 10, 10, 10);
-        textViewPrice.setPadding(10, 10, 10, 10);
-        textViewDesc.setPadding(10, 10, 10, 10);
-        rowLayout.setPadding(10, 10, 10, 10);
-        imageViewPic.setPadding(10, 10, 10, 10);
-
-        textViewName.setTextColor(getResources().getColor(R.color.colorPrimaryText));
-        textViewPrice.setTextColor(getResources().getColor(R.color.colorSecondaryText));
-        textViewDesc.setTextColor(getResources().getColor(R.color.colorSecondaryText));
-
-        textViewName.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
-
-        textViewPrice.setGravity(Gravity.END);
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(10, 10, 10, 10);
-        rowLayout.setLayoutParams(params);
-        row1Layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        row2Layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        row3Layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        imageViewPic.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-        rowLayout.setOrientation(LinearLayout.VERTICAL);
-        row1Layout.setOrientation(LinearLayout.HORIZONTAL);
-        row2Layout.setOrientation(LinearLayout.HORIZONTAL);
-        row3Layout.setOrientation(LinearLayout.HORIZONTAL);
-
-        row1Layout.addView(textViewName);
-        row1Layout.addView(textViewPrice);
-        row2Layout.addView(imageViewPic);
-        row3Layout.addView(textViewDesc);
-        rowLayout.addView(row1Layout);
-        rowLayout.addView(row2Layout);
-        rowLayout.addView(row3Layout);
-        layout.addView(rowLayout);
-
-        rowLayout.setBackground(getResources().getDrawable(R.drawable.layout_bg));
-    }
-    */
 
     private View.OnClickListener listener        =   new View.OnClickListener(){
         @Override
@@ -501,6 +460,11 @@ public class UserDishSelectionFragment extends BaseFragment {
                 }
 
                 datePickerDialog.show();
+            } else if (view.getId() == viewCartLayout.getId()) {
+
+                ViewCartSubFragment newFragment = new ViewCartSubFragment(menuCategoryList, menuDay);
+
+                ((MainActivity)getActivity()).changeFragments(newFragment);
             }
 
         }

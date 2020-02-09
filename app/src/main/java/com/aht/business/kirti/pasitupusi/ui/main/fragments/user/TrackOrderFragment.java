@@ -27,7 +27,7 @@ public class TrackOrderFragment extends BaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_track_order, container, false);
 
-        textViewWelcomeMsg =  view.findViewById(R.id.home_welcome);
+        textViewWelcomeMsg =  view.findViewById(R.id.titleTextView);
         //mGoToButton = (Button) view.findViewById(R.id.goto_button);
         //mGoToButton.setOnClickListener(listener);
 

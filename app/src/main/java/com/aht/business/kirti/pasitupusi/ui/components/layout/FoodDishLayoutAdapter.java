@@ -20,7 +20,7 @@ public final class FoodDishLayoutAdapter {
     private FoodDishLayoutAdapter() {
     }
 
-    public static View createLayout(final Context context, final DishOrderData data, final Bitmap picture, final Map<String, DishOrderData> orderList, final LinearLayout cartLayout) {
+    public static View createLayout(final Context context, final DishOrderData data, final Bitmap picture, final Map<String, DishOrderData> orderList, final LinearLayout cartLayout, final boolean isOrderEnable) {
 
         String name, description, price, count;
 
@@ -106,8 +106,14 @@ public final class FoodDishLayoutAdapter {
             }
         };
 
-        orderPlusImageView.setOnClickListener(listener);
-        orderMinusImageView.setOnClickListener(listener);
+        if(isOrderEnable) {
+            orderPlusImageView.setOnClickListener(listener);
+            orderMinusImageView.setOnClickListener(listener);
+        } else {
+            orderPlusImageView.setVisibility(View.GONE);
+            orderMinusImageView.setVisibility(View.GONE);
+            orderCountTextView.setVisibility(View.GONE);
+        }
 
 
 
