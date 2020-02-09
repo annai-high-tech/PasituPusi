@@ -11,10 +11,12 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.aht.business.kirti.pasitupusi.R;
+import com.aht.business.kirti.pasitupusi.model.ads.nativetemplates.NativeTemplateStyle;
 import com.aht.business.kirti.pasitupusi.model.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
@@ -27,15 +29,10 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class AdsAHT extends AdListener {
+public class AdsAHT {
 
     private InterstitialAd mInterstitialAd = null;
     private AdView mAdView = null;
@@ -67,7 +64,7 @@ public class AdsAHT extends AdListener {
         this.mAdView = mAdView;
         if(adsBannerEnable && mAdView != null) {
             ((ViewGroup)mAdView.getParent()).setVisibility(View.VISIBLE);
-            mAdView.setAdListener(this);
+            mAdView.setAdListener(bannerAdListener);
         }
         else {
             ((ViewGroup)mAdView.getParent()).setVisibility(View.GONE);
@@ -77,7 +74,7 @@ public class AdsAHT extends AdListener {
         if(adsFullScreenEnable) {
             mInterstitialAd = new InterstitialAd(context);
             mInterstitialAd.setAdUnitId(fullScreenUnitId);
-            mInterstitialAd.setAdListener(this);
+            mInterstitialAd.setAdListener(fullscreenAdListener);
         }
 
         if(adsNativeEnable) {
@@ -132,12 +129,18 @@ public class AdsAHT extends AdListener {
     }
 
     public boolean showFullScreenAds() {
-        loadFullScreenAds();
+
+        boolean status = false;
         if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
-            return true;
+            status = true;
         }
-        return false;
+
+        if(!mInterstitialAd.isLoading()) {
+            loadFullScreenAds();
+        }
+
+        return status;
     }
 
     public boolean showNativeAds(final Context context, final LinearLayout layout) {
@@ -147,13 +150,14 @@ public class AdsAHT extends AdListener {
         }
         if (mAdLoader != null && unifiedNativeAdQueue.size() > 0) {
 
-            //NativeTemplateStyle styles = new
-            //        NativeTemplateStyle.Builder().withMainBackgroundColor((ColorDrawable)fragmentActivity.getDrawable(R.drawable.ic_launcher_background)).build();
+            ColorDrawable colorDrawable = new ColorDrawable(ContextCompat.getColor(context, R.color.default_text_color));
 
+            NativeTemplateStyle styles = new
+                    NativeTemplateStyle.Builder().withMainBackgroundColor(colorDrawable).build();
 
             TemplateView template = new TemplateView(context, null);
             template.onFinishInflate();
-            //template.setStyles(styles);
+            template.setStyles(styles);
             template.setNativeAd(unifiedNativeAdQueue.remove());
 
             layout.addView(template);
@@ -163,6 +167,43 @@ public class AdsAHT extends AdListener {
         return false;
     }
 
+    AdListener bannerAdListener = new AdListener() {
+
+        @Override
+        public void onAdLoaded() {
+        }
+
+        @Override
+        public void onAdFailedToLoad(int errorCode) {
+            // Code to be executed when an ad request fails.
+            Toast.makeText(context, "1 Initialisation failed: " + errorCode, Toast.LENGTH_LONG).show();
+        }
+
+    };
+
+    AdListener fullscreenAdListener = new AdListener() {
+
+        @Override
+        public void onAdLoaded() {
+            //System.out.println("Full screen ad Loaded");
+        }
+
+        @Override
+        public void onAdClosed() {
+            // Load the next interstitial.
+            if(!mInterstitialAd.isLoading()) {
+                loadFullScreenAds();
+            }
+        }
+
+        @Override
+        public void onAdFailedToLoad(int errorCode) {
+            // Code to be executed when an ad request fails.
+            Toast.makeText(context, "2 Initialisation failed: " + errorCode, Toast.LENGTH_LONG).show();
+        }
+
+    };
+
     UnifiedNativeAd.OnUnifiedNativeAdLoadedListener nativeListener= new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
         @Override
         public void onUnifiedNativeAdLoaded(UnifiedNativeAd pUnifiedNativeAd) {
@@ -170,17 +211,7 @@ public class AdsAHT extends AdListener {
             unifiedNativeAdQueue.add(pUnifiedNativeAd);
 
             //showNativeAds(context);
-
-            //System.out.println(".....................1");
         }
     };
-
-    @Override
-    public void onAdFailedToLoad(int errorCode) {
-        // Code to be executed when an ad request fails.
-        Toast.makeText(context, "Initialisation failed: " + errorCode, Toast.LENGTH_LONG).show();
-    }
-
-
 
 }
