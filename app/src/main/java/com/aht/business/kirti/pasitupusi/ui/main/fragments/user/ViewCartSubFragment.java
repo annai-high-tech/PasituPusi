@@ -2,17 +2,10 @@ package com.aht.business.kirti.pasitupusi.ui.main.fragments.user;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,13 +14,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.aht.business.kirti.pasitupusi.R;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.DailyMenuViewModel;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenu;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenuList;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
-import com.aht.business.kirti.pasitupusi.model.utils.DateUtils;
+import com.aht.business.kirti.pasitupusi.model.order.OrderViewModel;
+import com.aht.business.kirti.pasitupusi.model.order.data.DishOrderData;
+import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.SubPageFragment;
 
 import java.util.Calendar;
@@ -36,23 +25,24 @@ import java.util.TimeZone;
 
 public class ViewCartSubFragment extends SubPageFragment {
 
+    private static final String ORDER_BUTTON_TEXT = "Place Order";
+
     private TextView textViewTitle;
     private LinearLayout contentLayout;
     private ProgressDialog progressDialog;
-    private Button save, reset;
+    private Button submit;
 
     private Calendar calendar;
 
 
-    private DailyMenuViewModel dailyMenuViewModel;
-    private DailyMenuList dailyMenuList;
-    private MenuCategoryList menuCategoryList;
+    private OrderViewModel orderViewModel;
+    private Map<String, OrderData> orderDataList;
     private String date;
 
 
-    public ViewCartSubFragment(MenuCategoryList menuCategoryList, String date) {
+    public ViewCartSubFragment(Map<String, OrderData> orderDataList, String date) {
         super("Order Summary");
-        this.menuCategoryList = menuCategoryList;
+        this.orderDataList = orderDataList;
         this.date = date;
     }
 
@@ -75,21 +65,84 @@ public class ViewCartSubFragment extends SubPageFragment {
 
         textViewTitle.setText("Order for the day (" + date + ")");
 
-        dailyMenuViewModel = new ViewModelProvider(this).get(DailyMenuViewModel.class);
-        dailyMenuViewModel.getDailyMenuList().observe(getViewLifecycleOwner(), mObserverResult);
-        dailyMenuViewModel.getDailyMenu(date);
-        progressDialog.show();
+        orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
+
+        //progressDialog.show();
+
+        updatePage(orderDataList.get(date), date, contentLayout);
 
         return v;
     }
 
-    private void updatePage(MenuCategoryList menuCategoryList, DailyMenuList dailyMenuList, LinearLayout contentLayout) {
+    private void updatePage(OrderData orderData, String date, LinearLayout contentLayout) {
 
-        boolean isEmpty = true;
-        boolean firstTime = true;
-        boolean isOldDate = DateUtils.isOldDate(date, calendar);
         contentLayout.removeAllViewsInLayout();
-        save = reset = null;
+        submit = null;
+
+        if(orderData == null) {
+            return;
+        }
+
+        Map<String, DishOrderData> orderList = orderData.getOrderList();
+        if(orderList.size() < 1) {
+            return;
+        }
+
+        int allOrderCost = 0;
+
+        if(orderData.getOrderId() != null && !orderData.getOrderId().equals("")) {
+            TextView textViewBillNo = new TextView(this.getContext());
+            textViewBillNo.setText("Order Number:" + orderData.getOrderId());
+            contentLayout.addView(textViewBillNo);
+        }
+
+        for(DishOrderData list:orderList.values()) {
+
+            String price, name, quantity, total;
+
+            LinearLayout eachRow = new LinearLayout(this.getContext());
+            TextView textViewPrice = new TextView(this.getContext());
+            TextView textViewName = new TextView(this.getContext());
+            TextView textViewQuantity = new TextView(this.getContext());
+            TextView textViewTotal = new TextView(this.getContext());
+
+            price = "\u20B9" + list.getPrice();
+            name = list.getName();
+            quantity = String.valueOf(list.getQuantity());
+            total = "\u20B9" + String.valueOf(list.getPrice() * list.getQuantity());
+            allOrderCost += list.getPrice() * list.getQuantity();
+
+            textViewPrice.setText(price);
+            textViewName.setText(name);
+            textViewQuantity.setText(quantity);
+            textViewTotal.setText(total);
+
+            eachRow.addView(textViewPrice);
+            eachRow.addView(textViewName);
+            eachRow.addView(textViewQuantity);
+            eachRow.addView(textViewTotal);
+            contentLayout.addView(eachRow);
+        }
+
+        orderData.setTotalCost(allOrderCost);
+        if(allOrderCost > 0) {
+            TextView textViewTotalCost = new TextView(this.getContext());
+            textViewTotalCost.setText("\u20B9" + String.valueOf(allOrderCost));
+
+            submit = new Button(this.getContext());
+            submit.setText(ORDER_BUTTON_TEXT);
+            submit.setOnClickListener(buttonListener);
+
+            contentLayout.addView(textViewTotalCost);
+            contentLayout.addView(submit);
+
+            if(orderData.getOrderId() != null && !orderData.getOrderId().equals("")) {
+                submit.setEnabled(false);
+                orderDataList.clear();
+            }
+
+        }
+
 
 /*        for(MenuCategory list:menuCategoryList.getMenuCategoryList().values()) {
             if(firstTime && dailyMenuList != null) {
@@ -120,7 +173,7 @@ public class ViewCartSubFragment extends SubPageFragment {
         }*/
     }
 
-    private void addMenuDescription(LinearLayout layout, String text, boolean isOldDate) {
+/*    private void addMenuDescription(LinearLayout layout, String text, boolean isOldDate) {
         EditText editText = new EditText(this.getContext());
         editText.setText(text);
         editText.setEnabled(!isOldDate);
@@ -219,17 +272,28 @@ public class ViewCartSubFragment extends SubPageFragment {
         layout.addView(rowLayout);
 
     }
-
-    Observer<DailyMenuList> mObserverResult = new Observer<DailyMenuList>() {
+*/
+    Observer<OrderData> mObserverResult1 = new Observer<OrderData>() {
         @Override
-        public void onChanged(@Nullable DailyMenuList list) {
+        public void onChanged(@Nullable OrderData orderList) {
 
-            dailyMenuList = list;
+            if(orderList != null) {
 
-            if(dailyMenuList != null) {
-                updatePage(menuCategoryList, dailyMenuList, contentLayout);
+                updatePage(orderList, date, contentLayout);
+            }
+            progressDialog.dismiss();
 
-                progressDialog.dismiss();
+        }
+    };
+
+    Observer<Boolean> mObserverResult2 = new Observer<Boolean>() {
+        @Override
+        public void onChanged(@Nullable Boolean resultStatus) {
+
+            if(resultStatus) {
+                orderViewModel.getLastOrder(date).observe(getViewLifecycleOwner(), mObserverResult1);
+            } else {
+                //TODO
             }
 
         }
@@ -239,35 +303,14 @@ public class ViewCartSubFragment extends SubPageFragment {
         @Override
         public void onClick(View view){
 
-            if(((Button)view).getText().equals("Save")) {
-                dailyMenuViewModel.updateDailyMenu(date, dailyMenuList);
+            if(((Button)view).getText().equals(ORDER_BUTTON_TEXT)) {
+                orderViewModel.addOrder(date, orderDataList.get(date)).observe(getViewLifecycleOwner(), mObserverResult2);
             }
 
-            dailyMenuViewModel.getDailyMenu(date);
-            save.setEnabled(false);
-            reset.setEnabled(false);
+            //orderViewModel.getLastOrder(date);
+            submit.setEnabled(false);
 
         }
-    };
-
-    private CompoundButton.OnCheckedChangeListener checkBoxListener =   new CompoundButton.OnCheckedChangeListener(){
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            Map<String, DailyMenu> menuList = dailyMenuList.getMenuList();
-            String key = buttonView.getText().toString();
-
-            if(isChecked && !menuList.containsKey(key)) {
-                menuList.put(key, new DailyMenu(key));
-                save.setEnabled(true);
-                reset.setEnabled(true);
-
-            } else if(!isChecked && menuList.containsKey(key)) {
-                menuList.remove(key);
-                save.setEnabled(true);
-                reset.setEnabled(true);
-            }
-        }
-
     };
 
 }

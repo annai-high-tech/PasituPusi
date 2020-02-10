@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_admin_view_order:
                 adsAHT.showFullScreenAds();
                 if(currentFragment == null || !(currentFragment instanceof ViewAllOrderFragment)){
-                    changeFragments(new ViewAllOrderFragment());
+                    changeFragments(new ViewAllOrderFragment(true));
                 }
                 break;
 

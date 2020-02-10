@@ -462,7 +462,7 @@ public class UserDishSelectionFragment extends BaseFragment {
                 datePickerDialog.show();
             } else if (view.getId() == viewCartLayout.getId()) {
 
-                ViewCartSubFragment newFragment = new ViewCartSubFragment(menuCategoryList, menuDay);
+                ViewCartSubFragment newFragment = new ViewCartSubFragment(orderDataList, menuDay);
 
                 ((MainActivity)getActivity()).changeFragments(newFragment);
             }

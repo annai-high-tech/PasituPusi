@@ -48,7 +48,7 @@ public final class FoodDishLayoutAdapter {
         if(data.getPrice() >= 0) {
             price = "Price " + "\u20B9" + data.getPrice();
         }
-        count = "" + data.getOrderCount();
+        count = "" + data.getQuantity();
 
 
         nameTextView.setText(name);
@@ -62,10 +62,10 @@ public final class FoodDishLayoutAdapter {
             pictureImageView.setImageDrawable(context.getResources().getDrawable(R.mipmap.ic_launcher));
         }
         orderCountTextView.setText(count);
-        if(data.getOrderCount() > 0 && !orderList.containsKey(data.getId())) {
+        if(data.getQuantity() > 0 && !orderList.containsKey(data.getId())) {
             orderList.put(data.getId(), data);
         }
-        if(data.getOrderCount() <= 0 && orderList.containsKey(data.getId())) {
+        if(data.getQuantity() <= 0 && orderList.containsKey(data.getId())) {
             orderList.remove(data.getId());
         }
 
@@ -78,26 +78,26 @@ public final class FoodDishLayoutAdapter {
                 String count;
                 if(view.getId() == orderPlusImageView.getId()) {
 
-                    if(data.getOrderCount() < 99) {
-                        data.setOrderCount(data.getOrderCount() + 1);
-                        count = "" + data.getOrderCount();
+                    if(data.getQuantity() < 99) {
+                        data.setQuantity(data.getQuantity() + 1);
+                        count = "" + data.getQuantity();
                         orderCountTextView.setText(count);
                     }
 
                 }
                 if(view.getId() == orderMinusImageView.getId()) {
-                    if(data.getOrderCount() > 0) {
-                        data.setOrderCount(data.getOrderCount() - 1);
-                        count = "" + data.getOrderCount();
+                    if(data.getQuantity() > 0) {
+                        data.setQuantity(data.getQuantity() - 1);
+                        count = "" + data.getQuantity();
                         orderCountTextView.setText(count);
                     }
 
                 }
 
-                if(data.getOrderCount() > 0 && !orderList.containsKey(data.getId())) {
+                if(data.getQuantity() > 0 && !orderList.containsKey(data.getId())) {
                     orderList.put(data.getId(), data);
                 }
-                if(data.getOrderCount() <= 0 && orderList.containsKey(data.getId())) {
+                if(data.getQuantity() <= 0 && orderList.containsKey(data.getId())) {
                     orderList.remove(data.getId());
                 }
 
@@ -133,8 +133,8 @@ public final class FoodDishLayoutAdapter {
             int cost = 0;
 
             for (Map.Entry<String, DishOrderData> entry : orderList.entrySet()) {
-                itemsCount += entry.getValue().getOrderCount();
-                cost += (entry.getValue().getOrderCount() * entry.getValue().getPrice());
+                itemsCount += entry.getValue().getQuantity();
+                cost += (entry.getValue().getQuantity() * entry.getValue().getPrice());
             }
 
             if(itemsCount == 1)

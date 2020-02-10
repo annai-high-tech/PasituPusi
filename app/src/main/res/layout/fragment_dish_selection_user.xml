@@ -49,7 +49,7 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:text="Online ordering is not possible in the app. Contact +91 7904771427 for any orders and queries"
+                android:text="Online payment is not possible in the app. Contact +91 7904771427 for any order enquiries"
                 android:textColor="#ff4500" />
 
             <RelativeLayout
@@ -169,7 +169,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="2 items  | $2323"
             android:textColor="@color/default_text_color"
             android:textStyle="bold" />
 

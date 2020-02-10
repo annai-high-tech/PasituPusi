@@ -4,37 +4,49 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenuList;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
-import com.aht.business.kirti.pasitupusi.model.order.data.DishOrderData;
 import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
 
-import java.util.Map;
+import java.util.List;
 
 public class OrderViewModel extends ViewModel {
 
-    private MutableLiveData<MenuCategoryList> orderList = new MutableLiveData<>();
+    private MutableLiveData<List<OrderData>> orderList = new MutableLiveData<>();
+
+    private MutableLiveData<OrderData> orderData = new MutableLiveData<>();
+
+    private MutableLiveData<Boolean> resultStatus = new MutableLiveData<>();
+
     OrderManager orderManager = new OrderManager();
 
-    public LiveData<MenuCategoryList> getOrderList() {
+    public MutableLiveData<List<OrderData>> getUserOrders() {
+
+        orderManager.getUserOrders(orderList);
+
         return orderList;
-    }
-
-    public void getAllOrders() {
-
-        orderManager.getAllOrders(orderList);
 
     }
 
-    public void getOrder(String date, String refId) {
+    public MutableLiveData<List<OrderData>> getAllOrders(String date) {
 
-        orderManager.getOrder(date, refId, orderList);
+        orderManager.getAllOrders(date, orderList);
+
+        return orderList;
 
     }
 
-    public void addOrder(String date, String refId, Map<String, DishOrderData> dishOrderDataList) {
+    public LiveData<OrderData> getLastOrder(String date) {
 
-        orderManager.addOrder(date, refId, dishOrderDataList, orderList);
+        orderManager.getLastOrder(date, orderData);
+
+        return orderData;
+
+    }
+
+    public LiveData<Boolean> addOrder(String date, OrderData dishOrderData) {
+
+        orderManager.addOrder(date, dishOrderData, resultStatus);
+
+        return resultStatus;
 
     }
 }

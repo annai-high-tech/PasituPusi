@@ -96,7 +96,7 @@
         android:layout_marginTop="56dp"
         android:fitsSystemWindows="true"
         android:maxWidth="200dp"
-        app:headerLayout="@layout/nav_header_main"
+        app:headerLayout="@layout/component_nav_header_main"
         app:menu="@menu/menu_drawer">
 
     </com.google.android.material.navigation.NavigationView>

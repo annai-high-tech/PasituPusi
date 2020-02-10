@@ -1,16 +1,21 @@
 package com.aht.business.kirti.pasitupusi.model.order.data;
 
+import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
+@IgnoreExtraProperties
 public class DishOrderData {
 
     private String id;
 
     private String name;
 
+    @Exclude
     private String description;
 
     private int price;
 
-    private int orderCount;
+    private int quantity;
 
     public DishOrderData() {
         this("", "", "", 0);
@@ -22,7 +27,7 @@ public class DishOrderData {
         setName(name);
         setDescription(description);
         setPrice(price);
-        setOrderCount(0);
+        setQuantity(0);
     }
 
     public String getId() {
@@ -41,6 +46,7 @@ public class DishOrderData {
         this.name = name;
     }
 
+    @Exclude
     public String getDescription() {
         return description;
     }
@@ -57,11 +63,11 @@ public class DishOrderData {
         this.price = price;
     }
 
-    public int getOrderCount() {
-        return orderCount;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setOrderCount(int orderCount) {
-        this.orderCount = orderCount;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

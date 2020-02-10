@@ -5,9 +5,13 @@ import java.util.Map;
 
 public class OrderData {
 
-    String refId;
+    String orderId;
 
     String date;
+
+    String userId;
+
+    int totalCost;
 
     private Map<String, DishOrderData> orderList = new HashMap<>();
 
@@ -19,12 +23,12 @@ public class OrderData {
         setDate(date);
     }
 
-    public String getRefId() {
-        return refId;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setRefId(String refId) {
-        this.refId = refId;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     public String getDate() {
@@ -41,5 +45,21 @@ public class OrderData {
 
     public void setOrderList(Map<String, DishOrderData> orderList) {
         this.orderList = orderList;
+    }
+
+    public int getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(int totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
