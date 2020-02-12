@@ -119,6 +119,11 @@ public class OrderManager {
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        if(orderData == null) {
+            result.setValue(false);
+            return;
+        }
+
         final CollectionReference collectionRef = db.collection(Database.DATABASE_ORDER_DATA_COLLECTION);
         String orderId = orderData.getOrderId();
         if(orderId == null || orderId.equals("")) {

@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -20,13 +22,11 @@ import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.order.OrderViewModel;
 import com.aht.business.kirti.pasitupusi.model.order.data.DishOrderData;
 import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
+import com.aht.business.kirti.pasitupusi.model.utils.AndroidUtils;
 import com.aht.business.kirti.pasitupusi.model.utils.AnimationUtil;
-import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
+import com.google.android.material.bottomappbar.BottomAppBar;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class TrackOrderFragment extends BaseFragment {
@@ -82,7 +82,7 @@ public class TrackOrderFragment extends BaseFragment {
         contentLayout.requestLayout();
         menuTitleTextView.setText("");
         if(orderDataList == null || orderDataList.size() <= 0) {
-            return;
+            addOrderTitle(contentLayout, "No Orders for Tracking", false, false);
         } else {
             updateMenuItems(orderDataList, contentLayout);
         }
@@ -90,28 +90,41 @@ public class TrackOrderFragment extends BaseFragment {
 
     private void updateMenuItems(List<OrderData> orderList, LinearLayout contentLayout) {
 
-        boolean isEmpty = true;
+        int countOrder = 0;
 
         for(OrderData list:orderList) {
-
-            boolean menuListNotEmpty = false;
+            boolean isLatestOrder = true;
             LinearLayout layout = null;
-            int countItem = 0;
+            countOrder ++;
 
-            layout = addMenuCategory(contentLayout, list.getOrderId());
+            if(countOrder > 1) {
+                isLatestOrder = false;
+            }
+            layout = addOrderTitle(contentLayout, list.getOrderId(), true, isLatestOrder);
+
+            TableLayout tableLayout = addOrderHeading(layout);
 
             for(String element:list.getOrderList().keySet()) {
 
                 DishOrderData orderElement = list.getOrderList().get(element);
 
-                //addMenuList(layout, orderElement, element, menuListNotEmpty, isOrderEnable);
+                String price, name, quantity, total;
+
+                price = String.valueOf(orderElement.getPrice());
+                name = orderElement.getName();
+                quantity = String.valueOf(orderElement.getQuantity());
+                total = String.valueOf(orderElement.getPrice() * orderElement.getQuantity());
+
+                addOrderLineItem(tableLayout, price, name, quantity, total, false);
             }
+
+            addTotalCost(tableLayout, list.getTotalCost());
 
         }
 
     }
 
-    private LinearLayout addMenuCategory(LinearLayout layout, String text) {
+    private LinearLayout addOrderTitle(LinearLayout layout, String text, boolean isCollapseButtonRequired, boolean isCollapse) {
 
         LinearLayout rowLayout = new LinearLayout(this.getContext());
         LinearLayout row1Layout = new LinearLayout(this.getContext());
@@ -140,16 +153,23 @@ public class TrackOrderFragment extends BaseFragment {
 
         rowLayout.addView(textView);
         rowLayout.addView(row1Layout);
-        row1Layout.addView(imageViewCollapse);
+
         layout.addView(rowLayout);
         layout.addView(contentLayout);
 
-        rowLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggle_contents(imageViewCollapse, contentLayout);
+        if(isCollapseButtonRequired) {
+            rowLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggle_contents(imageViewCollapse, contentLayout);
+                }
+            });
+            row1Layout.addView(imageViewCollapse);
+
+            if(!isCollapse) {
+                rowLayout.performClick();
             }
-        });
+        }
 
         rowLayout.setPadding(10, 10, 10, 10);
 
@@ -163,6 +183,97 @@ public class TrackOrderFragment extends BaseFragment {
         rowLayout.setLayoutParams(params1);
 
         return contentLayout;
+    }
+
+    private TableLayout addOrderHeading(LinearLayout layout) {
+
+        TableLayout tableLayout = new TableLayout(this.getContext());
+        layout.addView(tableLayout);
+        //layout.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        tableLayout.setStretchAllColumns(true);
+
+        addOrderLineItem(tableLayout, "Price", "Dish Name", "Quantity", "Cost", true);
+
+        return tableLayout;
+    }
+
+    private void addOrderLineItem(TableLayout layout, String price, String name, String quantity, String total, boolean isHeading) {
+
+        TableRow eachRow = new TableRow(this.getContext());
+        TextView textViewPrice = new TextView(this.getContext());
+        TextView textViewName = new TextView(this.getContext());
+        TextView textViewQuantity = new TextView(this.getContext());
+        TextView textViewTotal = new TextView(this.getContext());
+
+        textViewPrice.setText("\u20B9" + price);
+        textViewName.setText(name);
+        textViewQuantity.setText(quantity);
+        textViewTotal.setText("\u20B9" + total);
+
+        eachRow.addView(textViewName);
+        eachRow.addView(textViewPrice);
+        eachRow.addView(textViewQuantity);
+        eachRow.addView(textViewTotal);
+        layout.addView(eachRow);
+
+        //eachRow.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        textViewQuantity.setGravity(Gravity.CENTER);
+
+        int fontSize = 14;
+        if(isHeading) {
+            fontSize = 18;
+
+            textViewPrice.setTypeface(null, Typeface.BOLD);
+            textViewName.setTypeface(null, Typeface.BOLD);
+            textViewQuantity.setTypeface(null, Typeface.BOLD);
+            textViewTotal.setTypeface(null, Typeface.BOLD);
+
+            int paddingPix = AndroidUtils.dpToPixel(this.getContext(), 5);
+            eachRow.setPadding(0, paddingPix, 0, paddingPix);
+        } else {
+            int paddingPix = AndroidUtils.dpToPixel(this.getContext(), 5);
+            eachRow.setPadding(0, 0, 0, paddingPix);
+
+        }
+
+        textViewPrice.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
+        textViewName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
+        textViewQuantity.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
+        textViewTotal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
+
+        //textViewPrice.setWidth(AndroidUtils.dpToPixel(this.getContext(), 40));
+        //textViewQuantity.setWidth(AndroidUtils.dpToPixel(this.getContext(), 40));
+        //textViewTotal.setWidth(AndroidUtils.dpToPixel(this.getContext(), 60));
+    }
+
+    private void addTotalCost(TableLayout layout, int allOrderCost) {
+
+        TableRow row1 = new TableRow(this.getContext());
+        TextView textViewTotalCostTitle = new TextView(this.getContext());
+        TextView textViewTotalCost = new TextView(this.getContext());
+
+        textViewTotalCostTitle.setText("Total");
+        textViewTotalCost.setText("\u20B9" + String.valueOf(allOrderCost));
+
+        row1.addView(new TextView(this.getContext()));
+        row1.addView(new TextView(this.getContext()));
+        row1.addView(textViewTotalCostTitle);
+        row1.addView(textViewTotalCost);
+
+        layout.addView(row1);
+
+        int fontSize = 16;
+        textViewTotalCostTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
+        textViewTotalCostTitle.setTypeface(null, Typeface.BOLD);
+
+        fontSize = 14;
+        textViewTotalCost.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
+        textViewTotalCost.setTypeface(null, Typeface.BOLD);
+
+        int paddingPix = AndroidUtils.dpToPixel(this.getContext(), 10);
+        row1.setPadding(0, paddingPix, 0, paddingPix);
+
     }
 
     private void toggle_contents(ImageView sourceClick, View destView){
