@@ -9,39 +9,39 @@ import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 
 public class DailyMenuViewModel extends ViewModel {
 
-    private MutableLiveData<MenuCategoryList> categoryList = new MutableLiveData<>();
-    private MutableLiveData<DailyMenuList> dailyMenuList = new MutableLiveData<>();
     DailyMenuManager profileManager = new DailyMenuManager();
 
-    public LiveData<MenuCategoryList> getCategoryList() {
-        return categoryList;
+    private MutableLiveData<MenuCategoryList> categoryList1 = new MutableLiveData<>();
+    public LiveData<MenuCategoryList> getAllTimeMenu() {
+
+        profileManager.getAllTimeMenu(categoryList1);
+
+        return categoryList1;
     }
 
-    public void getAllTimeMenu() {
+    private MutableLiveData<MenuCategoryList> categoryList2 = new MutableLiveData<>();
+    public LiveData<MenuCategoryList> addAllTimeMenu() {
 
-        profileManager.getAllTimeMenu(categoryList);
+        profileManager.addTestMenu(categoryList2);
+
+        return categoryList2;
     }
 
-    public void addAllTimeMenu() {
+    private MutableLiveData<DailyMenuList> dailyMenuList1 = new MutableLiveData<>();
+    public LiveData<DailyMenuList> getDailyMenu(String date) {
 
-        profileManager.addTestMenu(categoryList);
+        dailyMenuList1.setValue(null);
+        profileManager.getDailyMenu(date, dailyMenuList1);
+
+        return dailyMenuList1;
     }
 
-    public LiveData<DailyMenuList> getDailyMenuList() {
-        return dailyMenuList;
-    }
+    private MutableLiveData<DailyMenuList> dailyMenuList2 = new MutableLiveData<>();
+    public LiveData<DailyMenuList> updateDailyMenu(String date, DailyMenuList list) {
 
-    public void getDailyMenu(String date) {
+        dailyMenuList2.setValue(null);
+        profileManager.updateDailyMenu(date, list, dailyMenuList2);
 
-        dailyMenuList.setValue(null);
-        profileManager.getDailyMenu(date, dailyMenuList);
-
-    }
-
-    public void updateDailyMenu(String date, DailyMenuList list) {
-
-        dailyMenuList.setValue(null);
-        profileManager.updateDailyMenu(date, list, dailyMenuList);
-
+        return dailyMenuList2;
     }
 }

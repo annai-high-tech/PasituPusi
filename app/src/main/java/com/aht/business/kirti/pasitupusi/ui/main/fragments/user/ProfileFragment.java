@@ -45,6 +45,13 @@ public class ProfileFragment extends BaseFragment {
     private ProfileData currrentProfileData;
     private ProfilePhotoManager profilePhotoManager;
 
+    public static ProfileFragment newInstance() {
+        Bundle args = new Bundle();
+        ProfileFragment f = new ProfileFragment();
+        f.setArguments(args);
+        return f;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

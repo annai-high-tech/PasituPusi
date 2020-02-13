@@ -69,12 +69,13 @@ public class UserDishSelectionFragment extends BaseFragment {
 
     private Map<String, OrderData> orderDataList = new HashMap<>();
 
-    private UserDishSelectionFragment() {
-
-    }
-
-    public UserDishSelectionFragment(boolean isNewObject) {
-        this.isNewObject = isNewObject;
+    public static UserDishSelectionFragment newInstance(boolean isNewObject) {
+        Bundle args = new Bundle();
+        args.putBoolean("isNewObject", isNewObject);
+        UserDishSelectionFragment f = new UserDishSelectionFragment();
+        f.setArguments(args);
+        f.isNewObject = isNewObject;
+        return f;
     }
 
     @Override
@@ -88,7 +89,8 @@ public class UserDishSelectionFragment extends BaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_dish_selection_user, container, false);
 
-        ((MainActivity)getActivity()).getAdsAHT().loadNativenAds();
+        //isNewObject = getArguments().getBoolean("isNewObject");
+
         ((MainActivity)getActivity()).getAdsAHT().loadNativenAds();
 
         progressDialog = new ProgressDialog(this.getContext());
@@ -125,12 +127,10 @@ public class UserDishSelectionFragment extends BaseFragment {
         }
 
         //if(menuCategoryList == null) {
-            dailyMenuViewModel.getCategoryList().observe(getViewLifecycleOwner(), mObserverResult1);
-            dailyMenuViewModel.getAllTimeMenu();
+            dailyMenuViewModel.getAllTimeMenu().observe(getViewLifecycleOwner(), mObserverResult1);
         //}
 
-        dailyMenuViewModel.getDailyMenuList().observe(getViewLifecycleOwner(), mObserverResult2);
-        dailyMenuViewModel.getDailyMenu(menuDay);
+        dailyMenuViewModel.getDailyMenu(menuDay).observe(getViewLifecycleOwner(), mObserverResult2);
         progressDialog.show();
 
         textViewDate.setOnClickListener(listener);
@@ -202,21 +202,29 @@ public class UserDishSelectionFragment extends BaseFragment {
             }
             welcomeMsgTextView.setText("Hello " + profileData.getName() + "!");
 
-            if(ProfileRole.getValue(profileData.getRole()) < ProfileRole.getValue(ProfileRole.MANAGER)) {
-
-                minCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
-                minCalendar.add(Calendar.DAY_OF_YEAR, -1);
-
-                maxCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
-                maxCalendar.add(Calendar.DAY_OF_YEAR, 7);
-            } else {
-                minCalendar = maxCalendar = null;
-            }
+            minCalendar = maxCalendar = null;
 
             if(ProfileRole.getValue(profileData.getRole()) <= ProfileRole.getValue(ProfileRole.GUEST)) {
+
                 newsTextView.setText("Guest user cannot order dishes and cannot see past and future dish menus");
                 minCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
                 maxCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
+
+                textViewDate.setOnClickListener(null);
+                textViewDate.setClickable(false);
+            } else if(ProfileRole.getValue(profileData.getRole()) <= ProfileRole.getValue(ProfileRole.USER)) {
+
+                //minCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
+                //minCalendar.add(Calendar.DAY_OF_YEAR, -1);
+
+                //maxCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
+                //maxCalendar.add(Calendar.DAY_OF_YEAR, 7);
+
+                minCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
+                maxCalendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
+
+                textViewDate.setOnClickListener(null);
+                textViewDate.setClickable(false);
             }
 
         }
@@ -425,16 +433,14 @@ public class UserDishSelectionFragment extends BaseFragment {
                 calendar.add(Calendar.DAY_OF_YEAR, -1);
                 menuDay = dateFormat(calendar);
 
-                dailyMenuViewModel.getDailyMenuList().observe(UserDishSelectionFragment.this.getViewLifecycleOwner(), mObserverResult2);
-                dailyMenuViewModel.getDailyMenu(menuDay);
+                dailyMenuViewModel.getDailyMenu(menuDay).observe(UserDishSelectionFragment.this.getViewLifecycleOwner(), mObserverResult2);
                 progressDialog.show();
 
             } else if(view.getId() == top_right_arrow.getId()) {
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
                 menuDay = dateFormat(calendar);
 
-                dailyMenuViewModel.getDailyMenuList().observe(UserDishSelectionFragment.this.getViewLifecycleOwner(), mObserverResult2);
-                dailyMenuViewModel.getDailyMenu(menuDay);
+                dailyMenuViewModel.getDailyMenu(menuDay).observe(UserDishSelectionFragment.this.getViewLifecycleOwner(), mObserverResult2);
                 progressDialog.show();
 
 
@@ -442,8 +448,7 @@ public class UserDishSelectionFragment extends BaseFragment {
                 calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
                 today = menuDay = dateFormat(calendar);
 
-                dailyMenuViewModel.getDailyMenuList().observe(UserDishSelectionFragment.this.getViewLifecycleOwner(), mObserverResult2);
-                dailyMenuViewModel.getDailyMenu(menuDay);
+                dailyMenuViewModel.getDailyMenu(menuDay).observe(UserDishSelectionFragment.this.getViewLifecycleOwner(), mObserverResult2);
                 progressDialog.show();
 
             } else if (view.getId() == textViewDate.getId()) {
@@ -462,7 +467,7 @@ public class UserDishSelectionFragment extends BaseFragment {
                 datePickerDialog.show();
             } else if (view.getId() == viewCartLayout.getId()) {
 
-                ViewCartSubFragment newFragment = new ViewCartSubFragment(orderDataList, menuDay);
+                ViewCartSubFragment newFragment = ViewCartSubFragment.newInstance(orderDataList, menuDay);
 
                 ((MainActivity)getActivity()).changeFragments(newFragment);
             }
@@ -483,8 +488,7 @@ public class UserDishSelectionFragment extends BaseFragment {
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             menuDay = dateFormat(calendar);
 
-            dailyMenuViewModel.getDailyMenuList().observe(UserDishSelectionFragment.this.getViewLifecycleOwner(), mObserverResult2);
-            dailyMenuViewModel.getDailyMenu(menuDay);
+            dailyMenuViewModel.getDailyMenu(menuDay).observe(UserDishSelectionFragment.this.getViewLifecycleOwner(), mObserverResult2);
             progressDialog.show();
         }
 

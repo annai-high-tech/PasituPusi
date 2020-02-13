@@ -36,6 +36,7 @@ import com.aht.business.kirti.pasitupusi.model.utils.BitmapUtils;
 import com.aht.business.kirti.pasitupusi.model.utils.DateUtils;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.user.UserDishSelectionFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import java.text.ParseException;
@@ -69,12 +70,13 @@ public class ViewAllOrderFragment extends BaseFragment {
 
     private Map<String, OrderData> orderDataList = new HashMap<>();
 
-    private ViewAllOrderFragment() {
-
-    }
-
-    public ViewAllOrderFragment(boolean isNewObject) {
-        this.isNewObject = isNewObject;
+    public static ViewAllOrderFragment newInstance(boolean isNewObject) {
+        Bundle args = new Bundle();
+        args.putBoolean("isNewObject", isNewObject);
+        ViewAllOrderFragment f = new ViewAllOrderFragment();
+        f.setArguments(args);
+        f.isNewObject = isNewObject;
+        return f;
     }
 
     @Override

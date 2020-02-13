@@ -12,6 +12,13 @@ import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
 
 public class ContactFragment extends BaseFragment {
 
+    public static ContactFragment newInstance() {
+        Bundle args = new Bundle();
+        ContactFragment f = new ContactFragment();
+        f.setArguments(args);
+        return f;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

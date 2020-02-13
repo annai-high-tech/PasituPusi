@@ -30,13 +30,19 @@ public class DishSelectionFragment extends BaseFragment {
 
     private TextView textViewMonth;
     private ImageView top_left_arrow, top_right_arrow, top_go_to_today;
-    private LinearLayout month_line_holder_last;
 
     private Calendar calendar;
     private ProgressDialog progressDialog;
 
     private DailyMenuViewModel dailyMenuViewModel;
     private MenuCategoryList menuCategoryList;
+
+    public static DishSelectionFragment newInstance() {
+        Bundle args = new Bundle();
+        DishSelectionFragment f = new DishSelectionFragment();
+        f.setArguments(args);
+        return f;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,11 +60,9 @@ public class DishSelectionFragment extends BaseFragment {
         top_left_arrow =  view.findViewById(R.id.top_left_arrow);
         top_right_arrow =  view.findViewById(R.id.top_right_arrow);
         top_go_to_today =  view.findViewById(R.id.top_go_to_today);
-        month_line_holder_last = view.findViewById(R.id.day_42);
 
         dailyMenuViewModel = new ViewModelProvider(this).get(DailyMenuViewModel.class);
-        dailyMenuViewModel.getCategoryList().observe(getViewLifecycleOwner(), mObserverResult);
-        dailyMenuViewModel.getAllTimeMenu();
+        dailyMenuViewModel.getAllTimeMenu().observe(getViewLifecycleOwner(), mObserverResult);
 
         progressDialog.show();
 
@@ -74,10 +78,6 @@ public class DishSelectionFragment extends BaseFragment {
         top_right_arrow.setOnClickListener(listener);
         top_go_to_today.setOnClickListener(listener);
 
-        if(ProfileRole.getValue(((MainActivity)getActivity()).getProfileData().getRole()) >= ProfileRole.getValue(ProfileRole.ADMIN)) {
-
-            month_line_holder_last.setOnClickListener(listener);
-        }
         return view;
     }
 
@@ -251,11 +251,6 @@ public class DishSelectionFragment extends BaseFragment {
 
                 updateCalendar(DishSelectionFragment.this.getView(), currentYear, currentMonth);
 
-            } else if(view.getId() == month_line_holder_last.getId()) {
-
-                progressDialog.show();
-                dailyMenuViewModel.addAllTimeMenu();
-
             }
 
         }
@@ -319,7 +314,7 @@ public class DishSelectionFragment extends BaseFragment {
             date = date + "-0" + d;
 
         // Create and show the dialog.
-        DailyDishSelectionSubFragment newFragment = new DailyDishSelectionSubFragment(menuCategoryList, date);
+        DailyDishSelectionSubFragment newFragment = DailyDishSelectionSubFragment.newInstance(menuCategoryList, date);
 
         ((MainActivity)getActivity()).changeFragments(newFragment);
         //newFragment.show(ft, "dialog");

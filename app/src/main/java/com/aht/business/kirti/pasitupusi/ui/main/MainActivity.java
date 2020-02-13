@@ -80,14 +80,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        try {
-            int versionCode = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode;
-            AppUpdatesManager.checkUpdates(versionCode, this);
-
-        } catch (PackageManager.NameNotFoundException e) {
-
-        }
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -123,6 +115,17 @@ public class MainActivity extends AppCompatActivity {
 
         if(!ProfileManager.isValidUser() && !(profileData != null && profileData.getRole() == ProfileRole.GUEST)) {
             logoutButton.performClick();
+        } else {
+            try {
+                int versionCode = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode;
+                AppUpdatesManager.checkUpdates(versionCode, this);
+
+            } catch (PackageManager.NameNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
 
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
@@ -170,20 +173,20 @@ public class MainActivity extends AppCompatActivity {
 
                 updateMenu(nav_Menu, "Guest", ProfileRole.USER, null);
 
-                changeFragments(new ProfileFragment());
+                changeFragments(ProfileFragment.newInstance());
 
             } else if(data.getName() == null ){
 
                 updateMenu(nav_Menu, "Guest", data.getRole(), null);
 
-                changeFragments(new ProfileFragment());
+                changeFragments(ProfileFragment.newInstance());
 
             } else {
 
                 updateMenu(nav_Menu, data.getName(), data.getRole(), data.getPicture());
 
                 profileData  = data;
-                changeFragments(new UserDishSelectionFragment(true));
+                changeFragments(UserDishSelectionFragment.newInstance(true));
 
             }
         }
@@ -250,21 +253,21 @@ public class MainActivity extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case R.id.nav_dashboard:
                 if(currentFragment == null || !(currentFragment instanceof UserDishSelectionFragment)){
-                    changeFragments(new UserDishSelectionFragment(true));
+                    changeFragments(UserDishSelectionFragment.newInstance(true));
                 }
                 break;
 
             case R.id.nav_track:
                 adsAHT.showFullScreenAds();
                 if(currentFragment == null || !(currentFragment instanceof TrackOrderFragment)){
-                    changeFragments(new TrackOrderFragment());
+                    changeFragments(TrackOrderFragment.newInstance());
                 }
                 break;
 
             case R.id.nav_profile:
                 //adsAHT.showFullScreenAds();
                 if(currentFragment == null || !(currentFragment instanceof ProfileFragment)) {
-                    changeFragments(new ProfileFragment());
+                    changeFragments(ProfileFragment.newInstance());
                 }
                 break;
 
@@ -272,28 +275,28 @@ public class MainActivity extends AppCompatActivity {
                 //adsAHT.showFullScreenAds();
                 showFooter(true, true, true);
                 if(currentFragment == null || !(currentFragment instanceof ContactFragment)) {
-                    changeFragments(new ContactFragment());
+                    changeFragments(ContactFragment.newInstance());
                 }
                 break;
 
             case R.id.nav_admin_configure:
                 adsAHT.showFullScreenAds();
                 if(currentFragment == null || !(currentFragment instanceof DishConfigureFragment)){
-                    changeFragments(new DishConfigureFragment());
+                    changeFragments(DishConfigureFragment.newInstance());
                 }
                 break;
 
             case R.id.nav_admin_update:
                 adsAHT.showFullScreenAds();
                 if(currentFragment == null || !(currentFragment instanceof DishSelectionFragment)){
-                    changeFragments(new DishSelectionFragment());
+                    changeFragments(DishSelectionFragment.newInstance());
                 }
                 break;
 
             case R.id.nav_admin_view_order:
                 adsAHT.showFullScreenAds();
                 if(currentFragment == null || !(currentFragment instanceof ViewAllOrderFragment)){
-                    changeFragments(new ViewAllOrderFragment(true));
+                    changeFragments(ViewAllOrderFragment.newInstance(true));
                 }
                 break;
 

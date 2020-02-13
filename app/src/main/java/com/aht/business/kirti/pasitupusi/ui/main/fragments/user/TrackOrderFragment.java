@@ -36,6 +36,13 @@ public class TrackOrderFragment extends BaseFragment {
 
     private OrderViewModel orderViewModel;
 
+    public static TrackOrderFragment newInstance() {
+        Bundle args = new Bundle();
+        TrackOrderFragment f = new TrackOrderFragment();
+        f.setArguments(args);
+        return f;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +107,7 @@ public class TrackOrderFragment extends BaseFragment {
             if(countOrder > 1) {
                 isLatestOrder = false;
             }
-            layout = addOrderTitle(contentLayout, list.getOrderId(), true, isLatestOrder);
+            layout = addOrderTitle(contentLayout, list.getOrderId() + " / " + list.getDate(), true, isLatestOrder);
 
             TableLayout tableLayout = addOrderHeading(layout);
 

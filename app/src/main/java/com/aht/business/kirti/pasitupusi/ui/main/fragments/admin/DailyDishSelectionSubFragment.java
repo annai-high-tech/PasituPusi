@@ -49,12 +49,17 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
     private MenuCategoryList menuCategoryList;
     private String date;
 
-
-    public DailyDishSelectionSubFragment(MenuCategoryList menuCategoryList, String date) {
+    public DailyDishSelectionSubFragment() {
         super("Daily Dish Selection");
+    }
 
-        this.menuCategoryList = menuCategoryList;
-        this.date = date;
+    public static DailyDishSelectionSubFragment newInstance(MenuCategoryList menuCategoryList, String date) {
+        Bundle args = new Bundle();
+        DailyDishSelectionSubFragment f = new DailyDishSelectionSubFragment();
+        f.setArguments(args);
+        f.menuCategoryList = menuCategoryList;
+        f.date = date;
+        return f;
     }
 
     @Override
@@ -77,8 +82,7 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
         textViewTitle.setText("Menu for the day (" + date + ")");
 
         dailyMenuViewModel = new ViewModelProvider(this).get(DailyMenuViewModel.class);
-        dailyMenuViewModel.getDailyMenuList().observe(getViewLifecycleOwner(), mObserverResult);
-        dailyMenuViewModel.getDailyMenu(date);
+        dailyMenuViewModel.getDailyMenu(date).observe(getViewLifecycleOwner(), mObserverResult1);
         progressDialog.show();
 
         /*((TextView)tv).setText("Dialog #" + mNum + ": using style "
@@ -233,7 +237,7 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
 
     }
 
-    Observer<DailyMenuList> mObserverResult = new Observer<DailyMenuList>() {
+    Observer<DailyMenuList> mObserverResult1 = new Observer<DailyMenuList>() {
         @Override
         public void onChanged(@Nullable DailyMenuList list) {
 
@@ -248,15 +252,39 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
         }
     };
 
+    Observer<DailyMenuList> mObserverResult2 = new Observer<DailyMenuList>() {
+        @Override
+        public void onChanged(@Nullable DailyMenuList list) {
+
+            if(list != null) {
+
+                dailyMenuViewModel.getDailyMenu(date).observe(getViewLifecycleOwner(), mObserverResult1);
+
+            } else {
+
+                updatePage(menuCategoryList, dailyMenuList, contentLayout);
+
+                progressDialog.dismiss();
+            }
+
+        }
+    };
+
     private View.OnClickListener buttonListener =   new View.OnClickListener(){
         @Override
         public void onClick(View view){
 
             if(((Button)view).getText().equals("Save")) {
-                dailyMenuViewModel.updateDailyMenu(date, dailyMenuList);
+
+                progressDialog.show();
+                dailyMenuViewModel.updateDailyMenu(date, dailyMenuList).observe(getViewLifecycleOwner(), mObserverResult2);
+
+            } else {
+
+                dailyMenuViewModel.getDailyMenu(date).observe(getViewLifecycleOwner(), mObserverResult1);
             }
 
-            dailyMenuViewModel.getDailyMenu(date);
+
             save.setEnabled(false);
             reset.setEnabled(false);
 

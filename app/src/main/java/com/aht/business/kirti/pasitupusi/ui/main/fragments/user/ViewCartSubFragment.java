@@ -47,11 +47,17 @@ public class ViewCartSubFragment extends SubPageFragment {
     private Map<String, OrderData> orderDataList;
     private String date;
 
-
-    public ViewCartSubFragment(Map<String, OrderData> orderDataList, String date) {
+    public ViewCartSubFragment() {
         super("Order Summary");
-        this.orderDataList = orderDataList;
-        this.date = date;
+    }
+
+    public static ViewCartSubFragment newInstance(Map<String, OrderData> orderDataList, String date) {
+        Bundle args = new Bundle();
+        ViewCartSubFragment f = new ViewCartSubFragment();
+        f.setArguments(args);
+        f.orderDataList = orderDataList;
+        f.date = date;
+        return f;
     }
 
     @Override
