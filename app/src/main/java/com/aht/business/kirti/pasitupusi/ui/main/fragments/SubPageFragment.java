@@ -25,7 +25,9 @@ public class SubPageFragment extends BaseFragment {
 
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
 
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if(actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         if(title != null) {
             actionBar.setTitle(title);

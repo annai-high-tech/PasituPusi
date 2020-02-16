@@ -1,5 +1,7 @@
 package com.aht.business.kirti.pasitupusi.model.dailymenu.data;
 
+import com.aht.business.kirti.pasitupusi.model.dailymenu.enums.MenuType;
+
 import java.util.HashMap;
 import java.util.Map;
 

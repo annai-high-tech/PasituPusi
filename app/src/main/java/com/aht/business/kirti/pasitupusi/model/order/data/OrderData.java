@@ -1,5 +1,7 @@
 package com.aht.business.kirti.pasitupusi.model.order.data;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +10,10 @@ public class OrderData {
     String orderId;
 
     String date;
+
+    Date orderPlacedTime;
+
+    Date orderDeliveredTime;
 
     String userId;
 
@@ -61,5 +67,21 @@ public class OrderData {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public Date getOrderPlacedTime() {
+        return orderPlacedTime;
+    }
+
+    public void setOrderPlacedTime(Date orderPlacedTime) {
+        this.orderPlacedTime = orderPlacedTime;
+    }
+
+    public Date getOrderDeliveredTime() {
+        return orderDeliveredTime;
+    }
+
+    public void setOrderDeliveredTime(Date orderDeliveredTime) {
+        this.orderDeliveredTime = orderDeliveredTime;
     }
 }

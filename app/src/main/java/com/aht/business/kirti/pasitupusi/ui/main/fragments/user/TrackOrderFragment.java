@@ -27,6 +27,9 @@ import com.aht.business.kirti.pasitupusi.model.utils.AnimationUtil;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
 import com.google.android.material.bottomappbar.BottomAppBar;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class TrackOrderFragment extends BaseFragment {
@@ -125,7 +128,7 @@ public class TrackOrderFragment extends BaseFragment {
                 addOrderLineItem(tableLayout, price, name, quantity, total, false);
             }
 
-            addTotalCost(tableLayout, list.getTotalCost());
+            addTotalCost(tableLayout, list.getTotalCost(), list.getOrderPlacedTime(), list.getOrderDeliveredTime());
 
         }
 
@@ -229,7 +232,7 @@ public class TrackOrderFragment extends BaseFragment {
 
         int fontSize = 14;
         if(isHeading) {
-            fontSize = 18;
+            fontSize = 15;
 
             textViewPrice.setTypeface(null, Typeface.BOLD);
             textViewName.setTypeface(null, Typeface.BOLD);
@@ -254,11 +257,15 @@ public class TrackOrderFragment extends BaseFragment {
         //textViewTotal.setWidth(AndroidUtils.dpToPixel(this.getContext(), 60));
     }
 
-    private void addTotalCost(TableLayout layout, int allOrderCost) {
+    private void addTotalCost(TableLayout layout, int allOrderCost, Date orderedDate, Date deliveredDate) {
 
         TableRow row1 = new TableRow(this.getContext());
         TextView textViewTotalCostTitle = new TextView(this.getContext());
         TextView textViewTotalCost = new TextView(this.getContext());
+        TextView textViewOrderedTime = new TextView(this.getContext());
+        TextView textViewDeliveredTime = new TextView(this.getContext());
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
         textViewTotalCostTitle.setText("Total");
         textViewTotalCost.setText("\u20B9" + String.valueOf(allOrderCost));
@@ -269,6 +276,17 @@ public class TrackOrderFragment extends BaseFragment {
         row1.addView(textViewTotalCost);
 
         layout.addView(row1);
+
+        if(orderedDate != null) {
+            textViewOrderedTime.setText("Ordered at " + dateFormat.format(orderedDate));
+            layout.addView(textViewOrderedTime);
+        }
+        if(deliveredDate != null) {
+            textViewDeliveredTime.setText("Delivered at " + dateFormat.format(orderedDate));
+            layout.addView(textViewOrderedTime);
+        } else {
+
+        }
 
         int fontSize = 16;
         textViewTotalCostTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);

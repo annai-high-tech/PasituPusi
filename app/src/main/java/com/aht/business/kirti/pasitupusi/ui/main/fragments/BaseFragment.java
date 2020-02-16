@@ -10,15 +10,14 @@ import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 
 public class BaseFragment extends Fragment{
 
-    public BaseFragment() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
-        actionBar.setTitle(this.getResources().getString(R.string.app_name));
+        if(actionBar != null) {
+            actionBar.setTitle(this.getResources().getString(R.string.app_name));
+        }
 
     }
 

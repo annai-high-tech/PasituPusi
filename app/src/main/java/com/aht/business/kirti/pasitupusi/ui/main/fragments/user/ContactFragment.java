@@ -6,8 +6,12 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.aht.business.kirti.pasitupusi.BuildConfig;
 import com.aht.business.kirti.pasitupusi.R;
+import com.aht.business.kirti.pasitupusi.model.share.ShareApp;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
 
 public class ContactFragment extends BaseFragment {
@@ -28,24 +32,26 @@ public class ContactFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                          Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_contactus, container, false);
+        final View view = inflater.inflate(R.layout.fragment_contactus, container, false);
 
-        Spanned email_link = Html.fromHtml("&nbsp;<a href='"
-                + "mailto:" + getResources().getString(R.string.email_id)
-                + "'>"
-                + getResources().getString(R.string.email_id)
-                + "</a>");
+        final ShareApp shareApp = new ShareApp();
+        TextView appDescriptionView = view.findViewById(R.id.textViewAppInfo);
+        Button shareButton = view.findViewById(R.id.buttonShareApp);
 
-        Spanned phone_link = Html.fromHtml("&nbsp;<a href='"
-                + "tel:" + getResources().getString(R.string.phone_number).replaceAll(" ", "")
-                + "'>"
-                + getResources().getString(R.string.phone_number)
-                + "</a>");
+        String appDesc = view.getResources().getString(R.string.app_contact_description, BuildConfig.VERSION_NAME);
 
-        //((TextView)view.findViewById(R.id.textViewContactusEmail)).setMovementMethod(LinkMovementMethod.getInstance());
-        //((TextView)view.findViewById(R.id.textViewContactusEmail)).setText(email_link);
+        appDescriptionView.setText(appDesc);
 
-        //((TextView)view.findViewById(R.id.textViewContactusPhone)).setText(phone_link);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String appName = view.getResources().getString(R.string.app_name);
+                String appLink = view.getResources().getString(R.string.app_link, BuildConfig.APPLICATION_ID);
+                String shareMsg = view.getResources().getString(R.string.share_text, appName, appLink);
+                shareApp.shareText(ContactFragment.this.getActivity(), shareMsg);
+            }
+        });
 
         return view;
     }

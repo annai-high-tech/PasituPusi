@@ -2,8 +2,10 @@ package com.aht.business.kirti.pasitupusi.ui.main.fragments.user;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,10 +38,10 @@ public class ProfileFragment extends BaseFragment {
     private TextView textViewProfilePicEdit, textViewProfilePicSave, textViewProfilePicCancel;
     private TextView textViewProfileEdit, textViewProfileSave, textViewProfileCancel;
     private TextView textViewProfileAddrEdit, textViewProfileAddrSave, textViewProfileAddrCancel;
-    private ImageView imageViewProfileCollapse, imageViewProfileAddrCollapse, imageViewProfileCurOrderCollapse, imageViewProfileHisOrderCollapse;
-    private LinearLayout layoutProfileCollapse, layoutProfileAddrCollapse, layoutProfileCurOrderCollapse, layoutProfileHisOrderCollapse;
+    private ImageView imageViewProfileCollapse, imageViewProfileAddrCollapse;
+    private LinearLayout layoutProfileCollapse, layoutProfileAddrCollapse;
 
-    private LinearLayout editableProfileLayout, editableProfileAddressLayout, editableProfileCurOrderLayout, editableProfileHisOrderLayout;
+    private LinearLayout editableProfileLayout, editableProfileAddressLayout;
 
     private ProfileViewModel profileViewModel;
     private ProfileData currrentProfileData;
@@ -90,17 +92,11 @@ public class ProfileFragment extends BaseFragment {
         textViewProfileAddrCancel = view.findViewById(R.id.textViewProfileAddressCancel);
         imageViewProfileAddrCollapse = view.findViewById(R.id.imageViewProfileAddressCollapse);
         layoutProfileAddrCollapse = view.findViewById(R.id.layoutProfileAddressCollapse);
-        imageViewProfileCurOrderCollapse = view.findViewById(R.id.imageViewProfileCurOrderCollapse);
-        layoutProfileCurOrderCollapse = view.findViewById(R.id.layoutProfileCurOrderCollapse);
-        imageViewProfileHisOrderCollapse = view.findViewById(R.id.imageViewProfileHisOrderCollapse);
-        layoutProfileHisOrderCollapse = view.findViewById(R.id.layoutProfileHisOrderCollapse);
 
         imageViewProfilePic = view.findViewById(R.id.profile_pic);
 
         editableProfileLayout = view.findViewById(R.id.editableProfileLayout);
         editableProfileAddressLayout = view.findViewById(R.id.editableProfileAddressLayout);
-        editableProfileCurOrderLayout = view.findViewById(R.id.editableProfileCurOrderLayout);
-        editableProfileHisOrderLayout = view.findViewById(R.id.editableProfileHisOrderLayout);
 
         textViewProfilePicEdit.setOnClickListener(listener);
         textViewProfilePicSave.setOnClickListener(listener);
@@ -115,10 +111,6 @@ public class ProfileFragment extends BaseFragment {
         textViewProfileAddrCancel.setOnClickListener(listener);
         imageViewProfileAddrCollapse.setOnClickListener(listener);
         layoutProfileAddrCollapse.setOnClickListener(listener);
-        imageViewProfileCurOrderCollapse.setOnClickListener(listener);
-        layoutProfileCurOrderCollapse.setOnClickListener(listener);
-        imageViewProfileHisOrderCollapse.setOnClickListener(listener);
-        layoutProfileHisOrderCollapse.setOnClickListener(listener);
 
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         profileViewModel.getProfileData().observe(getViewLifecycleOwner(), mObserverResult);
@@ -129,8 +121,6 @@ public class ProfileFragment extends BaseFragment {
         setProfileAddressView(false);
         editableProfileLayout.setVisibility(View.VISIBLE);
         editableProfileAddressLayout.setVisibility(View.GONE);
-        editableProfileCurOrderLayout.setVisibility(View.GONE);
-        editableProfileHisOrderLayout.setVisibility(View.GONE);
         return view;
     }
 
@@ -315,14 +305,6 @@ public class ProfileFragment extends BaseFragment {
                 toggle_contents(imageViewProfileAddrCollapse, editableProfileAddressLayout);
             }
 
-            if(v.getId() == imageViewProfileCurOrderCollapse.getId() || v.getId() == layoutProfileCurOrderCollapse.getId()) {
-                toggle_contents(imageViewProfileCurOrderCollapse, editableProfileCurOrderLayout);
-            }
-
-            if(v.getId() == imageViewProfileHisOrderCollapse.getId() || v.getId() == layoutProfileHisOrderCollapse.getId()) {
-                toggle_contents(imageViewProfileHisOrderCollapse, editableProfileHisOrderLayout);
-            }
-
         }
     };
 
@@ -426,9 +408,14 @@ public class ProfileFragment extends BaseFragment {
 
         if(destView.isShown()){
             AnimationUtil.slide_up(this.getContext(), destView, sourceClick);
+
         }
         else{
             AnimationUtil.slide_down(this.getContext(), destView, sourceClick);
+
+            /*if(!isFullyVisible(destView)) {
+                System.out.println("....................................................................");
+            }*/
         }
 
         /*if(destView.isShown()) {
@@ -436,5 +423,23 @@ public class ProfileFragment extends BaseFragment {
         } else {
             sourceClick.setText("+++");
         }*/
+    }
+
+    public boolean isFullyVisible(final View view) {
+        if (view == null) {
+            return false;
+        }
+        if (!view.isShown()) {
+            return false;
+        }
+        final Rect actualPosition = new Rect();
+        view.getDrawingRect(actualPosition);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+        final Rect screen = new Rect(0, 0, width, height);
+        return actualPosition.intersect(screen);
     }
 }

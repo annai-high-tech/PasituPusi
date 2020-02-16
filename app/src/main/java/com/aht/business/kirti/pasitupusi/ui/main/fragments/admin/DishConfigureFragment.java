@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.lifecycle.ViewModelProvider;
@@ -18,6 +19,7 @@ public class DishConfigureFragment extends BaseFragment {
 
     private Button mGoToButton;
     private TextView textViewWelcomeMsg;
+    private LinearLayout content_layout;
 
     private DailyMenuViewModel dailyMenuViewModel;
 
@@ -40,6 +42,7 @@ public class DishConfigureFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_dish_configure, container, false);
 
         textViewWelcomeMsg =  view.findViewById(R.id.titleTextView);
+        content_layout = view.findViewById(R.id.content_layout);
 
         textViewWelcomeMsg.setText("Hello " + ((MainActivity)getActivity()).getProfileData().getName() + "!\n\tWelcome to Pasitu Pusi - Dish Configure page");
 
@@ -48,6 +51,7 @@ public class DishConfigureFragment extends BaseFragment {
         mGoToButton.setOnClickListener(listener);
         mGoToButton.setText("Refresh All Time menu");
 
+        content_layout.addView(mGoToButton);
 
         return view;
     }

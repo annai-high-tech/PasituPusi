@@ -26,7 +26,6 @@ import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
 import com.aht.business.kirti.pasitupusi.model.utils.AndroidUtils;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.SubPageFragment;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.TimeZone;
@@ -124,7 +123,6 @@ public class ViewCartSubFragment extends SubPageFragment {
             boolean isValidNewOrder = true;
             if(orderData.getOrderId() != null && !orderData.getOrderId().equals("")) {
                 isValidNewOrder = false;
-                orderDataList.clear();
             }
 
             addTotalCostAndOrderButtons(tableLayout, allOrderCost, isValidNewOrder);
@@ -171,7 +169,7 @@ public class ViewCartSubFragment extends SubPageFragment {
 
         int fontSize = 14;
         if(isHeading) {
-            fontSize = 18;
+            fontSize = 15;
 
             textViewPrice.setTypeface(null, Typeface.BOLD);
             textViewName.setTypeface(null, Typeface.BOLD);
@@ -255,6 +253,20 @@ public class ViewCartSubFragment extends SubPageFragment {
         /*params = (TableRow.LayoutParams) clearButton.getLayoutParams();
         params.span = 2; //amount of columns you will span*/
 
+        submitButton.setBackground(getResources().getDrawable(R.drawable.button_animation));
+        submitButton.setTextColor(getResources().getColor(R.color.colorWhiteText));
+        clearButton.setBackground(getResources().getDrawable(R.drawable.button_animation));
+        clearButton.setTextColor(getResources().getColor(R.color.colorWhiteText));
+
+        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params2.setMargins(paddingPix, 0, paddingPix, 0);
+
+        submitButton.setLayoutParams(params2);
+        clearButton.setLayoutParams(params2);
+
     }
 
     private void updateOrderStatus(LinearLayout layout, OrderData orderData) {
@@ -265,9 +277,14 @@ public class ViewCartSubFragment extends SubPageFragment {
         if(orderData == null) {
             textViewOrderStatus.setText("Order Failure!\n\nYour Order is not complete due to technical reason");
             layout.addView(textViewOrderStatus);
+        } else if(orderData.getOrderId() != null && orderData.getOrderId().equals("CANCEL")) {
+            textViewOrderStatus.setText("Order cancelled by user");
+            layout.addView(textViewOrderStatus);
+            orderDataList.remove(date);
         } else if(orderData.getOrderId() != null && !orderData.getOrderId().equals("")) {
             textViewOrderStatus.setText("Order Received Successfully!\n\nYour Order Reference Number is \n" + orderData.getOrderId());
             layout.addView(textViewOrderStatus);
+            orderDataList.remove(date);
         }
 
         int paddingPix = AndroidUtils.dpToPixel(this.getContext(), 10);
@@ -315,11 +332,13 @@ public class ViewCartSubFragment extends SubPageFragment {
 
             if(button.getText().equals(PLACE_ORDER_BUTTON_TEXT)) {
                 progressDialog.show();
+                orderDataList.get(date).setOrderPlacedTime(calendar.getTime());
                 orderViewModel.addOrder(date, orderDataList.get(date)).observe(getViewLifecycleOwner(), mObserverResult2);
             }
 
             if(button.getText().equals(CANCEL_ORDER_BUTTON_TEXT)) {
-                orderDataList.clear();
+                orderDataList.get(date).setOrderId("CANCEL");
+                updateOrderStatus(contentLayout, orderDataList.get(date));
             }
 
             buttonLayout = (LinearLayout)(button.getParent());

@@ -24,7 +24,7 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:gravity="center"
             android:textSize="24sp"
-            android:text="testing" />
+            android:text="loading" />
 
         <LinearLayout
             android:id="@+id/content_layout"
