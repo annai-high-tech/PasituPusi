@@ -213,10 +213,19 @@ public class LoginWithPhone {
     }
 
     private void verifyPhoneNumberWithCode(String verificationId, String code) {
-        // [START verify_with_code]
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
-        // [END verify_with_code]
-        signInWithPhoneAuthCredential(credential, result);
+
+        PhoneAuthCredential credential = null;
+
+        try {
+            credential = PhoneAuthProvider.getCredential(verificationId, code);
+            signInWithPhoneAuthCredential(credential, result);
+        } catch(IllegalArgumentException e) {
+            LoggedInUser user = new LoggedInUser(getMessage(R.string.invalid_otp));
+            result.setValue(user);
+        } catch(Exception e) {
+            LoggedInUser user = new LoggedInUser(getMessage(R.string.invalid_otp));
+            result.setValue(user);
+        }
     }
 
 }

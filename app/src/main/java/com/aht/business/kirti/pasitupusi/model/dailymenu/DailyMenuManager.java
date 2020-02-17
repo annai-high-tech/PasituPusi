@@ -288,6 +288,11 @@ public class DailyMenuManager {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        if(date == null) {
+            result.setValue(new DailyMenuList());
+            return;
+        }
+
         final DocumentReference docRef = db.collection(Database.DATABASE_MENU_DATA_COLLECTION).document(date);
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
