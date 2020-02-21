@@ -8,16 +8,17 @@ import java.util.Map;
 
 public class MenuCategory {
 
+    private String id;
+
+    private String name;
+
     public MenuCategory() {
     }
 
-    public MenuCategory(String name) {
+    public MenuCategory(String id, String name) {
+        setId(id);
         setName(name);
     }
-
-    private Map<String, MenuElement> menuList = new HashMap<>();
-
-    private String name;
 
     public String getName() {
         return name;
@@ -27,11 +28,11 @@ public class MenuCategory {
         this.name = name;
     }
 
-    public Map<String, MenuElement> getMenuList() {
-        return menuList;
+    public String getId() {
+        return id;
     }
 
-    public void setMenuList(Map<String, MenuElement> menuList) {
-        this.menuList = menuList;
+    public void setId(String id) {
+        this.id = id;
     }
 }

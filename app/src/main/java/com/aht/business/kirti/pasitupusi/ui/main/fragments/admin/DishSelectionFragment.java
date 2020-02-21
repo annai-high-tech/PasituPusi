@@ -15,9 +15,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.aht.business.kirti.pasitupusi.R;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.DailyMenuViewModel;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
-import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
+import com.aht.business.kirti.pasitupusi.model.dailymenu.AllTimeMenuViewModel;
+import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElementList;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
 
@@ -34,8 +33,8 @@ public class DishSelectionFragment extends BaseFragment {
     private Calendar calendar;
     private ProgressDialog progressDialog;
 
-    private DailyMenuViewModel dailyMenuViewModel;
-    private MenuCategoryList menuCategoryList;
+    private AllTimeMenuViewModel allTimeMenuViewModel;
+    private MenuElementList menuElementList;
 
     public static DishSelectionFragment newInstance() {
         Bundle args = new Bundle();
@@ -61,9 +60,10 @@ public class DishSelectionFragment extends BaseFragment {
         top_right_arrow =  view.findViewById(R.id.top_right_arrow);
         top_go_to_today =  view.findViewById(R.id.top_go_to_today);
 
-        dailyMenuViewModel = new ViewModelProvider(this).get(DailyMenuViewModel.class);
-        dailyMenuViewModel.getAllTimeMenu().observe(getViewLifecycleOwner(), mObserverResult);
+        allTimeMenuViewModel = new ViewModelProvider(this).get(AllTimeMenuViewModel.class);
+        allTimeMenuViewModel.getAllTimeMenu().observe(getViewLifecycleOwner(), mObserverResult);
 
+        progressDialog.setMessage("Loading...");
         progressDialog.show();
 
         calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
@@ -314,17 +314,17 @@ public class DishSelectionFragment extends BaseFragment {
             date = date + "-0" + d;
 
         // Create and show the dialog.
-        DailyDishSelectionSubFragment newFragment = DailyDishSelectionSubFragment.newInstance(menuCategoryList, date);
+        DailyDishSelectionSubFragment newFragment = DailyDishSelectionSubFragment.newInstance(menuElementList, date);
 
         ((MainActivity)getActivity()).changeFragments(newFragment);
         //newFragment.show(ft, "dialog");
     }
 
-    Observer<MenuCategoryList> mObserverResult = new Observer<MenuCategoryList>() {
+    Observer<MenuElementList> mObserverResult = new Observer<MenuElementList>() {
         @Override
-        public void onChanged(@Nullable MenuCategoryList list) {
+        public void onChanged(@Nullable MenuElementList list) {
 
-            menuCategoryList = list;
+            menuElementList = list;
             progressDialog.dismiss();
 
        }

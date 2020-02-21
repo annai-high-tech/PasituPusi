@@ -21,9 +21,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.DailyMenuViewModel;
+import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenu;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenuList;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
 import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
@@ -39,9 +38,13 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -60,10 +63,9 @@ public class UserDishSelectionFragment extends BaseFragment {
     private String menuDay, today, tomorrow;
 
     private DailyMenuViewModel dailyMenuViewModel;
-    private MenuCategoryList menuCategoryList = null;
     private DailyMenuList dailyMenuList = null;
 
-    private boolean isAllTimeMenuAcquired, isDailyMenuAcquired, isNewObject;
+    private boolean isDailyMenuAcquired, isNewObject;
 
     private ProfileData profileData = null;
 
@@ -111,7 +113,6 @@ public class UserDishSelectionFragment extends BaseFragment {
         newsTextView.setSelected(true);
         //textViewWelcomeMsg.setText("Hello " + ((MainActivity)getActivity()).getProfileData().getName() + "!\n\tWelcome to Pasitu Pusi Menu");
 
-        isAllTimeMenuAcquired = false;
         isDailyMenuAcquired = false;
 
         dailyMenuViewModel = new ViewModelProvider(this).get(DailyMenuViewModel.class);
@@ -127,11 +128,12 @@ public class UserDishSelectionFragment extends BaseFragment {
         }
 
         //if(menuCategoryList == null) {
-            dailyMenuViewModel.getAllTimeMenu().observe(getViewLifecycleOwner(), mObserverResult1);
+            //dailyMenuViewModel.getAllTimeMenu().observe(getViewLifecycleOwner(), mObserverResult1);
         //}
 
-        dailyMenuViewModel.getDailyMenu(menuDay).observe(getViewLifecycleOwner(), mObserverResult2);
+        progressDialog.setMessage("Loading...");
         progressDialog.show();
+        dailyMenuViewModel.getDailyMenu(menuDay).observe(getViewLifecycleOwner(), mObserverResult2);
 
         textViewDate.setOnClickListener(listener);
         top_left_arrow.setOnClickListener(listener);
@@ -154,21 +156,6 @@ public class UserDishSelectionFragment extends BaseFragment {
 
     }
 
-    Observer<MenuCategoryList> mObserverResult1 = new Observer<MenuCategoryList>() {
-        @Override
-        public void onChanged(@Nullable MenuCategoryList list) {
-
-            menuCategoryList = list;
-            isAllTimeMenuAcquired = true;
-
-            if(isAllTimeMenuAcquired && isDailyMenuAcquired) {
-                progressDialog.dismiss();
-                updatePage();
-            }
-
-        }
-    };
-
     Observer<DailyMenuList> mObserverResult2 = new Observer<DailyMenuList>() {
         @Override
         public void onChanged(@Nullable DailyMenuList list) {
@@ -180,9 +167,9 @@ public class UserDishSelectionFragment extends BaseFragment {
             else
                 isDailyMenuAcquired = false;
 
-            if(isAllTimeMenuAcquired && isDailyMenuAcquired) {
-                progressDialog.dismiss();
+            if(isDailyMenuAcquired) {
                 updatePage();
+                progressDialog.dismiss();
             }
 
         }
@@ -275,16 +262,16 @@ public class UserDishSelectionFragment extends BaseFragment {
         contentLayout.invalidate();
         contentLayout.requestLayout();
         menuTitleTextView.setText("");
-        if(dailyMenuList == null || menuCategoryList == null) {
+        if(dailyMenuList == null) {
             addMenuTitle("No Menus for this day");
         } else if(dailyMenuList.getMenuList().size() <= 0) {
             addMenuTitle("No Menus for this day");
         } else {
-            updateMenuItems(menuCategoryList, dailyMenuList, contentLayout);
+            updateMenuItems(dailyMenuList, contentLayout);
         }
     }
 
-    private void updateMenuItems(MenuCategoryList menuCategoryList, DailyMenuList dailyMenuList, LinearLayout contentLayout) {
+    private void updateMenuItems(DailyMenuList dailyMenuList, LinearLayout contentLayout) {
 
         boolean isEmpty = true;
         boolean isOrderEnable = ProfileRole.getValue(profileData.getRole()) > ProfileRole.getValue(ProfileRole.GUEST);
@@ -297,40 +284,52 @@ public class UserDishSelectionFragment extends BaseFragment {
             addMenuTitle(dailyMenuList.getDescription());
         }
 
-        for(MenuCategory list:menuCategoryList.getMenuCategoryList().values()) {
-
-            boolean menuListNotEmpty = false;
-            LinearLayout layout = null;
-            int countItem = 0;
-
-            for(String element:list.getMenuList().keySet()) {
-
-                MenuElement menuElement = list.getMenuList().get(element);
-
-                if(menuElement.isActive()) {
-                    if(dailyMenuList != null && dailyMenuList.getMenuList().containsKey(element)) {
-                        if(!menuListNotEmpty) {
-                            layout = addMenuCategory(contentLayout, list.getName());
-                        }
-                        menuListNotEmpty = true;
-
-                        if(layout != null) {
-                            countItem ++;
-                            addMenuList(layout, menuElement, element, menuListNotEmpty, isOrderEnable);
-
-                            if(countItem % 5 == 0) {
-                                ((MainActivity)getActivity()).getAdsAHT().showNativeAds(this.getContext(), layout);
-                            }
-                        }
-
-                    }
-                    isEmpty = false;
+        List<DailyMenu> list = new ArrayList<>(dailyMenuList.getMenuList().values());
+        Collections.sort(list, new Comparator<DailyMenu>() {
+            @Override
+            public int compare(DailyMenu o1, DailyMenu o2) {
+                if(o1.getCategoryName() != null && o2.getCategoryName() != null) {
+                    return o1.getCategoryName().compareTo(o2.getCategoryName());
                 }
+                return 0;
+            }
+        });
+
+        int countItem = 0;
+        String menuCategoryName = "";
+        LinearLayout layout = null;
+
+        for(DailyMenu dailyMenu : list) {
+
+            if(!menuCategoryName.equals(dailyMenu.getCategoryName())) {
+
+                if(countItem % 5 != 0) {
+                    ((MainActivity)getActivity()).getAdsAHT().showNativeAds(this.getContext(), layout);
+                }
+
+                menuCategoryName = dailyMenu.getCategoryName();
+                layout = addMenuCategory(contentLayout, menuCategoryName);
+                countItem = 0;
             }
 
-            if(menuListNotEmpty && countItem % 5 != 0) {
-                ((MainActivity)getActivity()).getAdsAHT().showNativeAds(this.getContext(), layout);
+            if(layout != null) {
+                countItem ++;
+                addMenuList(layout,
+                        dailyMenu,
+                        isOrderEnable);
+
+                if(countItem % 5 == 0) {
+                    ((MainActivity)getActivity()).getAdsAHT().showNativeAds(this.getContext(), layout);
+                }
+
             }
+
+            isEmpty = false;
+
+        }
+
+        if(!isEmpty && countItem % 5 != 0) {
+            ((MainActivity)getActivity()).getAdsAHT().showNativeAds(this.getContext(), layout);
         }
 
     }
@@ -398,12 +397,12 @@ public class UserDishSelectionFragment extends BaseFragment {
         return contentLayout;
     }
 
-    private void addMenuList(LinearLayout layout, MenuElement element, String key, boolean selected, boolean isOrderEnable) {
+    private void addMenuList(LinearLayout layout, final DailyMenu dish, boolean isOrderEnable) {
 
         Bitmap thumbnail = null;
 
-        if(element.getPicture() != null) {
-            thumbnail = BitmapUtils.StringToBitMap(element.getPicture());
+        if(dish.getPicture() != null) {
+            thumbnail = BitmapUtils.StringToBitMap(dish.getPicture());
         }
 
         DishOrderData dishOrderData = null;
@@ -413,15 +412,32 @@ public class UserDishSelectionFragment extends BaseFragment {
         }
 
         if(orderDataList.get(menuDay).getOrderList().size() > 0
-                && orderDataList.get(menuDay).getOrderList().containsKey(key)) {
-            dishOrderData = orderDataList.get(menuDay).getOrderList().get(key);
+                && orderDataList.get(menuDay).getOrderList().containsKey(dish.getId().getId())) {
+            dishOrderData = orderDataList.get(menuDay).getOrderList().get(dish.getId().getId());
         } else {
-            dishOrderData = new DishOrderData(key, element.getName(), element.getDescription(), element.getPrice());
+            dishOrderData = new DishOrderData(dish.getId().getId(), dish.getName(), dish.getDescription(), dish.getPrice());
         }
 
-        View view = FoodDishLayoutAdapter.createLayout(this.getContext(), dishOrderData, thumbnail, orderDataList.get(menuDay).getOrderList(), cartLayout, isOrderEnable);
+        final FoodDishLayoutAdapter foodDishLayoutAdapter = new FoodDishLayoutAdapter(this.getContext());
+        View view = foodDishLayoutAdapter.createLayout(dishOrderData, thumbnail, orderDataList.get(menuDay).getOrderList(), cartLayout, isOrderEnable);
 
         layout.addView(view);
+
+
+        dailyMenuViewModel.getDishPicture(dish.getId()).observe(getViewLifecycleOwner(),
+                new Observer<String>() {
+                    @Override
+                    public void onChanged(String picture) {
+
+                        Bitmap thumbnail = null;
+
+                        if(picture != null) {
+                            thumbnail = BitmapUtils.StringToBitMap(picture);
+                        }
+
+                        foodDishLayoutAdapter.updatePicture(thumbnail);
+                    }
+                });
     }
 
     private View.OnClickListener listener        =   new View.OnClickListener(){
@@ -434,6 +450,7 @@ public class UserDishSelectionFragment extends BaseFragment {
                 menuDay = dateFormat(calendar);
 
                 dailyMenuViewModel.getDailyMenu(menuDay).observe(UserDishSelectionFragment.this.getViewLifecycleOwner(), mObserverResult2);
+                progressDialog.setMessage("Loading...");
                 progressDialog.show();
 
             } else if(view.getId() == top_right_arrow.getId()) {
@@ -441,6 +458,7 @@ public class UserDishSelectionFragment extends BaseFragment {
                 menuDay = dateFormat(calendar);
 
                 dailyMenuViewModel.getDailyMenu(menuDay).observe(UserDishSelectionFragment.this.getViewLifecycleOwner(), mObserverResult2);
+                progressDialog.setMessage("Loading...");
                 progressDialog.show();
 
 
@@ -449,6 +467,7 @@ public class UserDishSelectionFragment extends BaseFragment {
                 today = menuDay = dateFormat(calendar);
 
                 dailyMenuViewModel.getDailyMenu(menuDay).observe(UserDishSelectionFragment.this.getViewLifecycleOwner(), mObserverResult2);
+                progressDialog.setMessage("Loading...");
                 progressDialog.show();
 
             } else if (view.getId() == textViewDate.getId()) {
@@ -489,6 +508,7 @@ public class UserDishSelectionFragment extends BaseFragment {
             menuDay = dateFormat(calendar);
 
             dailyMenuViewModel.getDailyMenu(menuDay).observe(UserDishSelectionFragment.this.getViewLifecycleOwner(), mObserverResult2);
+            progressDialog.setMessage("Loading...");
             progressDialog.show();
         }
 

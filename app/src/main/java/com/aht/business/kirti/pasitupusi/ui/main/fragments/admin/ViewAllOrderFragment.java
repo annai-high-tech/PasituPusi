@@ -120,6 +120,7 @@ public class ViewAllOrderFragment extends BaseFragment {
 
         orderViewModel.getAllOrders(menuDay).observe(getViewLifecycleOwner(), mObserverResult1);
 
+        progressDialog.setMessage("Loading...");
         progressDialog.show();
 
         textViewDate.setOnClickListener(listener);
@@ -330,6 +331,7 @@ public class ViewAllOrderFragment extends BaseFragment {
                 menuDay = dateFormat(calendar);
 
                 orderViewModel.getAllOrders(menuDay).observe(getViewLifecycleOwner(), mObserverResult1);
+                progressDialog.setMessage("Loading...");
                 progressDialog.show();
 
             } else if(view.getId() == top_right_arrow.getId()) {
@@ -337,6 +339,7 @@ public class ViewAllOrderFragment extends BaseFragment {
                 menuDay = dateFormat(calendar);
 
                 orderViewModel.getAllOrders(menuDay).observe(getViewLifecycleOwner(), mObserverResult1);
+                progressDialog.setMessage("Loading...");
                 progressDialog.show();
 
 
@@ -345,6 +348,7 @@ public class ViewAllOrderFragment extends BaseFragment {
                 today = menuDay = dateFormat(calendar);
 
                 orderViewModel.getAllOrders(menuDay).observe(getViewLifecycleOwner(), mObserverResult1);
+                progressDialog.setMessage("Loading...");
                 progressDialog.show();
 
             } else if (view.getId() == textViewDate.getId()) {
@@ -380,6 +384,7 @@ public class ViewAllOrderFragment extends BaseFragment {
             menuDay = dateFormat(calendar);
 
             orderViewModel.getAllOrders(menuDay).observe(getViewLifecycleOwner(), mObserverResult1);
+            progressDialog.setMessage("Loading...");
             progressDialog.show();
         }
 

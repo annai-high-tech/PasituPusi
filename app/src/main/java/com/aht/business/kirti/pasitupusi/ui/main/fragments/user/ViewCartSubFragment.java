@@ -331,6 +331,7 @@ public class ViewCartSubFragment extends SubPageFragment {
             LinearLayout buttonLayout;
 
             if(button.getText().equals(PLACE_ORDER_BUTTON_TEXT)) {
+                progressDialog.setMessage("Loading...");
                 progressDialog.show();
                 orderDataList.get(date).setOrderPlacedTime(calendar.getTime());
                 orderViewModel.addOrder(date, orderDataList.get(date)).observe(getViewLifecycleOwner(), mObserverResult2);

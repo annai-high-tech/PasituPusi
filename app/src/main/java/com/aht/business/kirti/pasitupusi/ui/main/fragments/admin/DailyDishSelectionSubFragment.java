@@ -27,6 +27,7 @@ import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenuList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
+import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElementList;
 import com.aht.business.kirti.pasitupusi.model.utils.DateUtils;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.SubPageFragment;
 
@@ -46,18 +47,18 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
 
     private DailyMenuViewModel dailyMenuViewModel;
     private DailyMenuList dailyMenuList;
-    private MenuCategoryList menuCategoryList;
+    private MenuElementList menuElementList;
     private String date;
 
     public DailyDishSelectionSubFragment() {
         super("Daily Dish Selection");
     }
 
-    public static DailyDishSelectionSubFragment newInstance(MenuCategoryList menuCategoryList, String date) {
+    public static DailyDishSelectionSubFragment newInstance(MenuElementList menuElementList, String date) {
         Bundle args = new Bundle();
         DailyDishSelectionSubFragment f = new DailyDishSelectionSubFragment();
         f.setArguments(args);
-        f.menuCategoryList = menuCategoryList;
+        f.menuElementList = menuElementList;
         f.date = date;
         return f;
     }
@@ -83,6 +84,7 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
 
         dailyMenuViewModel = new ViewModelProvider(this).get(DailyMenuViewModel.class);
         dailyMenuViewModel.getDailyMenu(date).observe(getViewLifecycleOwner(), mObserverResult1);
+        progressDialog.setMessage("Loading...");
         progressDialog.show();
 
         /*((TextView)tv).setText("Dialog #" + mNum + ": using style "
@@ -100,7 +102,7 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
         return v;
     }
 
-    private void updatePage(MenuCategoryList menuCategoryList, DailyMenuList dailyMenuList, LinearLayout contentLayout) {
+    private void updatePage(MenuElementList menuElementList, DailyMenuList dailyMenuList, LinearLayout contentLayout) {
 
         boolean isEmpty = true;
         boolean firstTime = true;
@@ -108,28 +110,29 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
         contentLayout.removeAllViewsInLayout();
         save = reset = null;
 
-        for(MenuCategory list:menuCategoryList.getMenuCategoryList().values()) {
+        String menuCategory = "";
+
+        for(MenuElement menuElement:menuElementList.getMenuElementList()) {
             if(firstTime && dailyMenuList != null) {
                 firstTime = false;
                 addMenuDescription(contentLayout, dailyMenuList.getDescription(), isOldDate);
             }
 
-            addMenuCategory(contentLayout, list.getName());
-
-            for(String element:list.getMenuList().keySet()) {
-
-                MenuElement menuElement = list.getMenuList().get(element);
-
-                if(menuElement.isActive()) {
-                    boolean selected = false;
-
-                    if(dailyMenuList != null && dailyMenuList.getMenuList().containsKey(element)) {
-                        selected = true;
-                    }
-                    addMenuList(contentLayout, menuElement, element, selected, isOldDate);
-                    isEmpty = false;
-                }
+            if(!menuCategory.equals(menuElement.getCategory().getId())) {
+                addMenuCategory(contentLayout, menuElement.getCategory().getId());
             }
+            menuCategory = menuElement.getCategory().getId();
+
+            if(menuElement.isActive()) {
+                boolean selected = false;
+
+                if(dailyMenuList != null && dailyMenuList.getMenuList().containsKey(menuElement.getId())) {
+                    selected = true;
+                }
+                addMenuList(contentLayout, menuElement, menuElement.getId(), selected, isOldDate);
+                isEmpty = false;
+            }
+
         }
 
         if(!isEmpty && !isOldDate) {
@@ -208,7 +211,7 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
 
     }
 
-    private void addMenuList(LinearLayout layout, MenuElement element, String key, boolean selected, boolean isOldDate) {
+    private void addMenuList(LinearLayout layout, final MenuElement element, String key, boolean selected, boolean isOldDate) {
 
         LinearLayout rowLayout = new LinearLayout(this.getContext());
         CheckBox cb = new CheckBox(this.getContext());
@@ -217,7 +220,26 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
         cb.setText(key);
         textView.setText(element.getName());
 
-        cb.setOnCheckedChangeListener(checkBoxListener);
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Map<String, DailyMenu> menuList = dailyMenuList.getMenuList();
+                String key = buttonView.getText().toString();
+
+                if(isChecked && !menuList.containsKey(key)) {
+                    menuList.put(key, new DailyMenu(key, element));
+                    save.setEnabled(true);
+                    reset.setEnabled(true);
+
+                } else if(!isChecked && menuList.containsKey(key)) {
+                    menuList.remove(key);
+                    save.setEnabled(true);
+                    reset.setEnabled(true);
+                }
+            }
+        });
+
+
         cb.setChecked(selected);
         cb.setEnabled(!isOldDate);
 
@@ -244,7 +266,7 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
             dailyMenuList = list;
 
             if(dailyMenuList != null) {
-                updatePage(menuCategoryList, dailyMenuList, contentLayout);
+                updatePage(menuElementList, dailyMenuList, contentLayout);
 
                 progressDialog.dismiss();
             }
@@ -262,7 +284,7 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
 
             } else {
 
-                updatePage(menuCategoryList, dailyMenuList, contentLayout);
+                updatePage(menuElementList, dailyMenuList, contentLayout);
 
                 progressDialog.dismiss();
             }
@@ -276,6 +298,7 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
 
             if(((Button)view).getText().equals("Save")) {
 
+                progressDialog.setMessage("Loading...");
                 progressDialog.show();
                 dailyMenuViewModel.updateDailyMenu(date, dailyMenuList).observe(getViewLifecycleOwner(), mObserverResult2);
 
@@ -289,26 +312,6 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
             reset.setEnabled(false);
 
         }
-    };
-
-    private CompoundButton.OnCheckedChangeListener checkBoxListener =   new CompoundButton.OnCheckedChangeListener(){
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            Map<String, DailyMenu> menuList = dailyMenuList.getMenuList();
-            String key = buttonView.getText().toString();
-
-            if(isChecked && !menuList.containsKey(key)) {
-                menuList.put(key, new DailyMenu(key));
-                save.setEnabled(true);
-                reset.setEnabled(true);
-
-            } else if(!isChecked && menuList.containsKey(key)) {
-                menuList.remove(key);
-                save.setEnabled(true);
-                reset.setEnabled(true);
-            }
-        }
-
     };
 
 }

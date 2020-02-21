@@ -9,18 +9,31 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.lifecycle.Observer;
+
 import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.order.data.DishOrderData;
+import com.aht.business.kirti.pasitupusi.model.utils.BitmapUtils;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.user.UserDishSelectionFragment;
 
 import java.util.Map;
 
-public final class FoodDishLayoutAdapter {
+public class FoodDishLayoutAdapter {
 
+    private View view;
+
+    private Context context;
+
+    private ImageView pictureImageView;
 
     private FoodDishLayoutAdapter() {
     }
 
-    public static View createLayout(final Context context, final DishOrderData data, final Bitmap picture, final Map<String, DishOrderData> orderList, final LinearLayout cartLayout, final boolean isOrderEnable) {
+    public FoodDishLayoutAdapter(final Context context) {
+        this.context = context;
+    }
+
+    public View createLayout(final DishOrderData data, final Bitmap picture, final Map<String, DishOrderData> orderList, final LinearLayout cartLayout, final boolean isOrderEnable) {
 
         String name, description, price, count;
 
@@ -29,12 +42,12 @@ public final class FoodDishLayoutAdapter {
 
         //get the inflater and inflate the XML layout for each item
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.component_food_dish_layout, null);
+        view = inflater.inflate(R.layout.component_food_dish_layout, null);
 
         TextView nameTextView = (TextView) view.findViewById(R.id.dishname);
         TextView descriptionTextView = (TextView) view.findViewById(R.id.dishdescription);
         TextView priceTextView = (TextView) view.findViewById(R.id.dishprice);
-        ImageView pictureImageView = (ImageView) view.findViewById(R.id.dishpicture);
+        pictureImageView = (ImageView) view.findViewById(R.id.dishpicture);
         final TextView orderCountTextView = (TextView) view.findViewById(R.id.orderCountTextView);
         final ImageView orderPlusImageView = (ImageView) view.findViewById(R.id.orderPlusImageView);
         final ImageView orderMinusImageView = (ImageView) view.findViewById(R.id.orderMinusImageView);
@@ -54,13 +67,9 @@ public final class FoodDishLayoutAdapter {
         nameTextView.setText(name);
         descriptionTextView.setText(description);
         priceTextView.setText(price);
-        if(picture != null) {
-            pictureImageView.setImageBitmap(picture);
-            pictureImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            pictureImageView.setAdjustViewBounds(true);
-        } else {
-            pictureImageView.setImageDrawable(context.getResources().getDrawable(R.mipmap.ic_launcher));
-        }
+
+        updatePicture(picture);
+
         orderCountTextView.setText(count);
         if(data.getQuantity() > 0 && !orderList.containsKey(data.getId())) {
             orderList.put(data.getId(), data);
@@ -114,10 +123,18 @@ public final class FoodDishLayoutAdapter {
             orderMinusImageView.setVisibility(View.GONE);
             orderCountTextView.setVisibility(View.GONE);
         }
-
-
-
         return view;
+    }
+
+    public void updatePicture(final Bitmap picture) {
+
+        if(picture != null) {
+            pictureImageView.setImageBitmap(picture);
+            pictureImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            pictureImageView.setAdjustViewBounds(true);
+        } else {
+            pictureImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_logo_faded));
+        }
     }
 
     private static void setCartLayout(LinearLayout cartLayout, Map<String, DishOrderData> orderList) {
