@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.aht.business.kirti.pasitupusi.R;
+import com.aht.business.kirti.pasitupusi.model.dailymenu.enums.MenuType;
 import com.aht.business.kirti.pasitupusi.model.order.OrderViewModel;
 import com.aht.business.kirti.pasitupusi.model.order.data.DishOrderData;
 import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
@@ -27,6 +28,7 @@ import com.aht.business.kirti.pasitupusi.model.utils.AnimationUtil;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
 import com.google.android.material.bottomappbar.BottomAppBar;
 
+import java.text.BreakIterator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -112,23 +114,71 @@ public class TrackOrderFragment extends BaseFragment {
             }
             layout = addOrderTitle(contentLayout, list.getOrderId() + " / " + list.getDate(), true, isLatestOrder);
 
-            TableLayout tableLayout = addOrderHeading(layout);
+            boolean firstTime = true;
+            TableLayout tableLayout = null;
 
             for(String element:list.getOrderList().keySet()) {
 
                 DishOrderData orderElement = list.getOrderList().get(element);
 
-                String price, name, quantity, total;
+                if(orderElement.getBreakfastQuantity() > 0) {
+                    String price, name, quantity, total;
+                    if(firstTime) {
+                        tableLayout = addOrderHeading(layout, "Breakfast");
+                        firstTime = false;
+                    }
+                    price = String.valueOf(orderElement.getPrice());
+                    name = orderElement.getName();
+                    quantity = String.valueOf(orderElement.getBreakfastQuantity());
+                    total = String.valueOf(orderElement.getPrice() * orderElement.getBreakfastQuantity());
 
-                price = String.valueOf(orderElement.getPrice());
-                name = orderElement.getName();
-                quantity = String.valueOf(orderElement.getQuantity());
-                total = String.valueOf(orderElement.getPrice() * orderElement.getQuantity());
-
-                addOrderLineItem(tableLayout, price, name, quantity, total, false);
+                    addOrderLineItem(tableLayout, price, name, quantity, total, false);
+                }
             }
 
-            addTotalCost(tableLayout, list.getTotalCost(), list.getOrderPlacedTime(), list.getOrderDeliveredTime());
+            firstTime = true;
+            for(String element:list.getOrderList().keySet()) {
+
+                DishOrderData orderElement = list.getOrderList().get(element);
+
+                if(orderElement.getLunchQuantity() > 0) {
+                    String price, name, quantity, total;
+                    if(firstTime) {
+                        tableLayout = addOrderHeading(layout, "Lunch");
+                        firstTime = false;
+                    }
+                    price = String.valueOf(orderElement.getPrice());
+                    name = orderElement.getName();
+                    quantity = String.valueOf(orderElement.getLunchQuantity());
+                    total = String.valueOf(orderElement.getPrice() * orderElement.getLunchQuantity());
+
+                    addOrderLineItem(tableLayout, price, name, quantity, total, false);
+                }
+            }
+
+            firstTime = true;
+            for(String element:list.getOrderList().keySet()) {
+
+                DishOrderData orderElement = list.getOrderList().get(element);
+
+                if(orderElement.getDinnerQuantity() > 0) {
+                    String price, name, quantity, total;
+                    if(firstTime) {
+                        tableLayout = addOrderHeading(layout, "Dinner");
+                        firstTime = false;
+                    }
+                    price = String.valueOf(orderElement.getPrice());
+                    name = orderElement.getName();
+                    quantity = String.valueOf(orderElement.getDinnerQuantity());
+                    total = String.valueOf(orderElement.getPrice() * orderElement.getDinnerQuantity());
+
+                    addOrderLineItem(tableLayout, price, name, quantity, total, false);
+                }
+            }
+
+            if(tableLayout != null) {
+                addTotalCost(tableLayout, list.getTotalCost(), list.getOrderPlacedTime(), list.getOrderDeliveredTime());
+            }
 
         }
 
@@ -195,10 +245,16 @@ public class TrackOrderFragment extends BaseFragment {
         return contentLayout;
     }
 
-    private TableLayout addOrderHeading(LinearLayout layout) {
+    private TableLayout addOrderHeading(LinearLayout layout, String title) {
 
         TableLayout tableLayout = new TableLayout(this.getContext());
+        TextView textView = new TextView(this.getContext());
+
+        layout.addView(textView);
         layout.addView(tableLayout);
+
+        textView.setText(title);
+
         //layout.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         tableLayout.setStretchAllColumns(true);
 

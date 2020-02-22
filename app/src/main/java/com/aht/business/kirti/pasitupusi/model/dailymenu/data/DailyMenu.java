@@ -22,12 +22,13 @@ public class DailyMenu {
 
     private int price;
 
+    private MenuTime menuTime;
 
     public DailyMenu() {
 
     }
 
-    public DailyMenu(String id, MenuElement menuElement) {
+    public DailyMenu(String id, MenuElement menuElement, MenuTime menuTime) {
 
         DocumentReference categoryRef = FirebaseFirestore.getInstance().collection(Database.DATABASE_MENU_DATA_COLLECTION).document(Database.DATABASE_ALL_TIME_MENU_DOCUMENT)
                 .collection(Database.DATABASE_ALL_TIME_MENU_DOCUMENT_DISHES).document(id);
@@ -43,10 +44,12 @@ public class DailyMenu {
 
         if(menuElement.getPicture() != null) {
             Bitmap thumbnailTemp = BitmapUtils.StringToBitMap(menuElement.getPicture());
-            thumbnail = BitmapUtils.getResizedBitmap(thumbnailTemp, 25);
+            thumbnail = BitmapUtils.getResizedBitmap(thumbnailTemp, 10);
         }
 
         setPicture(BitmapUtils.BitMapToString(thumbnail));
+
+        setMenuTime(menuTime);
 
     }
 
@@ -96,5 +99,13 @@ public class DailyMenu {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public MenuTime getMenuTime() {
+        return menuTime;
+    }
+
+    public void setMenuTime(MenuTime menuTime) {
+        this.menuTime = menuTime;
     }
 }

@@ -36,39 +36,137 @@
             android:textColor="@color/colorSecondaryText" />
 
         <LinearLayout
+            android:id="@+id/row2"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="0"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/orderMinusImageView"
+            <LinearLayout
+                android:id="@+id/layoutBreakfast"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_minus_vector" />
-
-            <TextView
-                android:id="@+id/orderCountTextView"
-                android:layout_width="24dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="0"
-                android:textColor="@color/colorPrimaryText" />
+                android:layout_gravity="center_vertical|end"
+                android:layout_weight="0"
+                android:gravity="center_vertical|end"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/orderPlusImageView"
+                <TextView
+                    android:id="@+id/textViewBreakfast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Breakfast" />
+
+                <ImageView
+                    android:id="@+id/orderMinusImageViewBF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_minus_vector" />
+
+                <TextView
+                    android:id="@+id/orderCountTextViewBF"
+                    android:layout_width="24dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/colorPrimaryText" />
+
+                <ImageView
+                    android:id="@+id/orderPlusImageViewBF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_plus_vector" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutLunch"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_plus_vector" />
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical|end"
+                android:layout_weight="0"
+                android:gravity="center_vertical|end"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewLunch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Lunch" />
+
+                <ImageView
+                    android:id="@+id/orderMinusImageViewL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_minus_vector" />
+
+                <TextView
+                    android:id="@+id/orderCountTextViewL"
+                    android:layout_width="24dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/colorPrimaryText" />
+
+                <ImageView
+                    android:id="@+id/orderPlusImageViewL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_plus_vector" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutDinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical|end"
+                android:layout_weight="0"
+                android:gravity="center_vertical|end"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewDinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Dinner" />
+
+                <ImageView
+                    android:id="@+id/orderMinusImageViewD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_minus_vector" />
+
+                <TextView
+                    android:id="@+id/orderCountTextViewD"
+                    android:layout_width="24dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/colorPrimaryText" />
+
+                <ImageView
+                    android:id="@+id/orderPlusImageViewD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_plus_vector" />
+
+            </LinearLayout>
 
         </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/row2"
+        android:id="@+id/row3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -86,7 +184,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/row3"
+        android:id="@+id/row4"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">

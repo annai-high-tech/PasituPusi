@@ -1,25 +1,17 @@
 package com.aht.business.kirti.pasitupusi.model.dailymenu.enums;
 
 public enum MenuType {
-    BREAKFAST(0),
-    LUNCH(1),
-    DINNER(9);
+    BREAKFAST("Breakfast"),
+    LUNCH("Lunch"),
+    DINNER("Dinner");
 
-    private int value;
-    private MenuType(int value){
+    private String value;
+    private MenuType(String value){
         this.value=value;
     }
 
-    public static int getValue(MenuType type) {
+    public static String getValue(MenuType type) {
         return type.value;
     }
 
-    public static MenuType find(int code) {
-        for (MenuType type : MenuType.values()) {
-            if (getValue(type) == code) {
-                return type;
-            }
-        }
-        return null;
-    }
 }

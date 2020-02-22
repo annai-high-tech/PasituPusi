@@ -419,7 +419,7 @@ public class UserDishSelectionFragment extends BaseFragment {
         }
 
         final FoodDishLayoutAdapter foodDishLayoutAdapter = new FoodDishLayoutAdapter(this.getContext());
-        View view = foodDishLayoutAdapter.createLayout(dishOrderData, thumbnail, orderDataList.get(menuDay).getOrderList(), cartLayout, isOrderEnable);
+        View view = foodDishLayoutAdapter.createLayout(dishOrderData, orderDataList.get(menuDay).getOrderList(), thumbnail, dish.getMenuTime(), cartLayout, isOrderEnable);
 
         layout.addView(view);
 

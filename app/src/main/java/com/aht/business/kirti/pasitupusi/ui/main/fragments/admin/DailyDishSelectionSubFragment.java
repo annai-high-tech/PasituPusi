@@ -28,6 +28,7 @@ import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElementList;
+import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuTime;
 import com.aht.business.kirti.pasitupusi.model.utils.DateUtils;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.SubPageFragment;
 
@@ -211,14 +212,27 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
 
     }
 
-    private void addMenuList(LinearLayout layout, final MenuElement element, String key, boolean selected, boolean isOldDate) {
+    private void addMenuList(final LinearLayout layout, final MenuElement element, final String key, final boolean selected, final boolean isOldDate) {
 
-        LinearLayout rowLayout = new LinearLayout(this.getContext());
-        CheckBox cb = new CheckBox(this.getContext());
-        TextView textView = new TextView(this.getContext());
+        final LinearLayout rowLayout = new LinearLayout(this.getContext());
+        final CheckBox cb = new CheckBox(this.getContext());
+        final TextView textView = new TextView(this.getContext());
+        final CheckBox cb1 = new CheckBox(this.getContext());
+        final CheckBox cb2 = new CheckBox(this.getContext());
+        final CheckBox cb3 = new CheckBox(this.getContext());
 
         cb.setText(key);
         textView.setText(element.getName());
+        cb1.setText("Breakfast");
+        cb2.setText("Lunch");
+        cb3.setText("Dinner");
+
+        if(selected) {
+            MenuTime menuTime = dailyMenuList.getMenuList().get(key).getMenuTime();
+            cb1.setChecked(menuTime.isBreakfast());
+            cb2.setChecked(menuTime.isLunch());
+            cb3.setChecked(menuTime.isDinner());
+        }
 
         cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -227,7 +241,7 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
                 String key = buttonView.getText().toString();
 
                 if(isChecked && !menuList.containsKey(key)) {
-                    menuList.put(key, new DailyMenu(key, element));
+                    menuList.put(key, new DailyMenu(key, element, new MenuTime(cb1.isChecked(), cb2.isChecked(), cb3.isChecked())));
                     save.setEnabled(true);
                     reset.setEnabled(true);
 
@@ -236,12 +250,48 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
                     save.setEnabled(true);
                     reset.setEnabled(true);
                 }
+
+                if(isChecked) {
+                    cb1.setEnabled(true);
+                    cb2.setEnabled(true);
+                    cb3.setEnabled(true);
+                } else {
+                    cb1.setEnabled(false);
+                    cb2.setEnabled(false);
+                    cb3.setEnabled(false);
+                }
             }
         });
 
+        class MenuTimeListener implements CompoundButton.OnCheckedChangeListener {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Map<String, DailyMenu> menuList = dailyMenuList.getMenuList();
+                String key = cb.getText().toString();
+
+                if(cb.isChecked() && menuList.containsKey(key)) {
+                    MenuTime menuTime = menuList.get(key).getMenuTime();
+                    menuTime.setBreakfast(cb1.isChecked());
+                    menuTime.setLunch(cb2.isChecked());
+                    menuTime.setDinner(cb3.isChecked());
+                    save.setEnabled(true);
+                    reset.setEnabled(true);
+                }
+
+            }
+        }
+
+        cb1.setOnCheckedChangeListener(new MenuTimeListener());
+        cb2.setOnCheckedChangeListener(new MenuTimeListener());
+        cb3.setOnCheckedChangeListener(new MenuTimeListener());
 
         cb.setChecked(selected);
         cb.setEnabled(!isOldDate);
+
+        cb1.setEnabled(selected);
+        cb2.setEnabled(selected);
+        cb3.setEnabled(selected);
 
         rowLayout.setOrientation(LinearLayout.HORIZONTAL);
         rowLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -255,6 +305,9 @@ public class DailyDishSelectionSubFragment extends SubPageFragment {
 
         rowLayout.addView(cb);
         rowLayout.addView(textView);
+        rowLayout.addView(cb1);
+        rowLayout.addView(cb2);
+        rowLayout.addView(cb3);
         layout.addView(rowLayout);
 
     }

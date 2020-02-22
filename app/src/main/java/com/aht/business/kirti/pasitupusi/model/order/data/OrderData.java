@@ -1,5 +1,7 @@
 package com.aht.business.kirti.pasitupusi.model.order.data;
 
+import com.aht.business.kirti.pasitupusi.model.order.enums.OrderStatus;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,17 +9,23 @@ import java.util.Map;
 
 public class OrderData {
 
-    String orderId;
+    private String orderId;
 
-    String date;
+    private String date;
 
-    Date orderPlacedTime;
+    private Date orderPlacedTime;
 
-    Date orderDeliveredTime;
+    private Date orderDeliveredTime;
 
-    String userId;
+    private String userId;
 
-    int totalCost;
+    private int totalCost;
+
+    private OrderStatus breakfastOrderStatus;
+
+    private OrderStatus lunchOrderStatus;
+
+    private OrderStatus dinnerOrderStatus;
 
     private Map<String, DishOrderData> orderList = new HashMap<>();
 
@@ -27,6 +35,9 @@ public class OrderData {
 
     public OrderData(String date) {
         setDate(date);
+        setBreakfastOrderStatus(OrderStatus.NO_ORDER);
+        setLunchOrderStatus(OrderStatus.NO_ORDER);
+        setDinnerOrderStatus(OrderStatus.NO_ORDER);
     }
 
     public String getOrderId() {
@@ -83,5 +94,29 @@ public class OrderData {
 
     public void setOrderDeliveredTime(Date orderDeliveredTime) {
         this.orderDeliveredTime = orderDeliveredTime;
+    }
+
+    public OrderStatus getBreakfastOrderStatus() {
+        return breakfastOrderStatus;
+    }
+
+    public void setBreakfastOrderStatus(OrderStatus breakfastOrderStatus) {
+        this.breakfastOrderStatus = breakfastOrderStatus;
+    }
+
+    public OrderStatus getLunchOrderStatus() {
+        return lunchOrderStatus;
+    }
+
+    public void setLunchOrderStatus(OrderStatus lunchOrderStatus) {
+        this.lunchOrderStatus = lunchOrderStatus;
+    }
+
+    public OrderStatus getDinnerOrderStatus() {
+        return dinnerOrderStatus;
+    }
+
+    public void setDinnerOrderStatus(OrderStatus dinnerOrderStatus) {
+        this.dinnerOrderStatus = dinnerOrderStatus;
     }
 }

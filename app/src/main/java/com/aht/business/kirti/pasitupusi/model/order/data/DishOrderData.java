@@ -1,7 +1,12 @@
 package com.aht.business.kirti.pasitupusi.model.order.data;
 
+import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuTime;
+import com.aht.business.kirti.pasitupusi.model.dailymenu.enums.MenuType;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.IgnoreExtraProperties;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @IgnoreExtraProperties
 public class DishOrderData {
@@ -15,7 +20,11 @@ public class DishOrderData {
 
     private int price;
 
-    private int quantity;
+    private int breakfastQuantity;
+
+    private int lunchQuantity;
+
+    private int dinnerQuantity;
 
     public DishOrderData() {
         this("", "", "", 0);
@@ -27,7 +36,9 @@ public class DishOrderData {
         setName(name);
         setDescription(description);
         setPrice(price);
-        setQuantity(0);
+        setBreakfastQuantity(0);
+        setLunchQuantity(0);
+        setDinnerQuantity(0);
     }
 
     public String getId() {
@@ -63,11 +74,27 @@ public class DishOrderData {
         this.price = price;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getBreakfastQuantity() {
+        return breakfastQuantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setBreakfastQuantity(int breakfastQuantity) {
+        this.breakfastQuantity = breakfastQuantity;
+    }
+
+    public int getLunchQuantity() {
+        return lunchQuantity;
+    }
+
+    public void setLunchQuantity(int lunchQuantity) {
+        this.lunchQuantity = lunchQuantity;
+    }
+
+    public int getDinnerQuantity() {
+        return dinnerQuantity;
+    }
+
+    public void setDinnerQuantity(int dinnerQuantity) {
+        this.dinnerQuantity = dinnerQuantity;
     }
 }

@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.aht.business.kirti.pasitupusi.R;
+import com.aht.business.kirti.pasitupusi.model.dailymenu.enums.MenuType;
 import com.aht.business.kirti.pasitupusi.model.order.OrderViewModel;
 import com.aht.business.kirti.pasitupusi.model.order.data.DishOrderData;
 import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
@@ -101,22 +102,67 @@ public class ViewCartSubFragment extends SubPageFragment {
         }
 
         int allOrderCost = 0;
-
-        TableLayout tableLayout = addOrderHeading(contentLayout);
+        boolean firstTime = true;
+        TableLayout tableLayout = null;
 
         for(DishOrderData list:orderList.values()) {
 
             String price, name, quantity, total;
 
-            price = String.valueOf(list.getPrice());
-            name = list.getName();
-            quantity = String.valueOf(list.getQuantity());
-            total = String.valueOf(list.getPrice() * list.getQuantity());
-            allOrderCost += list.getPrice() * list.getQuantity();
+            if(list.getBreakfastQuantity() > 0) {
+                if(firstTime) {
+                    tableLayout = addOrderHeading(contentLayout, "Breakfast");
+                    firstTime = false;
+                }
+                price = String.valueOf(list.getPrice());
+                name = list.getName();
+                quantity = String.valueOf(list.getBreakfastQuantity());
+                total = String.valueOf(list.getPrice() * list.getBreakfastQuantity());
+                allOrderCost += list.getPrice() * list.getBreakfastQuantity();
 
-            addOrderLineItem(tableLayout, price, name, quantity, total, false);
+                addOrderLineItem(tableLayout, price, name, quantity, total, false);
+            }
         }
 
+        firstTime = true;
+        for(DishOrderData list:orderList.values()) {
+
+            String price, name, quantity, total;
+
+            if(list.getLunchQuantity() > 0) {
+                if(firstTime) {
+                    tableLayout = addOrderHeading(contentLayout, "Lunch");
+                    firstTime = false;
+                }
+                price = String.valueOf(list.getPrice());
+                name = list.getName();
+                quantity = String.valueOf(list.getLunchQuantity());
+                total = String.valueOf(list.getPrice() * list.getLunchQuantity());
+                allOrderCost += list.getPrice() * list.getLunchQuantity();
+
+                addOrderLineItem(tableLayout, price, name, quantity, total, false);
+            }
+        }
+
+        firstTime = true;
+        for(DishOrderData list:orderList.values()) {
+
+            String price, name, quantity, total;
+
+            if(list.getDinnerQuantity() > 0) {
+                if(firstTime) {
+                    tableLayout = addOrderHeading(contentLayout, "Dinner");
+                    firstTime = false;
+                }
+                price = String.valueOf(list.getPrice());
+                name = list.getName();
+                quantity = String.valueOf(list.getDinnerQuantity());
+                total = String.valueOf(list.getPrice() * list.getDinnerQuantity());
+                allOrderCost += list.getPrice() * list.getDinnerQuantity();
+
+                addOrderLineItem(tableLayout, price, name, quantity, total, false);
+            }
+        }
         orderData.setTotalCost(allOrderCost);
         if(allOrderCost > 0) {
 
@@ -125,17 +171,25 @@ public class ViewCartSubFragment extends SubPageFragment {
                 isValidNewOrder = false;
             }
 
-            addTotalCostAndOrderButtons(tableLayout, allOrderCost, isValidNewOrder);
+            if(tableLayout != null) {
+                addTotalCostAndOrderButtons(tableLayout, allOrderCost, isValidNewOrder);
+            }
         }
 
         updateOrderStatus(contentLayout, orderData);
 
     }
 
-    private TableLayout addOrderHeading(LinearLayout layout) {
+    private TableLayout addOrderHeading(LinearLayout layout, String title) {
 
         TableLayout tableLayout = new TableLayout(this.getContext());
+        TextView textView = new TextView(this.getContext());
+
+        layout.addView(textView);
         layout.addView(tableLayout);
+
+        textView.setText(title);
+
         //layout.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         tableLayout.setStretchAllColumns(true);
 
