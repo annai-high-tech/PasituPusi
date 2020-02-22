@@ -192,7 +192,7 @@ public class DishSelectionFragment extends BaseFragment {
                 }
                 textSelection(textView, date == dateSelect);
 
-                viewById.setOnClickListener(menuDaylistener);
+                viewById.setOnClickListener(menuDayListener);
 
                 if(date == endDate) end = true;
             }
@@ -256,27 +256,11 @@ public class DishSelectionFragment extends BaseFragment {
         }
     };
 
-    //static int aaaaaaaaaa = 0;
-    private View.OnClickListener menuDaylistener        =   new View.OnClickListener(){
+    private View.OnClickListener menuDayListener =   new View.OnClickListener(){
         @Override
         public void onClick(View view){
 
-            //aaaaaaaaaa++;
-
             ((LinearLayout)view).removeViews(1, ((LinearLayout)view).getChildCount() - 1);
-
-            /*if(aaaaaaaaaa == 1) {
-                addTextView(view, "Idly");
-                addTextView(view, "Dosa");
-                addTextView(view, "Biriyani");
-                addTextView(view, "Vatha Kulambu");
-            } else if(aaaaaaaaaa == 2) {
-                addTextView(view, "Puri");
-                addTextView(view, "Meals");
-                addTextView(view, "Kara Kulambu");
-            }else if(aaaaaaaaaa == 3) {
-                aaaaaaaaaa = 0;
-            }*/
 
             showDialog((LinearLayout)view);
         }

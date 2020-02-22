@@ -1,21 +1,14 @@
 package com.aht.business.kirti.pasitupusi.model.ads;
 
 import android.content.Context;
-import android.content.res.XmlResourceParser;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Display;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.ads.nativetemplates.NativeTemplateStyle;
@@ -111,7 +104,7 @@ public class AdsAHT {
     public void loadAllAds() {
         loadBannerAds();
         loadFullScreenAds();
-        loadNativenAds();
+        loadNativeAds();
     }
 
     public void loadBannerAds() {
@@ -132,7 +125,7 @@ public class AdsAHT {
             mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
-    public void loadNativenAds() {
+    public void loadNativeAds() {
         if(adsNativeEnable) {
             mAdLoader.loadAds(new AdRequest.Builder().build(), 5);
         }
@@ -156,7 +149,7 @@ public class AdsAHT {
     public boolean showNativeAds(final Context context, final LinearLayout layout) {
 
         if(unifiedNativeAdQueue.size() < 15) {
-            loadNativenAds();
+            loadNativeAds();
         }
         if (mAdLoader != null && unifiedNativeAdQueue.size() > 0) {
 

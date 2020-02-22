@@ -23,7 +23,6 @@ import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.DailyMenuViewModel;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenu;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenuList;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
 import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
@@ -93,7 +92,7 @@ public class UserDishSelectionFragment extends BaseFragment {
 
         //isNewObject = getArguments().getBoolean("isNewObject");
 
-        ((MainActivity)getActivity()).getAdsAHT().loadNativenAds();
+        ((MainActivity)getActivity()).getAdsAHT().loadNativeAds();
 
         progressDialog = new ProgressDialog(this.getContext());
         textViewWelcomeMsg =  view.findViewById(R.id.titleTextView);

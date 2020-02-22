@@ -100,7 +100,7 @@ public class DailyMenuManager {
                  if(task.isSuccessful()) {
                     result.setValue(dailyMenuList);
                 } else {
-                    //Excepion message to be shown to user
+                    //Exception message to be shown to user
                     //TODO
                     System.out.println("Error in updating the database: " + task.getException().getMessage());
 

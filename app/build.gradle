@@ -48,6 +48,12 @@ android {
             enableSplit = true
         }
     }
+    sourceSets {
+        main {
+            res.srcDirs =
+                    ['src/main/res', 'src/main/res/layouts/login', 'src/main/res/layouts/main_fragments', 'src/main/res/layouts/components']
+        }
+    }
 }
 
 dependencies {
