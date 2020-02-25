@@ -14,7 +14,7 @@ import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.user.ViewCartSubFragment;
 
-public class NotificationManager {
+public class NotificationsManager {
 
     private static final String CHANNEL_ID_ORDER = "notifications_order";
     private static final String CHANNEL_ID_DISHES= "notifications_new_dishes";
@@ -22,7 +22,7 @@ public class NotificationManager {
     private Context context;
 
 
-    public NotificationManager() {
+    public NotificationsManager() {
 
     }
 

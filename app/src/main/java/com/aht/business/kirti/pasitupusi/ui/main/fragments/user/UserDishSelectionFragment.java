@@ -23,7 +23,7 @@ import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.DailyMenuViewModel;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenu;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenuList;
-import com.aht.business.kirti.pasitupusi.model.notification.NotificationManager;
+import com.aht.business.kirti.pasitupusi.model.notification.NotificationsManager;
 import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
@@ -68,7 +68,7 @@ public class UserDishSelectionFragment extends BaseFragment {
     private boolean isDailyMenuAcquired, isNewObject;
 
     private ProfileData profileData = null;
-    private NotificationManager notificationManager;
+    private NotificationsManager notificationsManager;
 
     private Map<String, OrderData> orderDataList = new HashMap<>();
 
@@ -94,7 +94,7 @@ public class UserDishSelectionFragment extends BaseFragment {
 
         //isNewObject = getArguments().getBoolean("isNewObject");
 
-        notificationManager = new NotificationManager();
+        notificationsManager = new NotificationsManager();
         ((MainActivity)getActivity()).getAdsAHT().loadNativeAds();
 
         progressDialog = new ProgressDialog(this.getContext());
@@ -181,7 +181,7 @@ public class UserDishSelectionFragment extends BaseFragment {
 
         profileData = ((MainActivity)getActivity()).getProfileData();
 
-        notificationManager.init(this.getContext(), profileData);
+        notificationsManager.init(this.getContext(), profileData);
 
         updateCartLayout();
 
