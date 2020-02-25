@@ -1,8 +1,8 @@
 ext {
     appName = 'Pasitu Pusi'
     appId = 'com.aht.business.kirti.pasitupusi'
-    verCode = 114
-    verName = 'V1.14'
+    verCode = 115
+    verName = 'V1.15'
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
@@ -76,6 +76,7 @@ dependencies {
     implementation 'com.hbb20:ccp:2.3.5'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
 
     //implementation 'com.google.api-client:google-api-client:1.30.6'
     //implementation 'com.google.api:api-common:1.8.1'

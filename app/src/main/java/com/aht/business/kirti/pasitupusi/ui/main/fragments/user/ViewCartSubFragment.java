@@ -1,9 +1,11 @@
 package com.aht.business.kirti.pasitupusi.ui.main.fragments.user;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -17,14 +19,18 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.dailymenu.enums.MenuType;
+import com.aht.business.kirti.pasitupusi.model.notification.NotificationManager;
 import com.aht.business.kirti.pasitupusi.model.order.OrderViewModel;
 import com.aht.business.kirti.pasitupusi.model.order.data.DishOrderData;
 import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
+import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
 import com.aht.business.kirti.pasitupusi.model.utils.AndroidUtils;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.SubPageFragment;
 
@@ -47,17 +53,20 @@ public class ViewCartSubFragment extends SubPageFragment {
     private OrderViewModel orderViewModel;
     private Map<String, OrderData> orderDataList;
     private String date;
+    private ProfileData profileData = null;
+    private NotificationManager notificationManager;
 
     public ViewCartSubFragment() {
         super("Order Summary");
     }
 
-    public static ViewCartSubFragment newInstance(Map<String, OrderData> orderDataList, String date) {
+    public static ViewCartSubFragment newInstance(Map<String, OrderData> orderDataList, String date, ProfileData profileData) {
         Bundle args = new Bundle();
         ViewCartSubFragment f = new ViewCartSubFragment();
         f.setArguments(args);
         f.orderDataList = orderDataList;
         f.date = date;
+        f.profileData = profileData;
         return f;
     }
 
@@ -74,6 +83,7 @@ public class ViewCartSubFragment extends SubPageFragment {
 
         calendar = Calendar.getInstance(TimeZone.getTimeZone(getResources().getString(R.string.timezone)));
 
+        notificationManager = new NotificationManager();
         progressDialog = new ProgressDialog(this.getContext());
         textViewTitle = v.findViewById(R.id.titleTextView);
         contentLayout =  v.findViewById(R.id.contentTableLayout);
@@ -107,6 +117,7 @@ public class ViewCartSubFragment extends SubPageFragment {
             return;
         }
 
+        notificationManager.init(this.getContext(), profileData);
         int allOrderCost = 0;
         boolean firstTime = true;
 
@@ -274,6 +285,11 @@ public class ViewCartSubFragment extends SubPageFragment {
             if(orderData != null) {
 
                 updatePage(orderData, date, contentLayout);
+
+                if(orderData.getOrderId() != null && !orderData.getOrderId().equals("")) {
+                    notificationManager.showNewOrderNotification(orderData);
+                }
+
             }
             progressDialog.dismiss();
 
@@ -286,6 +302,7 @@ public class ViewCartSubFragment extends SubPageFragment {
 
             if(resultStatus) {
                 orderViewModel.getLastOrder(date).observe(getViewLifecycleOwner(), mObserverResult1);
+
             } else {
                 updateOrderStatus(contentLayout, null);
                 progressDialog.dismiss();
