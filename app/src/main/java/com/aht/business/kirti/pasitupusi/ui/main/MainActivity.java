@@ -195,9 +195,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateMenu(Menu nav_Menu, String name, ProfileRole role, String picture) {
 
-        if(ProfileRole.getValue(role) < ProfileRole.getValue(ProfileRole.MANAGER)) {
+        if(ProfileRole.getValue(role) < ProfileRole.getValue(ProfileRole.ADMIN)) {
             nav_Menu.findItem(R.id.nav_admin_configure).setVisible(false);
             nav_Menu.findItem(R.id.nav_admin_update).setVisible(false);
+        }
+
+        if(ProfileRole.getValue(role) < ProfileRole.getValue(ProfileRole.MANAGER)) {
             nav_Menu.findItem(R.id.nav_admin_view_order).setVisible(false);
         }
 

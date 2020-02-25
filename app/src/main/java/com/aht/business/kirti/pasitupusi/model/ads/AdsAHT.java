@@ -179,7 +179,7 @@ public class AdsAHT {
         @Override
         public void onAdFailedToLoad(int errorCode) {
             // Code to be executed when an ad request fails.
-            Toast.makeText(context, "1 Initialisation failed: " + errorCode, Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "1 Initialisation failed: " + errorCode, Toast.LENGTH_LONG).show();
         }
 
     };
@@ -202,7 +202,7 @@ public class AdsAHT {
         @Override
         public void onAdFailedToLoad(int errorCode) {
             // Code to be executed when an ad request fails.
-            Toast.makeText(context, "2 Initialisation failed: " + errorCode, Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "2 Initialisation failed: " + errorCode, Toast.LENGTH_LONG).show();
         }
 
     };

@@ -10,10 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
+        android:maxLines="3"
+        android:padding="5dp"
+        android:singleLine="false"
         android:text="Dish Name" />
 
     <TextView
@@ -21,10 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
+        android:padding="5dp"
         android:text="\u20B9Price" />
 
     <TextView
@@ -32,10 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
+        android:padding="5dp"
         android:text="Quantity" />
 
     <TextView
@@ -43,10 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
+        android:padding="5dp"
         android:text="\u20B9Cost" />
 
 </TableRow>

@@ -46,7 +46,7 @@ public class AllTimeMenuManager {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         MenuElement menuElement = document.toObject(MenuElement.class);
                         menuElementList.getMenuElementList().add(menuElement);
-                        System.out.println(menuElement.getId());
+                        //System.out.println(menuElement.getId());
                     }
 
                     Collections.sort(menuElementList.getMenuElementList(), new Comparator<MenuElement>() {
