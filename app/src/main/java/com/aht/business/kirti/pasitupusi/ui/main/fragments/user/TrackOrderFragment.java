@@ -1,5 +1,6 @@
 package com.aht.business.kirti.pasitupusi.ui.main.fragments.user;
 
+import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -36,6 +37,9 @@ import java.util.List;
 
 public class TrackOrderFragment extends BaseFragment {
 
+    private static final int NUMBER_OF_HEADER_ROWS = 4;
+    private static final int NUMBER_OF_FOOTER_ROWS = 1;
+
     private TextView menuTitleTextView;
     private LinearLayout contentLayout;
 
@@ -61,10 +65,6 @@ public class TrackOrderFragment extends BaseFragment {
 
         menuTitleTextView = view.findViewById(R.id.titleTextView);
         contentLayout = view.findViewById(R.id.contentLayout);
-        //mGoToButton = (Button) view.findViewById(R.id.goto_button);
-        //mGoToButton.setOnClickListener(listener);
-
-        //textViewWelcomeMsg.setText("Hello " + ((MainActivity)getActivity()).getProfileData().getName() + "!\n\tTrack your order page - COMING SOON");
 
         orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
         orderViewModel.getUserOrders().observe(getViewLifecycleOwner(), mObserverResult1);
@@ -87,14 +87,14 @@ public class TrackOrderFragment extends BaseFragment {
 
     private void updatePage(List<OrderData> orderDataList) {
 
-        menuTitleTextView.setText("Track Order");
+        menuTitleTextView.setText("Order Tracking");
 
         contentLayout.removeAllViewsInLayout();
         contentLayout.invalidate();
         contentLayout.requestLayout();
-        menuTitleTextView.setText("");
+
         if(orderDataList == null || orderDataList.size() <= 0) {
-            addOrderTitle(contentLayout, "No Orders for Tracking", false, false);
+            menuTitleTextView.setText("No Orders for Tracking");
         } else {
             updateMenuItems(orderDataList, contentLayout);
         }
@@ -106,16 +106,16 @@ public class TrackOrderFragment extends BaseFragment {
 
         for(OrderData list:orderList) {
             boolean isLatestOrder = true;
-            LinearLayout layout = null;
+            TableLayout layout = null;
             countOrder ++;
 
             if(countOrder > 1) {
                 isLatestOrder = false;
             }
-            layout = addOrderTitle(contentLayout, list.getOrderId() + " / " + list.getDate(), true, isLatestOrder);
+
+            layout = addOrderHeader(contentLayout, list.getOrderId(), list.getDate(), list.getOrderPlacedTime(), list.getOrderDeliveredTime(), list.getTotalCost(), isLatestOrder);
 
             boolean firstTime = true;
-            TableLayout tableLayout = null;
 
             for(String element:list.getOrderList().keySet()) {
 
@@ -124,7 +124,7 @@ public class TrackOrderFragment extends BaseFragment {
                 if(orderElement.getBreakfastQuantity() > 0) {
                     String price, name, quantity, total;
                     if(firstTime) {
-                        tableLayout = addOrderHeading(layout, "Breakfast");
+                        addOrderHeading(layout, "Breakfast", "");
                         firstTime = false;
                     }
                     price = String.valueOf(orderElement.getPrice());
@@ -132,7 +132,7 @@ public class TrackOrderFragment extends BaseFragment {
                     quantity = String.valueOf(orderElement.getBreakfastQuantity());
                     total = String.valueOf(orderElement.getPrice() * orderElement.getBreakfastQuantity());
 
-                    addOrderLineItem(tableLayout, price, name, quantity, total, false);
+                    addOrderLineItem(layout, price, name, quantity, total, false);
                 }
             }
 
@@ -144,7 +144,7 @@ public class TrackOrderFragment extends BaseFragment {
                 if(orderElement.getLunchQuantity() > 0) {
                     String price, name, quantity, total;
                     if(firstTime) {
-                        tableLayout = addOrderHeading(layout, "Lunch");
+                        addOrderHeading(layout, "Lunch", "");
                         firstTime = false;
                     }
                     price = String.valueOf(orderElement.getPrice());
@@ -152,7 +152,7 @@ public class TrackOrderFragment extends BaseFragment {
                     quantity = String.valueOf(orderElement.getLunchQuantity());
                     total = String.valueOf(orderElement.getPrice() * orderElement.getLunchQuantity());
 
-                    addOrderLineItem(tableLayout, price, name, quantity, total, false);
+                    addOrderLineItem(layout, price, name, quantity, total, false);
                 }
             }
 
@@ -164,7 +164,7 @@ public class TrackOrderFragment extends BaseFragment {
                 if(orderElement.getDinnerQuantity() > 0) {
                     String price, name, quantity, total;
                     if(firstTime) {
-                        tableLayout = addOrderHeading(layout, "Dinner");
+                        addOrderHeading(layout, "Dinner", "");
                         firstTime = false;
                     }
                     price = String.valueOf(orderElement.getPrice());
@@ -172,188 +172,92 @@ public class TrackOrderFragment extends BaseFragment {
                     quantity = String.valueOf(orderElement.getDinnerQuantity());
                     total = String.valueOf(orderElement.getPrice() * orderElement.getDinnerQuantity());
 
-                    addOrderLineItem(tableLayout, price, name, quantity, total, false);
+                    addOrderLineItem(layout, price, name, quantity, total, false);
                 }
-            }
-
-            if(tableLayout != null) {
-                addTotalCost(tableLayout, list.getTotalCost(), list.getOrderPlacedTime(), list.getOrderDeliveredTime());
             }
 
         }
 
     }
 
-    private LinearLayout addOrderTitle(LinearLayout layout, String text, boolean isCollapseButtonRequired, boolean isCollapse) {
+    private TableLayout addOrderHeader(LinearLayout layout, String orderId, String orderDate, Date orderedDate, Date deliveredDate, int totalCost, boolean isCollapse) {
 
-        LinearLayout rowLayout = new LinearLayout(this.getContext());
-        LinearLayout row1Layout = new LinearLayout(this.getContext());
-        TextView textView = new TextView(this.getContext());
-        final ImageView imageViewCollapse = new ImageView(this.getContext());
-        final LinearLayout contentLayout = new LinearLayout(this.getContext());
+        LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.component_track_order_layout, null);
 
-        textView.setText(text);
-        imageViewCollapse.setImageDrawable(this.getResources().getDrawable(android.R.drawable.arrow_up_float));
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        TextView textViewOrderId = view.findViewById(R.id.textViewOrderID);
+        TextView textViewOrderDate = view.findViewById(R.id.textViewOrderDate);
+        TextView textViewOrderedDate = view.findViewById(R.id.textViewOrderedDate);
+        TextView textViewDeliveredDate = view.findViewById(R.id.textViewDeliveredDate);
+        TextView textViewTotalCost = view.findViewById(R.id.textViewTotalCost);
+        final LinearLayout headerLayout = view.findViewById(R.id.layoutOrderCollapse);
+        final ImageView imageViewCollapse = view.findViewById(R.id.imageViewCollapse);
+        final TableLayout tableLayout = view.findViewById(R.id.tableLayout);
 
-        textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        imageViewCollapse.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        row1Layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        rowLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        rowLayout.setGravity(Gravity.CENTER_VERTICAL);
-        row1Layout.setGravity(Gravity.END);
-        textView.setGravity(Gravity.CENTER_VERTICAL);
-
-        rowLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
-        textView.setTextColor(getResources().getColor(R.color.colorWhiteText));
-        textView.setTypeface(null, Typeface.BOLD);
-
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
-
-        rowLayout.addView(textView);
-        rowLayout.addView(row1Layout);
-
-        layout.addView(rowLayout);
-        layout.addView(contentLayout);
-
-        if(isCollapseButtonRequired) {
-            rowLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    toggle_contents(imageViewCollapse, contentLayout);
-                }
-            });
-            row1Layout.addView(imageViewCollapse);
-
-            if(!isCollapse) {
-                rowLayout.performClick();
-            }
+        textViewOrderId.setText(orderId);
+        textViewOrderDate.setText(orderDate);
+        textViewTotalCost.setText(String.valueOf(totalCost));
+        if(orderedDate != null) {
+            textViewOrderedDate.setText(dateFormat.format(orderedDate));
+        } else {
+            textViewOrderedDate.setText("");
+        }
+        if(deliveredDate != null) {
+            textViewDeliveredDate.setText(dateFormat.format(deliveredDate));
+        } else {
+            textViewDeliveredDate.setText("");
         }
 
-        rowLayout.setPadding(10, 10, 10, 10);
+        layout.addView(view);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(10, 10, 10, 10);
-        contentLayout.setOrientation(LinearLayout.VERTICAL);
-        contentLayout.setLayoutParams(params);
+        headerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle_contents(imageViewCollapse, tableLayout);
+            }
+        });
 
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params1.setMargins(0, 30, 0, 0);
-        rowLayout.setLayoutParams(params1);
-
-        return contentLayout;
-    }
-
-    private TableLayout addOrderHeading(LinearLayout layout, String title) {
-
-        TableLayout tableLayout = new TableLayout(this.getContext());
-        TextView textView = new TextView(this.getContext());
-
-        layout.addView(textView);
-        layout.addView(tableLayout);
-
-        textView.setText(title);
-
-        //layout.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        tableLayout.setStretchAllColumns(true);
-
-        addOrderLineItem(tableLayout, "Price", "Dish Name", "Quantity", "Cost", true);
+        if(!isCollapse) {
+            headerLayout.performClick();
+        }
 
         return tableLayout;
     }
 
-    private void addOrderLineItem(TableLayout layout, String price, String name, String quantity, String total, boolean isHeading) {
+    private void addOrderHeading(TableLayout layout, String title, String orderStatus) {
 
-        TableRow eachRow = new TableRow(this.getContext());
-        TextView textViewPrice = new TextView(this.getContext());
-        TextView textViewName = new TextView(this.getContext());
-        TextView textViewQuantity = new TextView(this.getContext());
-        TextView textViewTotal = new TextView(this.getContext());
+        LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View view1 = inflater.inflate(R.layout.component_order_summary_title, null);
+        View view2 = inflater.inflate(R.layout.component_track_order_status, null);
 
-        textViewPrice.setText("\u20B9" + price);
-        textViewName.setText(name);
-        textViewQuantity.setText(quantity);
-        textViewTotal.setText("\u20B9" + total);
+        layout.addView(view1, layout.getChildCount() - NUMBER_OF_FOOTER_ROWS);
+        layout.addView(view2, layout.getChildCount() - NUMBER_OF_FOOTER_ROWS);
 
-        eachRow.addView(textViewName);
-        eachRow.addView(textViewPrice);
-        eachRow.addView(textViewQuantity);
-        eachRow.addView(textViewTotal);
-        layout.addView(eachRow);
+        TextView textViewTitle = view1.findViewById(R.id.textViewTitle);
+        TextView textViewStatus = view2.findViewById(R.id.textViewOrderStatus);
 
-        //eachRow.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        textViewTitle.setText(title);
+        textViewStatus.setText(orderStatus);
 
-        textViewQuantity.setGravity(Gravity.CENTER);
-
-        int fontSize = 14;
-        if(isHeading) {
-            fontSize = 15;
-
-            textViewPrice.setTypeface(null, Typeface.BOLD);
-            textViewName.setTypeface(null, Typeface.BOLD);
-            textViewQuantity.setTypeface(null, Typeface.BOLD);
-            textViewTotal.setTypeface(null, Typeface.BOLD);
-
-            int paddingPix = AndroidUtils.dpToPixel(this.getContext(), 5);
-            eachRow.setPadding(0, paddingPix, 0, paddingPix);
-        } else {
-            int paddingPix = AndroidUtils.dpToPixel(this.getContext(), 5);
-            eachRow.setPadding(0, 0, 0, paddingPix);
-
-        }
-
-        textViewPrice.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-        textViewName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-        textViewQuantity.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-        textViewTotal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-
-        //textViewPrice.setWidth(AndroidUtils.dpToPixel(this.getContext(), 40));
-        //textViewQuantity.setWidth(AndroidUtils.dpToPixel(this.getContext(), 40));
-        //textViewTotal.setWidth(AndroidUtils.dpToPixel(this.getContext(), 60));
     }
 
-    private void addTotalCost(TableLayout layout, int allOrderCost, Date orderedDate, Date deliveredDate) {
+    private void addOrderLineItem(TableLayout layout, String price, String name, String quantity, String total, boolean isHeading) {
 
-        TableRow row1 = new TableRow(this.getContext());
-        TextView textViewTotalCostTitle = new TextView(this.getContext());
-        TextView textViewTotalCost = new TextView(this.getContext());
-        TextView textViewOrderedTime = new TextView(this.getContext());
-        TextView textViewDeliveredTime = new TextView(this.getContext());
+        LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.component_order_summary_row, null);
 
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        layout.addView(view, layout.getChildCount() - NUMBER_OF_FOOTER_ROWS - 1);
 
-        textViewTotalCostTitle.setText("Total");
-        textViewTotalCost.setText("\u20B9" + String.valueOf(allOrderCost));
+        TextView textViewPrice = view.findViewById(R.id.textViewPrice);
+        TextView textViewName = view.findViewById(R.id.textViewName);
+        TextView textViewQuantity = view.findViewById(R.id.textViewQuantity);
+        TextView textViewTotal = view.findViewById(R.id.textViewCost);
 
-        row1.addView(new TextView(this.getContext()));
-        row1.addView(new TextView(this.getContext()));
-        row1.addView(textViewTotalCostTitle);
-        row1.addView(textViewTotalCost);
-
-        layout.addView(row1);
-
-        if(orderedDate != null) {
-            textViewOrderedTime.setText("Ordered at " + dateFormat.format(orderedDate));
-            layout.addView(textViewOrderedTime);
-        }
-        if(deliveredDate != null) {
-            textViewDeliveredTime.setText("Delivered at " + dateFormat.format(orderedDate));
-            layout.addView(textViewOrderedTime);
-        } else {
-
-        }
-
-        int fontSize = 16;
-        textViewTotalCostTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-        textViewTotalCostTitle.setTypeface(null, Typeface.BOLD);
-
-        fontSize = 14;
-        textViewTotalCost.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-        textViewTotalCost.setTypeface(null, Typeface.BOLD);
-
-        int paddingPix = AndroidUtils.dpToPixel(this.getContext(), 10);
-        row1.setPadding(0, paddingPix, 0, paddingPix);
+        textViewPrice.setText(price);
+        textViewName.setText(name);
+        textViewQuantity.setText(quantity);
+        textViewTotal.setText(total);
 
     }
 

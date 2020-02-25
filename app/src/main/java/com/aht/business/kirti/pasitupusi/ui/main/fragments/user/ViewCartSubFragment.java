@@ -1,5 +1,6 @@
 package com.aht.business.kirti.pasitupusi.ui.main.fragments.user;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -33,11 +34,11 @@ import java.util.TimeZone;
 
 public class ViewCartSubFragment extends SubPageFragment {
 
-    private static final String PLACE_ORDER_BUTTON_TEXT = "Place Order";
-    private static final String CANCEL_ORDER_BUTTON_TEXT = "Cancel Order";
+    private static final int NUMBER_OF_HEADER_ROWS = 2;
+    private static final int NUMBER_OF_FOOTER_ROWS = 3;
 
     private TextView textViewTitle;
-    private LinearLayout contentLayout;
+    private TableLayout contentLayout;
     private ProgressDialog progressDialog;
 
     private Calendar calendar;
@@ -75,7 +76,7 @@ public class ViewCartSubFragment extends SubPageFragment {
 
         progressDialog = new ProgressDialog(this.getContext());
         textViewTitle = v.findViewById(R.id.titleTextView);
-        contentLayout =  v.findViewById(R.id.content_layout);
+        contentLayout =  v.findViewById(R.id.contentTableLayout);
 
         textViewTitle.setText("Order for the day (" + date + ")");
 
@@ -88,9 +89,14 @@ public class ViewCartSubFragment extends SubPageFragment {
         return v;
     }
 
-    private void updatePage(OrderData orderData, String date, LinearLayout contentLayout) {
+    private void updatePage(OrderData orderData, String date, TableLayout contentLayout) {
 
-        contentLayout.removeAllViewsInLayout();
+        int childCount = contentLayout.getChildCount();
+
+        // Remove all rows except the first one
+        if (childCount > NUMBER_OF_HEADER_ROWS) {
+            contentLayout.removeViews(NUMBER_OF_HEADER_ROWS, childCount - NUMBER_OF_HEADER_ROWS - NUMBER_OF_FOOTER_ROWS);
+        }
 
         if(orderData == null) {
             return;
@@ -103,64 +109,39 @@ public class ViewCartSubFragment extends SubPageFragment {
 
         int allOrderCost = 0;
         boolean firstTime = true;
-        TableLayout tableLayout = null;
 
         for(DishOrderData list:orderList.values()) {
-
-            String price, name, quantity, total;
-
             if(list.getBreakfastQuantity() > 0) {
-                if(firstTime) {
-                    tableLayout = addOrderHeading(contentLayout, "Breakfast");
+
+                updateOrderSummaryTable(contentLayout, list, list.getBreakfastQuantity(), "Breakfast", firstTime);
+               if(firstTime) {
                     firstTime = false;
                 }
-                price = String.valueOf(list.getPrice());
-                name = list.getName();
-                quantity = String.valueOf(list.getBreakfastQuantity());
-                total = String.valueOf(list.getPrice() * list.getBreakfastQuantity());
                 allOrderCost += list.getPrice() * list.getBreakfastQuantity();
-
-                addOrderLineItem(tableLayout, price, name, quantity, total, false);
             }
         }
 
         firstTime = true;
         for(DishOrderData list:orderList.values()) {
-
-            String price, name, quantity, total;
-
             if(list.getLunchQuantity() > 0) {
+
+                updateOrderSummaryTable(contentLayout, list, list.getLunchQuantity(), "Lunch", firstTime);
                 if(firstTime) {
-                    tableLayout = addOrderHeading(contentLayout, "Lunch");
                     firstTime = false;
                 }
-                price = String.valueOf(list.getPrice());
-                name = list.getName();
-                quantity = String.valueOf(list.getLunchQuantity());
-                total = String.valueOf(list.getPrice() * list.getLunchQuantity());
                 allOrderCost += list.getPrice() * list.getLunchQuantity();
-
-                addOrderLineItem(tableLayout, price, name, quantity, total, false);
             }
         }
 
         firstTime = true;
         for(DishOrderData list:orderList.values()) {
-
-            String price, name, quantity, total;
-
             if(list.getDinnerQuantity() > 0) {
+
+                updateOrderSummaryTable(contentLayout, list, list.getDinnerQuantity(), "Dinner", firstTime);
                 if(firstTime) {
-                    tableLayout = addOrderHeading(contentLayout, "Dinner");
                     firstTime = false;
                 }
-                price = String.valueOf(list.getPrice());
-                name = list.getName();
-                quantity = String.valueOf(list.getDinnerQuantity());
-                total = String.valueOf(list.getPrice() * list.getDinnerQuantity());
                 allOrderCost += list.getPrice() * list.getDinnerQuantity();
-
-                addOrderLineItem(tableLayout, price, name, quantity, total, false);
             }
         }
         orderData.setTotalCost(allOrderCost);
@@ -171,8 +152,8 @@ public class ViewCartSubFragment extends SubPageFragment {
                 isValidNewOrder = false;
             }
 
-            if(tableLayout != null) {
-                addTotalCostAndOrderButtons(tableLayout, allOrderCost, isValidNewOrder);
+            if(contentLayout != null) {
+                addTotalCostAndOrderButtons(contentLayout, allOrderCost, isValidNewOrder);
             }
         }
 
@@ -180,175 +161,110 @@ public class ViewCartSubFragment extends SubPageFragment {
 
     }
 
-    private TableLayout addOrderHeading(LinearLayout layout, String title) {
+    private void updateOrderSummaryTable(final TableLayout layout, final DishOrderData data, final int quantity, final String title, final boolean firstTime) {
 
-        TableLayout tableLayout = new TableLayout(this.getContext());
-        TextView textView = new TextView(this.getContext());
+        String price, name, total;
 
-        layout.addView(textView);
-        layout.addView(tableLayout);
+        if(firstTime) {
+            addOrderHeading(contentLayout, title);
+        }
+
+        price = String.valueOf(data.getPrice());
+        name = data.getName();
+        total = String.valueOf(data.getPrice() * quantity);
+
+        addOrderLineItem(layout, price, name, String.valueOf(quantity), total, false);
+    }
+
+    private TableLayout addOrderHeading(TableLayout layout, String title) {
+
+        LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.component_order_summary_title, null);
+
+        TextView textView = view.findViewById(R.id.textViewTitle);
+
+        //System.out.println(layout.getChildCount());
+        layout.addView(view, layout.getChildCount() - NUMBER_OF_FOOTER_ROWS);
 
         textView.setText(title);
 
-        //layout.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        tableLayout.setStretchAllColumns(true);
-
-        addOrderLineItem(tableLayout, "Price", "Dish Name", "Quantity", "Cost", true);
-
-        return tableLayout;
+        return layout;
     }
 
     private void addOrderLineItem(TableLayout layout, String price, String name, String quantity, String total, boolean isHeading) {
 
-        TableRow eachRow = new TableRow(this.getContext());
-        TextView textViewPrice = new TextView(this.getContext());
-        TextView textViewName = new TextView(this.getContext());
-        TextView textViewQuantity = new TextView(this.getContext());
-        TextView textViewTotal = new TextView(this.getContext());
+        LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.component_order_summary_row, null);
+        //System.out.println(layout.getChildCount());
+        layout.addView(view, layout.getChildCount() - NUMBER_OF_FOOTER_ROWS);
 
-        textViewPrice.setText("\u20B9" + price);
+        TextView textViewPrice = view.findViewById(R.id.textViewPrice);
+        TextView textViewName = view.findViewById(R.id.textViewName);
+        TextView textViewQuantity = view.findViewById(R.id.textViewQuantity);
+        TextView textViewTotal = view.findViewById(R.id.textViewCost);
+
+        textViewPrice.setText(String.valueOf(price));
         textViewName.setText(name);
         textViewQuantity.setText(quantity);
-        textViewTotal.setText("\u20B9" + total);
+        textViewTotal.setText(String.valueOf(total));
 
-        eachRow.addView(textViewName);
-        eachRow.addView(textViewPrice);
-        eachRow.addView(textViewQuantity);
-        eachRow.addView(textViewTotal);
-        layout.addView(eachRow);
-
-        //eachRow.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        textViewQuantity.setGravity(Gravity.CENTER);
-
-        int fontSize = 14;
-        if(isHeading) {
-            fontSize = 15;
-
-            textViewPrice.setTypeface(null, Typeface.BOLD);
-            textViewName.setTypeface(null, Typeface.BOLD);
-            textViewQuantity.setTypeface(null, Typeface.BOLD);
-            textViewTotal.setTypeface(null, Typeface.BOLD);
-
-            int paddingPix = AndroidUtils.dpToPixel(this.getContext(), 5);
-            eachRow.setPadding(0, paddingPix, 0, paddingPix);
-        } else {
-            int paddingPix = AndroidUtils.dpToPixel(this.getContext(), 5);
-            eachRow.setPadding(0, 0, 0, paddingPix);
-
-        }
-
-        textViewPrice.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-        textViewName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-        textViewQuantity.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-        textViewTotal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-
-        //textViewPrice.setWidth(AndroidUtils.dpToPixel(this.getContext(), 40));
-        //textViewQuantity.setWidth(AndroidUtils.dpToPixel(this.getContext(), 40));
-        //textViewTotal.setWidth(AndroidUtils.dpToPixel(this.getContext(), 60));
     }
 
     private void addTotalCostAndOrderButtons(TableLayout layout, int allOrderCost, boolean isValidOrder) {
 
-        TableRow row1 = new TableRow(this.getContext());
-        TableRow row2 = new TableRow(this.getContext());
-        LinearLayout buttonLayout = new LinearLayout(this.getContext());
-        TextView textViewTotalCostTitle = new TextView(this.getContext());
-        TextView textViewTotalCost = new TextView(this.getContext());
-        Button submitButton = new Button(this.getContext());
-        Button clearButton = new Button(this.getContext());
+        final TextView textViewTotalCost = layout.findViewById(R.id.textViewTotalCost);
+        final Button submitButton = layout.findViewById(R.id.buttonSubmit);
+        final Button clearButton = layout.findViewById(R.id.buttonCancel);
 
-        textViewTotalCostTitle.setText("Total");
-        textViewTotalCost.setText("\u20B9" + String.valueOf(allOrderCost));
+        textViewTotalCost.setText(String.valueOf(allOrderCost));
 
-        submitButton.setText(PLACE_ORDER_BUTTON_TEXT);
-        clearButton.setText(CANCEL_ORDER_BUTTON_TEXT);
+        class ButtonListener implements View.OnClickListener {
 
-        submitButton.setOnClickListener(buttonListener);
-        clearButton.setOnClickListener(buttonListener);
+            @Override
+            public void onClick(View view) {
+                Button button = ((Button)view);
 
-        row1.addView(new TextView(this.getContext()));
-        row1.addView(new TextView(this.getContext()));
-        row1.addView(textViewTotalCostTitle);
-        row1.addView(textViewTotalCost);
+                if(button.getText().equals(submitButton.getText())) {
+                    progressDialog.setMessage("Loading...");
+                    progressDialog.show();
+                    orderDataList.get(date).setOrderPlacedTime(calendar.getTime());
+                    orderViewModel.addOrder(date, orderDataList.get(date)).observe(getViewLifecycleOwner(), mObserverResult2);
+                }
 
-        buttonLayout.addView(submitButton);
-        buttonLayout.addView(clearButton);
+                if(button.getText().equals(clearButton.getText())) {
+                    orderDataList.get(date).setOrderId("CANCEL");
+                    submitButton.setEnabled(false);
+                    clearButton.setEnabled(false);
+                    updateOrderStatus(contentLayout, orderDataList.get(date));
+                }
+            }
+        }
 
-        row2.addView(buttonLayout);
-
-        layout.addView(row1);
-        layout.addView(row2);
+        submitButton.setOnClickListener(new ButtonListener());
+        clearButton.setOnClickListener(new ButtonListener());
 
         if(!isValidOrder) {
             submitButton.setEnabled(false);
             clearButton.setEnabled(false);
         }
-        int fontSize = 16;
-        textViewTotalCostTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-        textViewTotalCostTitle.setTypeface(null, Typeface.BOLD);
-
-        fontSize = 14;
-        textViewTotalCost.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-        textViewTotalCost.setTypeface(null, Typeface.BOLD);
-
-        int paddingPix = AndroidUtils.dpToPixel(this.getContext(), 10);
-        row1.setPadding(0, paddingPix, 0, paddingPix);
-
-        paddingPix = AndroidUtils.dpToPixel(this.getContext(), 10);
-        row2.setPadding(paddingPix, 0, paddingPix, 0);
-
-        //submitButton.setWidth(AndroidUtils.dpToPixel(this.getContext(), 30));
-        //clearButton.setWidth(AndroidUtils.dpToPixel(this.getContext(), 30));
-
-        TableRow.LayoutParams params = (TableRow.LayoutParams) buttonLayout.getLayoutParams();
-        params.span = 4; //amount of columns you will span
-        params.gravity = Gravity.CENTER;
-        /*params = (TableRow.LayoutParams) clearButton.getLayoutParams();
-        params.span = 2; //amount of columns you will span*/
-
-        submitButton.setBackground(getResources().getDrawable(R.drawable.button_animation));
-        submitButton.setTextColor(getResources().getColor(R.color.colorWhiteText));
-        clearButton.setBackground(getResources().getDrawable(R.drawable.button_animation));
-        clearButton.setTextColor(getResources().getColor(R.color.colorWhiteText));
-
-        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params2.setMargins(paddingPix, 0, paddingPix, 0);
-
-        submitButton.setLayoutParams(params2);
-        clearButton.setLayoutParams(params2);
-
     }
 
     private void updateOrderStatus(LinearLayout layout, OrderData orderData) {
 
-        TextView textViewOrderStatus = new TextView(this.getContext());
-        textViewOrderStatus.setGravity(Gravity.CENTER);
+        TextView textViewOrderStatus = layout.findViewById(R.id.textViewOrderStatus);
 
         if(orderData == null) {
             textViewOrderStatus.setText("Order Failure!\n\nYour Order is not complete due to technical reason");
-            layout.addView(textViewOrderStatus);
         } else if(orderData.getOrderId() != null && orderData.getOrderId().equals("CANCEL")) {
             textViewOrderStatus.setText("Order cancelled by user");
-            layout.addView(textViewOrderStatus);
             orderDataList.remove(date);
         } else if(orderData.getOrderId() != null && !orderData.getOrderId().equals("")) {
             textViewOrderStatus.setText("Order Received Successfully!\n\nYour Order Reference Number is \n" + orderData.getOrderId());
-            layout.addView(textViewOrderStatus);
             orderDataList.remove(date);
+        } else {
+            textViewOrderStatus.setText("");
         }
 
-        int paddingPix = AndroidUtils.dpToPixel(this.getContext(), 10);
-        textViewOrderStatus.setPadding(paddingPix, paddingPix * 2, paddingPix, paddingPix);
-
-        int fontSize = 14;
-        textViewOrderStatus.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize);
-        textViewOrderStatus.setTypeface(null, Typeface.ITALIC);
-
-        textViewOrderStatus.setTextColor(Color.parseColor("#ff4500"));
     }
 
     Observer<OrderData> mObserverResult1 = new Observer<OrderData>() {
@@ -373,36 +289,6 @@ public class ViewCartSubFragment extends SubPageFragment {
             } else {
                 updateOrderStatus(contentLayout, null);
                 progressDialog.dismiss();
-            }
-        }
-    };
-
-    private View.OnClickListener buttonListener =   new View.OnClickListener(){
-        @Override
-        public void onClick(View view){
-
-            Button button = ((Button)view);
-            LinearLayout buttonLayout;
-
-            if(button.getText().equals(PLACE_ORDER_BUTTON_TEXT)) {
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
-                orderDataList.get(date).setOrderPlacedTime(calendar.getTime());
-                orderViewModel.addOrder(date, orderDataList.get(date)).observe(getViewLifecycleOwner(), mObserverResult2);
-            }
-
-            if(button.getText().equals(CANCEL_ORDER_BUTTON_TEXT)) {
-                orderDataList.get(date).setOrderId("CANCEL");
-                updateOrderStatus(contentLayout, orderDataList.get(date));
-            }
-
-            buttonLayout = (LinearLayout)(button.getParent());
-
-            // loop through them, if they are instances of Button, disable them.
-            for(int i = 0; i < buttonLayout.getChildCount(); i++){
-                if(buttonLayout.getChildAt(i) instanceof Button ) {
-                    ((Button)buttonLayout.getChildAt(i)).setEnabled(false);
-                }
             }
         }
     };
