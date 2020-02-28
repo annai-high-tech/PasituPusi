@@ -1,14 +1,11 @@
-package com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder;
+package com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.allorder;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -18,17 +15,13 @@ import androidx.navigation.Navigation;
 import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.order.data.DishOrderData;
 import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
-import com.aht.business.kirti.pasitupusi.model.utils.AnimationUtil;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
-public class ViewAllOrderOneOrderFragment extends BaseFragment {
+public class AllOrderOneOrderFragment extends BaseFragment {
 
     private static final int NUMBER_OF_HEADER_ROWS = 5;
     private static final int NUMBER_OF_FOOTER_ROWS = 1;
@@ -49,7 +42,7 @@ public class ViewAllOrderOneOrderFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View view = inflater.inflate(R.layout.fragment_view_allorder_oneorder, container, false);
+        final View view = inflater.inflate(R.layout.fragment_all_order_oneorder, container, false);
 
         tableLayout =  view.findViewById(R.id.tableLayout);
         textViewOrderId = view.findViewById(R.id.textViewOrderID);
@@ -67,11 +60,11 @@ public class ViewAllOrderOneOrderFragment extends BaseFragment {
             public void onClick(View v) {
 
                 Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("dishList", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDishList());
-                bundle.putSerializable("breakFastCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getBreakFastCount());
-                bundle.putSerializable("lunchCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getLunchCount());
-                bundle.putSerializable("dinnerCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDinnerCount());
-                bundle.putParcelableArrayList("orderList", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getOrderList());
+                bundle.putParcelableArrayList("dishList", AllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDishList());
+                bundle.putSerializable("breakFastCount", AllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getBreakFastCount());
+                bundle.putSerializable("lunchCount", AllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getLunchCount());
+                bundle.putSerializable("dinnerCount", AllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDinnerCount());
+                bundle.putParcelableArrayList("orderList", AllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getOrderList());
 
                 Navigation.findNavController(view).navigate(R.id.action_viewAllOrderOneOrder_to_OrderList, bundle);
 
@@ -87,7 +80,7 @@ public class ViewAllOrderOneOrderFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
-        ViewAllOrderOneOrderFragmentArgs args = ViewAllOrderOneOrderFragmentArgs.fromBundle(getArguments());
+        AllOrderOneOrderFragmentArgs args = AllOrderOneOrderFragmentArgs.fromBundle(getArguments());
 
         OrderData orderData = args.getOrderData();
 

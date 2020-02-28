@@ -15,7 +15,7 @@ import com.aht.business.kirti.pasitupusi.model.utils.BitmapUtils;
 import com.aht.business.kirti.pasitupusi.ui.login.LoginMainActivity;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.DishConfigureFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.DishSelectionFragment;
-import com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder.ViewAllOrderFragment;
+import com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.allorder.AllOrderFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.user.ContactFragment;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.user.TrackOrderFragment;
@@ -297,8 +297,8 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.nav_admin_view_order:
                 adsAHT.showFullScreenAds();
-                if(currentFragment == null || !(currentFragment instanceof ViewAllOrderFragment)){
-                    changeFragments(ViewAllOrderFragment.newInstance(true));
+                if(currentFragment == null || !(currentFragment instanceof AllOrderFragment)){
+                    changeFragments(AllOrderFragment.newInstance(true));
                 }
                 break;
 

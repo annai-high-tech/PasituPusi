@@ -1,6 +1,5 @@
-package com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder;
+package com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.allorder;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -31,7 +29,6 @@ import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class ViewAllOrderFragment extends BaseFragment {
+public class AllOrderFragment extends BaseFragment {
 
     private static final int NUMBER_OF_HEADER_ROWS = 4;
     private static final int NUMBER_OF_FOOTER_ROWS = 1;
@@ -71,10 +68,10 @@ public class ViewAllOrderFragment extends BaseFragment {
     private ProfileData profileData = null;
 
 
-    public static ViewAllOrderFragment newInstance(boolean isNewObject) {
+    public static AllOrderFragment newInstance(boolean isNewObject) {
         Bundle args = new Bundle();
         args.putBoolean("isNewObject", isNewObject);
-        ViewAllOrderFragment f = new ViewAllOrderFragment();
+        AllOrderFragment f = new AllOrderFragment();
         f.setArguments(args);
         f.isNewObject = isNewObject;
         return f;
@@ -89,7 +86,7 @@ public class ViewAllOrderFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_view_allorder, container, false);
+        View view = inflater.inflate(R.layout.fragment_all_order, container, false);
 
         progressDialog = new ProgressDialog(this.getContext());
         textViewWelcomeMsg =  view.findViewById(R.id.titleTextView);
@@ -273,7 +270,7 @@ public class ViewAllOrderFragment extends BaseFragment {
 
             } else if (view.getId() == textViewDate.getId()) {
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(ViewAllOrderFragment.this.getContext(), dateListener, calendar
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AllOrderFragment.this.getContext(), dateListener, calendar
                         .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH));
 

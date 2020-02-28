@@ -1,4 +1,4 @@
-package com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder;
+package com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.allorder;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.aht.business.kirti.pasitupusi.R;
@@ -22,7 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class ViewAllOrderDishesCountFragment extends BaseFragment {
+public class AllOrderDishesCountFragment extends BaseFragment {
 
     private TableLayout tableLayout;
 
@@ -35,7 +34,7 @@ public class ViewAllOrderDishesCountFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View view = inflater.inflate(R.layout.fragment_view_allorder_dishescount, container, false);
+        final View view = inflater.inflate(R.layout.fragment_all_order_dishescount, container, false);
 
         tableLayout = view.findViewById(R.id.tableLayout);
 
@@ -45,11 +44,11 @@ public class ViewAllOrderDishesCountFragment extends BaseFragment {
             public void onClick(View v) {
 
                 Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("dishList", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDishList());
-                bundle.putSerializable("breakFastCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getBreakFastCount());
-                bundle.putSerializable("lunchCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getLunchCount());
-                bundle.putSerializable("dinnerCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDinnerCount());
-                bundle.putParcelableArrayList("orderList", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getOrderList());
+                bundle.putParcelableArrayList("dishList", AllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDishList());
+                bundle.putSerializable("breakFastCount", AllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getBreakFastCount());
+                bundle.putSerializable("lunchCount", AllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getLunchCount());
+                bundle.putSerializable("dinnerCount", AllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDinnerCount());
+                bundle.putParcelableArrayList("orderList", AllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getOrderList());
 
                 Navigation.findNavController(view).navigate(R.id.action_viewAllOrderDishesCount_to_Entry, bundle);
             }
@@ -61,7 +60,7 @@ public class ViewAllOrderDishesCountFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
-        ViewAllOrderEntrySubFragmentArgs args = ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments());
+        AllOrderEntrySubFragmentArgs args = AllOrderEntrySubFragmentArgs.fromBundle(getArguments());
 
         ArrayList<DishOrderData> dishList = args.getDishList();
         HashMap<String, Integer> breakFastCount = args.getBreakFastCount();
@@ -86,7 +85,7 @@ public class ViewAllOrderDishesCountFragment extends BaseFragment {
     private void addOrderSummary(TableLayout layout, String dishName, int breakfastQuantity, int lunchQuantity, int dinnerQuantity) {
 
         LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.component_view_allorder_dishescount_row, null);
+        View view = inflater.inflate(R.layout.component_all_order_dishescount_row, null);
 
         layout.addView(view, layout.getChildCount());
 

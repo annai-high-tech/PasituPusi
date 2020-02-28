@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/viewAllOrderEntrySubFragment"
-        android:name="com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder.ViewAllOrderEntrySubFragment"
+        android:name="com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.allorder.AllOrderEntrySubFragment"
         android:label="fragment_view_allorder_entry"
-        tools:layout="@layout/fragment_view_allorder_entry" >
+        tools:layout="@layout/fragment_all_order_entry" >
 
         <argument
             android:name="dishList"
@@ -55,18 +55,18 @@
 
     <fragment
         android:id="@+id/viewAllOrderDishesCountFragment"
-        android:name="com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder.ViewAllOrderDishesCountFragment"
+        android:name="com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.allorder.AllOrderDishesCountFragment"
         android:label="fragment_view_allorder_dishescount"
-        tools:layout="@layout/fragment_view_allorder_dishescount" >
+        tools:layout="@layout/fragment_all_order_dishescount" >
         <action
             android:id="@+id/action_viewAllOrderDishesCount_to_Entry"
             app:destination="@id/viewAllOrderEntrySubFragment" />
     </fragment>
     <fragment
         android:id="@+id/viewAllOrderOrderListFragment"
-        android:name="com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder.ViewAllOrderOrderListFragment"
+        android:name="com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.allorder.AllOrderOrderListFragment"
         android:label="fragment_view_allorder_orderlist"
-        tools:layout="@layout/fragment_view_allorder_orderlist" >
+        tools:layout="@layout/fragment_all_order_orderlist" >
         <action
             android:id="@+id/action_viewAllOrderOrderList_to_Entry"
             app:destination="@id/viewAllOrderEntrySubFragment" />
@@ -76,9 +76,9 @@
     </fragment>
     <fragment
         android:id="@+id/viewAllOrderOneOrderFragment"
-        android:name="com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder.ViewAllOrderOneOrderFragment"
+        android:name="com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.allorder.AllOrderOneOrderFragment"
         android:label="fragment_view_allorder_oneorder"
-        tools:layout="@layout/fragment_view_allorder_oneorder" >
+        tools:layout="@layout/fragment_all_order_oneorder" >
         <argument
             android:name="orderData"
             app:argType="com.aht.business.kirti.pasitupusi.model.order.data.OrderData"
