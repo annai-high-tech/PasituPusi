@@ -1,11 +1,12 @@
 ext {
     appName = 'Pasitu Pusi'
     appId = 'com.aht.business.kirti.pasitupusi'
-    verCode = 115
-    verName = 'V1.15'
+    verCode = 116
+    verName = 'V1.16'
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: "androidx.navigation.safeargs"
 
 android {
 
@@ -51,7 +52,12 @@ android {
     sourceSets {
         main {
             res.srcDirs =
-                    ['src/main/res', 'src/main/res/layouts/login', 'src/main/res/layouts/main_fragments', 'src/main/res/layouts/components']
+                    ['src/main/res',
+                     'src/main/res/layouts/login',
+                     'src/main/res/layouts/main_fragments',
+                     'src/main/res/layouts/overall_order_summary',
+                     'src/main/res/layouts/components'
+                    ]
         }
     }
 }
@@ -76,9 +82,12 @@ dependencies {
     implementation 'com.hbb20:ccp:2.3.5'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
-
+    implementation 'androidx.navigation:navigation-fragment:2.3.0-alpha02'
+    implementation 'androidx.navigation:navigation-ui:2.3.0-alpha02'
+    implementation 'androidx.navigation:navigation-dynamic-features-fragment:2.3.0-alpha02'
     //implementation 'com.google.api-client:google-api-client:1.30.6'
     //implementation 'com.google.api:api-common:1.8.1'
 
     //implementation 'com.google.firebase:firebase-admin:6.11.0'
+
 }

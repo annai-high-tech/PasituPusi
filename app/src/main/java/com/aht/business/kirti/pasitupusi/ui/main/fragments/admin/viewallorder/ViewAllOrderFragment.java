@@ -1,17 +1,13 @@
-package com.aht.business.kirti.pasitupusi.ui.main.fragments.admin;
+package com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.TypedValue;
-import android.view.Gravity;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,34 +15,30 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavHost;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.aht.business.kirti.pasitupusi.R;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.DailyMenuViewModel;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.DailyMenuList;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategory;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuCategoryList;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuElement;
 import com.aht.business.kirti.pasitupusi.model.order.OrderViewModel;
 import com.aht.business.kirti.pasitupusi.model.order.data.DishOrderData;
 import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
 import com.aht.business.kirti.pasitupusi.model.profile.data.ProfileData;
-import com.aht.business.kirti.pasitupusi.model.profile.enums.ProfileRole;
 import com.aht.business.kirti.pasitupusi.model.utils.AnimationUtil;
-import com.aht.business.kirti.pasitupusi.model.utils.BitmapUtils;
-import com.aht.business.kirti.pasitupusi.model.utils.DateUtils;
 import com.aht.business.kirti.pasitupusi.ui.main.MainActivity;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
-import com.aht.business.kirti.pasitupusi.ui.main.fragments.user.UserDishSelectionFragment;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -62,7 +54,6 @@ public class ViewAllOrderFragment extends BaseFragment {
 
     private TextView textViewWelcomeMsg, welcomeMsgTextView, menuTitleTextView;
     private LinearLayout contentLayout;
-    private TableLayout tableLayout;
     private TextView textViewDate;
     private ImageView top_left_arrow, top_right_arrow, top_go_to_today;
     private ImageView menuDrawerImageView;
@@ -80,6 +71,12 @@ public class ViewAllOrderFragment extends BaseFragment {
     private ProfileData profileData = null;
 
     private Map<String, OrderData> orderDataList = new HashMap<>();
+
+    private List<DishOrderData> dishList = new ArrayList<>();
+    private Map<String, Integer> breakFastCount = new HashMap<>();
+    private Map<String, Integer> lunchCount = new HashMap<>();
+    private Map<String, Integer> dinnerCount = new HashMap<>();
+
 
     public static ViewAllOrderFragment newInstance(boolean isNewObject) {
         Bundle args = new Bundle();
@@ -109,7 +106,6 @@ public class ViewAllOrderFragment extends BaseFragment {
         top_right_arrow =  view.findViewById(R.id.top_right_arrow);
         top_go_to_today =  view.findViewById(R.id.top_go_to_today);
         contentLayout =  view.findViewById(R.id.content_layout);
-        tableLayout = view.findViewById(R.id.tableLayout);
         navigationView = getActivity().findViewById(R.id.nav_view);
         welcomeMsgTextView = navigationView.getHeaderView(0).findViewById(R.id.nameTxt);
         menuDrawerImageView= navigationView.getHeaderView(0).findViewById(R.id.imageView);
@@ -143,6 +139,10 @@ public class ViewAllOrderFragment extends BaseFragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    }
+
     Observer<List<OrderData>> mObserverResult1 = new Observer<List<OrderData>>() {
         @Override
         public void onChanged(@Nullable List<OrderData> list) {
@@ -162,7 +162,6 @@ public class ViewAllOrderFragment extends BaseFragment {
 
         minCalendar = maxCalendar = null;
         profileData = ((MainActivity)getActivity()).getProfileData();
-
 
         textViewWelcomeMsg.setText("Order Summary");
 
@@ -206,16 +205,31 @@ public class ViewAllOrderFragment extends BaseFragment {
         }
         textViewDate.setText(dateTitle);
 
-        tableLayout.removeViews(2, tableLayout.getChildCount() - 2);
         contentLayout.removeAllViewsInLayout();
         contentLayout.invalidate();
         contentLayout.requestLayout();
         menuTitleTextView.setText("");
+
+        dishList.clear();
+        breakFastCount.clear();
+        lunchCount.clear();
+        dinnerCount.clear();
+
         if(orderList == null || orderList.size() <= 0) {
             addMenuTitle("No Orders for this day");
         } else {
             updateMenuItems(orderList, contentLayout);
         }
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("dishList", (ArrayList<? extends Parcelable>) dishList);
+        bundle.putSerializable("breakFastCount", (Serializable) breakFastCount);
+        bundle.putSerializable("lunchCount", (Serializable) lunchCount);
+        bundle.putSerializable("dinnerCount", (Serializable) dinnerCount);
+
+        NavController navController = Navigation.findNavController(this.getActivity(), R.id.fragment_allorder_entry);
+        navController.setGraph(navController.getGraph(), bundle);
+
     }
 
     private void updateMenuItems(List<OrderData> orderList, LinearLayout contentLayout) {
@@ -223,11 +237,6 @@ public class ViewAllOrderFragment extends BaseFragment {
         boolean isEmpty = true;
 
         addMenuTitle("Order Summary");
-
-        List<DishOrderData> dishList = new ArrayList<>();
-        Map<String, Integer> breakFastCount = new HashMap<>();
-        Map<String, Integer> lunchCount = new HashMap<>();
-        Map<String, Integer> dinnerCount = new HashMap<>();
 
         for(OrderData list:orderList) {
 
@@ -308,18 +317,6 @@ public class ViewAllOrderFragment extends BaseFragment {
             }
 
 
-        }
-
-        Collections.sort(dishList, new Comparator<DishOrderData>() {
-            @Override
-            public int compare(DishOrderData o1, DishOrderData o2) {
-                return o1.getId().compareTo(o2.getId());
-            }
-        });
-
-        for(DishOrderData orderData: dishList) {
-            //System.out.println(orderData.getId() + " " + orderData.getName() + " " + breakFastCount.get(orderData.getId()) + " " + lunchCount.get(orderData.getId()) + " " + dinnerCount.get(orderData.getId()));
-            addOrderSummary(tableLayout, orderData.getName(), breakFastCount.get(orderData.getId()), lunchCount.get(orderData.getId()), dinnerCount.get(orderData.getId()));
         }
 
     }
@@ -411,25 +408,6 @@ public class ViewAllOrderFragment extends BaseFragment {
         textViewName.setText(name);
         textViewQuantity.setText(quantity);
         textViewTotal.setText(total);
-
-    }
-
-    private void addOrderSummary(TableLayout layout, String dishName, int breakfastQuantity, int lunchQuantity, int dinnerQuantity) {
-
-        LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.component_order_summary_row, null);
-
-        layout.addView(view, layout.getChildCount());
-
-        TextView textViewPrice = view.findViewById(R.id.textViewPrice);
-        TextView textViewName = view.findViewById(R.id.textViewName);
-        TextView textViewQuantity = view.findViewById(R.id.textViewQuantity);
-        TextView textViewTotal = view.findViewById(R.id.textViewCost);
-
-        textViewName.setText(dishName);
-        textViewPrice.setText(String.valueOf(breakfastQuantity));
-        textViewQuantity.setText(String.valueOf(lunchQuantity));
-        textViewTotal.setText(String.valueOf(dinnerQuantity));
 
     }
 

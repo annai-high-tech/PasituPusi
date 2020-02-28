@@ -1,15 +1,13 @@
 package com.aht.business.kirti.pasitupusi.model.order.data;
 
-import com.aht.business.kirti.pasitupusi.model.dailymenu.data.MenuTime;
-import com.aht.business.kirti.pasitupusi.model.dailymenu.enums.MenuType;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @IgnoreExtraProperties
-public class DishOrderData {
+public class DishOrderData implements Parcelable {
 
     private String id;
 
@@ -39,6 +37,16 @@ public class DishOrderData {
         setBreakfastQuantity(0);
         setLunchQuantity(0);
         setDinnerQuantity(0);
+    }
+
+    protected DishOrderData(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        description = in.readString();
+        price = in.readInt();
+        breakfastQuantity = in.readInt();
+        lunchQuantity = in.readInt();
+        dinnerQuantity = in.readInt();
     }
 
     public String getId() {
@@ -97,4 +105,33 @@ public class DishOrderData {
     public void setDinnerQuantity(int dinnerQuantity) {
         this.dinnerQuantity = dinnerQuantity;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.description);
+        dest.writeInt(this.price);
+        dest.writeInt(this.breakfastQuantity);
+        dest.writeInt(this.lunchQuantity);
+        dest.writeInt(this.dinnerQuantity);
+    }
+
+    public static final Creator<DishOrderData> CREATOR = new Creator<DishOrderData>() {
+        @Override
+        public DishOrderData createFromParcel(Parcel in) {
+            return new DishOrderData(in);
+        }
+
+        @Override
+        public DishOrderData[] newArray(int size) {
+            return new DishOrderData[size];
+        }
+    };
+
 }

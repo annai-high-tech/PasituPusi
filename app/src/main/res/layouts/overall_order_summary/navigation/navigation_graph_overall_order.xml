@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph_overall_order"
+    app:startDestination="@id/viewAllOrderEntrySubFragment">
+
+    <fragment
+        android:id="@+id/viewAllOrderEntrySubFragment"
+        android:name="com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder.ViewAllOrderEntrySubFragment"
+        android:label="fragment_view_allorder_entry"
+        tools:layout="@layout/fragment_view_allorder_entry" >
+
+        <argument
+            android:name="dishList"
+            app:argType="java.util.ArrayList"
+            app:nullable="true"
+            android:defaultValue="@null" />
+
+        <argument
+            android:name="breakFastCount"
+            app:argType="java.util.HashMap"
+            app:nullable="true"
+            android:defaultValue="@null" />
+
+        <argument
+            android:name="lunchCount"
+            app:argType="java.util.HashMap"
+            app:nullable="true"
+            android:defaultValue="@null" />
+
+        <argument
+            android:name="dinnerCount"
+            app:argType="java.util.HashMap"
+            app:nullable="true"
+            android:defaultValue="@null" />
+
+        <action
+            android:id="@+id/action_viewAllOrderEntry_to_DishesCount"
+            app:destination="@id/viewAllOrderDishesCountFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/viewAllOrderDishesCountFragment"
+        android:name="com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder.ViewAllOrderDishesCountFragment"
+        android:label="fragment_view_allorder_dishescount"
+        tools:layout="@layout/fragment_view_allorder_dishescount" >
+        <action
+            android:id="@+id/action_viewAllOrderDishesCount_to_Entry"
+            app:destination="@id/viewAllOrderEntrySubFragment" />
+    </fragment>
+
+</navigation>
