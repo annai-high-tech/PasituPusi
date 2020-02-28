@@ -159,7 +159,7 @@ public class OrderManager {
 
         id += String.valueOf(new Date().getTime());
 
-        id += date.replaceAll("-", "");
+        //id += date.replaceAll("-", "");
 
         return id;
     }

@@ -1,5 +1,8 @@
 package com.aht.business.kirti.pasitupusi.model.order.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.aht.business.kirti.pasitupusi.model.order.enums.OrderStatus;
 
 import java.util.Calendar;
@@ -7,7 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OrderData {
+public class OrderData implements Parcelable {
 
     private String orderId;
 
@@ -39,6 +42,25 @@ public class OrderData {
         setLunchOrderStatus(OrderStatus.NO_ORDER);
         setDinnerOrderStatus(OrderStatus.NO_ORDER);
     }
+
+    protected OrderData(Parcel in) {
+        orderId = in.readString();
+        date = in.readString();
+        userId = in.readString();
+        totalCost = in.readInt();
+    }
+
+    public static final Creator<OrderData> CREATOR = new Creator<OrderData>() {
+        @Override
+        public OrderData createFromParcel(Parcel in) {
+            return new OrderData(in);
+        }
+
+        @Override
+        public OrderData[] newArray(int size) {
+            return new OrderData[size];
+        }
+    };
 
     public String getOrderId() {
         return orderId;
@@ -118,5 +140,18 @@ public class OrderData {
 
     public void setDinnerOrderStatus(OrderStatus dinnerOrderStatus) {
         this.dinnerOrderStatus = dinnerOrderStatus;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(orderId);
+        dest.writeString(date);
+        dest.writeString(userId);
+        dest.writeInt(totalCost);
     }
 }

@@ -82,6 +82,15 @@ public class ViewAllOrderEntrySubFragment extends BaseFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
+        ViewAllOrderEntrySubFragmentArgs args = ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments());
+
+        ArrayList<DishOrderData> dishList = args.getDishList();
+
+        if(dishList == null || dishList.size() <= 0) {
+            buttonOrderList.setVisibility(View.GONE);
+            buttonDishesCount.setVisibility(View.GONE);
+        }
     }
 
 
@@ -89,25 +98,23 @@ public class ViewAllOrderEntrySubFragment extends BaseFragment {
         @Override
         public void onClick(View view) {
 
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("dishList", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDishList());
+            bundle.putSerializable("breakFastCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getBreakFastCount());
+            bundle.putSerializable("lunchCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getLunchCount());
+            bundle.putSerializable("dinnerCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDinnerCount());
+            bundle.putParcelableArrayList("orderList", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getOrderList());
+
             if(view.getId() == buttonDishesCount.getId()) {
-
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("dishList", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDishList());
-                bundle.putSerializable("breakFastCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getBreakFastCount());
-                bundle.putSerializable("lunchCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getLunchCount());
-                bundle.putSerializable("dinnerCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDinnerCount());
-
                 /*NavDirections action =
                         ViewAllOrderEntrySubFragmentDirections
                                 .actionViewAllOrderEntryToDishesCount();
                 Navigation.findNavController(view).navigate(action);*/
                 Navigation.findNavController(view).navigate(R.id.action_viewAllOrderEntry_to_DishesCount, bundle);
-
-
             }
 
             if(view.getId() == buttonOrderList.getId()) {
-
+                Navigation.findNavController(view).navigate(R.id.action_viewAllOrderEntry_to_OrderList, bundle);
             }
         }
     };

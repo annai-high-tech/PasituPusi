@@ -10,19 +10,20 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.aht.business.kirti.pasitupusi.R;
 import com.aht.business.kirti.pasitupusi.model.order.data.DishOrderData;
+import com.aht.business.kirti.pasitupusi.model.order.data.OrderData;
 import com.aht.business.kirti.pasitupusi.ui.main.fragments.BaseFragment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class ViewAllOrderDishesCountFragment extends BaseFragment {
+public class ViewAllOrderOrderListFragment extends BaseFragment {
 
     private TableLayout tableLayout;
 
@@ -35,7 +36,7 @@ public class ViewAllOrderDishesCountFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View view = inflater.inflate(R.layout.fragment_view_allorder_dishescount, container, false);
+        final View view = inflater.inflate(R.layout.fragment_view_allorder_orderlist, container, false);
 
         tableLayout = view.findViewById(R.id.tableLayout);
 
@@ -51,7 +52,7 @@ public class ViewAllOrderDishesCountFragment extends BaseFragment {
                 bundle.putSerializable("dinnerCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDinnerCount());
                 bundle.putParcelableArrayList("orderList", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getOrderList());
 
-                Navigation.findNavController(view).navigate(R.id.action_viewAllOrderDishesCount_to_Entry, bundle);
+                Navigation.findNavController(view).navigate(R.id.action_viewAllOrderOrderList_to_Entry, bundle);
             }
         });
 
@@ -63,42 +64,48 @@ public class ViewAllOrderDishesCountFragment extends BaseFragment {
 
         ViewAllOrderEntrySubFragmentArgs args = ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments());
 
-        ArrayList<DishOrderData> dishList = args.getDishList();
-        HashMap<String, Integer> breakFastCount = args.getBreakFastCount();
-        HashMap<String, Integer> lunchCount = args.getLunchCount();
-        HashMap<String, Integer> dinnerCount = args.getDinnerCount();
+        ArrayList<OrderData> orderList = args.getOrderList();
 
-        if(dishList != null && dishList.size() > 0) {
+        if(orderList != null && orderList.size() > 0) {
 
-            Collections.sort(dishList, new Comparator<DishOrderData>() {
-                @Override
-                public int compare(DishOrderData o1, DishOrderData o2) {
-                    return o1.getId().compareTo(o2.getId());
-                }
-            });
-
-            for(DishOrderData orderData: dishList) {
-                addOrderSummary(tableLayout, orderData.getName(), breakFastCount.get(orderData.getId()), lunchCount.get(orderData.getId()), dinnerCount.get(orderData.getId()));
+            for(OrderData orderData: orderList) {
+                addOrderSummary(tableLayout, orderData);
             }
         }
     }
 
-    private void addOrderSummary(TableLayout layout, String dishName, int breakfastQuantity, int lunchQuantity, int dinnerQuantity) {
+    private void addOrderSummary(final TableLayout layout, final OrderData orderData) {
 
         LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.component_view_allorder_dishescount_row, null);
+        final View view = inflater.inflate(R.layout.component_view_allorder_orderlist_row, null);
 
         layout.addView(view, layout.getChildCount());
 
-        TextView textViewDishName = view.findViewById(R.id.textViewDishName);
-        TextView textViewBFQuantity = view.findViewById(R.id.textViewBFQuantity);
-        TextView textViewLQuantity = view.findViewById(R.id.textViewLQuantity);
-        TextView textViewDQuantity = view.findViewById(R.id.textViewDQuantity);
+        TextView textViewOrderID = view.findViewById(R.id.textViewOrderID);
+        TextView textViewName = view.findViewById(R.id.textViewName);
+        TextView textViewPhone = view.findViewById(R.id.textViewPhone);
+        TextView textViewCost = view.findViewById(R.id.textViewCost);
 
-        textViewDishName.setText(dishName);
-        textViewBFQuantity.setText(String.valueOf(breakfastQuantity));
-        textViewLQuantity.setText(String.valueOf(lunchQuantity));
-        textViewDQuantity.setText(String.valueOf(dinnerQuantity));
+        textViewOrderID.setText(orderData.getOrderId());
+        textViewName.setText(orderData.getDate());
+        textViewPhone.setText(orderData.getDate());
+        textViewCost.setText(String.valueOf(orderData.getTotalCost()));
+
+        textViewOrderID.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("dishList", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDishList());
+                bundle.putSerializable("breakFastCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getBreakFastCount());
+                bundle.putSerializable("lunchCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getLunchCount());
+                bundle.putSerializable("dinnerCount", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getDinnerCount());
+                bundle.putParcelableArrayList("orderList", ViewAllOrderEntrySubFragmentArgs.fromBundle(getArguments()).getOrderList());
+                bundle.putParcelable("orderData", orderData);
+
+                Navigation.findNavController(view).navigate(R.id.action_viewAllOrderOrderList_to_OneOrder, bundle);
+            }
+        });
 
     }
 

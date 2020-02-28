@@ -35,6 +35,12 @@
             app:nullable="true"
             android:defaultValue="@null" />
 
+        <argument
+            android:name="orderList"
+            app:argType="java.util.ArrayList"
+            app:nullable="true"
+            android:defaultValue="@null" />
+
         <action
             android:id="@+id/action_viewAllOrderEntry_to_DishesCount"
             app:destination="@id/viewAllOrderDishesCountFragment"
@@ -42,6 +48,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_viewAllOrderEntry_to_OrderList"
+            app:destination="@id/viewAllOrderOrderListFragment" />
     </fragment>
 
     <fragment
@@ -52,6 +61,32 @@
         <action
             android:id="@+id/action_viewAllOrderDishesCount_to_Entry"
             app:destination="@id/viewAllOrderEntrySubFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewAllOrderOrderListFragment"
+        android:name="com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder.ViewAllOrderOrderListFragment"
+        android:label="fragment_view_allorder_orderlist"
+        tools:layout="@layout/fragment_view_allorder_orderlist" >
+        <action
+            android:id="@+id/action_viewAllOrderOrderList_to_Entry"
+            app:destination="@id/viewAllOrderEntrySubFragment" />
+        <action
+            android:id="@+id/action_viewAllOrderOrderList_to_OneOrder"
+            app:destination="@id/viewAllOrderOneOrderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewAllOrderOneOrderFragment"
+        android:name="com.aht.business.kirti.pasitupusi.ui.main.fragments.admin.viewallorder.ViewAllOrderOneOrderFragment"
+        android:label="fragment_view_allorder_oneorder"
+        tools:layout="@layout/fragment_view_allorder_oneorder" >
+        <argument
+            android:name="orderData"
+            app:argType="com.aht.business.kirti.pasitupusi.model.order.data.OrderData"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_viewAllOrderOneOrder_to_OrderList"
+            app:destination="@id/viewAllOrderOrderListFragment" />
     </fragment>
 
 </navigation>

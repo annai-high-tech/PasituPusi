@@ -126,15 +126,6 @@
                 app:defaultNavHost="true"
                 app:navGraph="@navigation/navigation_graph_overall_order" />
 
-            <LinearLayout
-                android:id="@+id/content_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-
-            </LinearLayout>
-
         </LinearLayout>
 
 </ScrollView>
