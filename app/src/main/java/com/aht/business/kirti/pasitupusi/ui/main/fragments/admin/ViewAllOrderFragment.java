@@ -44,7 +44,11 @@ import com.google.android.material.navigation.NavigationView;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +62,7 @@ public class ViewAllOrderFragment extends BaseFragment {
 
     private TextView textViewWelcomeMsg, welcomeMsgTextView, menuTitleTextView;
     private LinearLayout contentLayout;
+    private TableLayout tableLayout;
     private TextView textViewDate;
     private ImageView top_left_arrow, top_right_arrow, top_go_to_today;
     private ImageView menuDrawerImageView;
@@ -104,6 +109,7 @@ public class ViewAllOrderFragment extends BaseFragment {
         top_right_arrow =  view.findViewById(R.id.top_right_arrow);
         top_go_to_today =  view.findViewById(R.id.top_go_to_today);
         contentLayout =  view.findViewById(R.id.content_layout);
+        tableLayout = view.findViewById(R.id.tableLayout);
         navigationView = getActivity().findViewById(R.id.nav_view);
         welcomeMsgTextView = navigationView.getHeaderView(0).findViewById(R.id.nameTxt);
         menuDrawerImageView= navigationView.getHeaderView(0).findViewById(R.id.imageView);
@@ -200,6 +206,7 @@ public class ViewAllOrderFragment extends BaseFragment {
         }
         textViewDate.setText(dateTitle);
 
+        tableLayout.removeViews(2, tableLayout.getChildCount() - 2);
         contentLayout.removeAllViewsInLayout();
         contentLayout.invalidate();
         contentLayout.requestLayout();
@@ -217,6 +224,11 @@ public class ViewAllOrderFragment extends BaseFragment {
 
         addMenuTitle("Order Summary");
 
+        List<DishOrderData> dishList = new ArrayList<>();
+        Map<String, Integer> breakFastCount = new HashMap<>();
+        Map<String, Integer> lunchCount = new HashMap<>();
+        Map<String, Integer> dinnerCount = new HashMap<>();
+
         for(OrderData list:orderList) {
 
             TableLayout layout = null;
@@ -228,6 +240,17 @@ public class ViewAllOrderFragment extends BaseFragment {
             for(String element:list.getOrderList().keySet()) {
 
                 DishOrderData orderElement = list.getOrderList().get(element);
+
+                if(breakFastCount.containsKey(element)) {
+                    breakFastCount.put(element, breakFastCount.get(element) + orderElement.getBreakfastQuantity());
+                    lunchCount.put(element, lunchCount.get(element) + orderElement.getLunchQuantity());
+                    dinnerCount.put(element, dinnerCount.get(element) + orderElement.getDinnerQuantity());
+                } else {
+                    breakFastCount.put(element, orderElement.getBreakfastQuantity());
+                    lunchCount.put(element, orderElement.getLunchQuantity());
+                    dinnerCount.put(element, orderElement.getDinnerQuantity());
+                    dishList.add(orderElement);
+                }
 
                 if(orderElement.getBreakfastQuantity() > 0) {
                     String price, name, quantity, total;
@@ -285,6 +308,18 @@ public class ViewAllOrderFragment extends BaseFragment {
             }
 
 
+        }
+
+        Collections.sort(dishList, new Comparator<DishOrderData>() {
+            @Override
+            public int compare(DishOrderData o1, DishOrderData o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+        });
+
+        for(DishOrderData orderData: dishList) {
+            //System.out.println(orderData.getId() + " " + orderData.getName() + " " + breakFastCount.get(orderData.getId()) + " " + lunchCount.get(orderData.getId()) + " " + dinnerCount.get(orderData.getId()));
+            addOrderSummary(tableLayout, orderData.getName(), breakFastCount.get(orderData.getId()), lunchCount.get(orderData.getId()), dinnerCount.get(orderData.getId()));
         }
 
     }
@@ -376,6 +411,25 @@ public class ViewAllOrderFragment extends BaseFragment {
         textViewName.setText(name);
         textViewQuantity.setText(quantity);
         textViewTotal.setText(total);
+
+    }
+
+    private void addOrderSummary(TableLayout layout, String dishName, int breakfastQuantity, int lunchQuantity, int dinnerQuantity) {
+
+        LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.component_order_summary_row, null);
+
+        layout.addView(view, layout.getChildCount());
+
+        TextView textViewPrice = view.findViewById(R.id.textViewPrice);
+        TextView textViewName = view.findViewById(R.id.textViewName);
+        TextView textViewQuantity = view.findViewById(R.id.textViewQuantity);
+        TextView textViewTotal = view.findViewById(R.id.textViewCost);
+
+        textViewName.setText(dishName);
+        textViewPrice.setText(String.valueOf(breakfastQuantity));
+        textViewQuantity.setText(String.valueOf(lunchQuantity));
+        textViewTotal.setText(String.valueOf(dinnerQuantity));
 
     }
 
